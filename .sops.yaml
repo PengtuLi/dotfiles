@@ -1,0 +1,7 @@
+# .sops.yaml
+creation_rules:
+  - path_regex: .*/\.ssh/.*$
+    age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7
+  - path_regex: mihomo-clash/config/config.yaml$
+    format: binary
+    age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7

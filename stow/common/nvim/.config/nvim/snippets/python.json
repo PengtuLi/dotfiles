@@ -1,0 +1,24 @@
+{
+  "Download Hugging Face Model": {
+    "prefix": "hf-download",
+    "body": [
+      "import os",
+      "os.environ[\"HF_ENDPOINT\"] = \"https://hf-mirror.com\"",
+      "",
+      "from huggingface_hub import login, snapshot_download",
+      "",
+      "login(token=\"${1:token}\")",
+      "repo_id = \"${2:Qwen/Qwen3-0.6B}\"",
+      "local_dir = \"${3:/share/models/Qwen3-0.6B}\"",
+      "",
+      "snapshot_path = snapshot_download(",
+      "    repo_id=repo_id,",
+      "    local_dir=local_dir,",
+      "    allow_patterns=\"*\"",
+      ")",
+      "",
+      "print(f\"\\nDownloaded entire repository '{repo_id}' to: {snapshot_path}\")"
+    ],
+    "description": "Download Hugging Face model using mirror site with token"
+  }
+}

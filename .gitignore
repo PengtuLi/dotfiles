@@ -1,7 +1,30 @@
 tags
 test.sh
 .luarc.json
-nvim
 
-spell/
-lazy-lock.json
+
+node_modules/
+**/*.DS_Store
+
+mihomo-clash/config/
+!mihomo-clash/config/ui/
+!mihomo-clash/config/config.yaml.sops
+
+stow/linux/fcitx5/.config/fcitx5/
+!stow/linux/fcitx5/.config/fcitx5/conf/classicui.conf
+
+stow/common/tmux/.config/tmux/plugins/
+
+stow/common/rclone/.config/rclone/rclone.conf
+
+stow/common/vscode/Code/
+!stow/common/vscode/Code/User/snippets/
+!stow/common/vscode/Code/User/*.json
+
+# stow/common/ssh/.ssh/authorized_keys
+stow/common/ssh/.ssh/known_hosts
+stow/common/ssh/.ssh/known_hosts.old
+stow/common/ssh/.ssh/sockets/
+stow/common/ssh/.ssh/id_rsa
+stow/common/ssh/.ssh/config
+
