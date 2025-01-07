@@ -1,0 +1,36 @@
+# 显示工作区变更
+set show-changes = true
+set show-untracked = true
+
+# 提交排序（加快加载）
+set commit-order = default
+
+# 启用鼠标（可选）
+set mouse = true
+set mouse-scroll = 3
+
+# 自动换行长行（可选）
+set wrap-lines = true
+
+# 分屏行为
+set vertical-split = auto
+set split-view-height = 70%
+set split-view-width = 70%
+
+# 更紧凑的作者显示
+set main-view = \
+  id:yes,width=8 \
+  author:abbreviated,width=12 \
+  date:relative-compact,width=12 \
+  commit-title:yes \
+  ref:yes
+
+# 颜色配置（示例）
+color cursor yellow red bold
+color diff-add green default
+color diff-del red default
+color diff-chunk blue default
+color author cyan default
+color date magenta default
+color commit-title white default bold
+color main-head green default bold
