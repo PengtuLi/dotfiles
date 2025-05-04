@@ -3,7 +3,11 @@ Host x299-torch
   HostName 172.18.216.209
   User root
   Port 10919
-  
+
+Host x299-torch-new
+  HostName 172.18.216.209
+  User root
+  Port 10920
 
 Host tecent-server
   HostName 43.138.253.221

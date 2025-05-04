@@ -4,9 +4,11 @@
 . scripts/prerequisites.sh
 . scripts/osx-defaults.sh
 . scripts/symlinks.sh
+. scripts/software.sh
 
 info "Dotfiles intallation initialized..."
 read -p "Install apps? [y/n] " install_apps
+read -p "Install font? [y/n] " install_fonts
 read -p "Overwrite existing dotfiles? [y/n] " overwrite_dotfiles
 
 if [[ "$install_apps" == "y" ]]; then
@@ -17,13 +19,21 @@ if [[ "$install_apps" == "y" ]]; then
 
     install_xcode
     install_homebrew
-    source ~/.zshrc
 
     printf "\n"
     info "===================="
     info "Apps"
     info "===================="
+    install_software
+fi
 
+if [[ "$install_fonts" == "y" ]]; then
+
+    printf "\n"
+    info "===================="
+    info "Fonts"
+    info "===================="
+    install_fonts
 fi
 
 # printf "\n"
