@@ -17,12 +17,18 @@ install_xcode() {
 
 install_homebrew() {
     info "Installing Homebrew..."
-    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+    if [[ "$(get_platform)" == "osx" ]]; then
+        export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+    fi
     if hash brew &>/dev/null; then
         warning "Homebrew already installed"
     else
         sudo --validate
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    fi
+    if [[ "$(get_platform)" == "linux" ]]; then
+        echo >> ~/.zshrc
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
     fi
 }
 

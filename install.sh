@@ -2,7 +2,6 @@
 
 . scripts/utils.sh
 . scripts/prerequisites.sh
-. scripts/brew-install-custom.sh
 . scripts/osx-defaults.sh
 . scripts/symlinks.sh
 
@@ -18,32 +17,22 @@ if [[ "$install_apps" == "y" ]]; then
 
     install_xcode
     install_homebrew
+    source ~/.zshrc
 
     printf "\n"
     info "===================="
     info "Apps"
     info "===================="
 
-    install_custom_formulae
-    install_custom_casks
-    run_brew_bundle
 fi
 
-printf "\n"
-info "===================="
-info "OSX System Defaults"
-info "===================="
-
-register_keyboard_shortcuts
-apply_osx_system_defaults
-
-printf "\n"
-info "===================="
-info "Terminal"
-info "===================="
-
-info "Adding .hushlogin file to suppress 'last login' message in terminal..."
-touch ~/.hushlogin
+# printf "\n"
+# info "===================="
+# info "OSX System Defaults"
+# info "===================="
+#
+# register_keyboard_shortcuts
+# apply_osx_system_defaults
 
 printf "\n"
 info "===================="
