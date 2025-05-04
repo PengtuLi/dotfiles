@@ -62,10 +62,33 @@ install_from_shell() {
         git clone https://github.com/wting/autojump.git ~/.zsh/autojump
         cd  ~/.zsh/autojump
         python ~/.zsh/autojump/install.py
-        echo '[[ -s /home/tutu/.autojump/etc/profile.d/autojump.sh ]] && source /home/tutu/.autojump/etc/profile.d/autojump.sh' >> $HOME/.zshrc
+        cd $SCRIPT_DIR
+        echo '[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] && source ~/.autojump/etc/profile.d/autojump.sh' >> $HOME/.zshrc
     else
         warning "autojump has already installed"
     fi
+    
+    # miniconda3
+    if ! command -v conda &>/dev/null; then
+        
+        if [[ $(get_platform) == "linux" ]]; then
+            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+        elif [[ $(get_platform) == "osx" ]]; then
+            curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o ~/miniconda3/miniconda.sh
+        fi
+
+        mkdir -p ~/miniconda3
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+        bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+        rm ~/miniconda3/miniconda.sh
+
+        source ~/miniconda3/bin/activate
+        conda init --all
+        source ~/.zshrc
+    else
+        warning "miniconda has already installed"
+    fi
+
 }
 
 install_software() {
@@ -83,7 +106,8 @@ install_fonts() {
     if [[ $(get_platform) == "linux" ]]; then
         info "install nerd font jetbrains-mono"
         sudo pacman -S --noconfirm ttf-jetbrains-mono-nerd
-    else
-        error "macos install font"
+    elif [[ $(get_platform) == "osx" ]]; then
+        info "install nerd font jetbrains-mono"
+        brew install --cask font-jetbrains-mono-nerd-font
     fi
 }
