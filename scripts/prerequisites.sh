@@ -27,8 +27,6 @@ install_homebrew() {
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         
         if [[ "$(get_platform)" == "linux" ]]; then
-            sudo chown -R root:root /home/linuxbrew/.linuxbrew/Cellar
-            sudo chmod -R 777 /home/linuxbrew/.linuxbrew/Cellar
             echo >> ~/.zshrc
             echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
         fi

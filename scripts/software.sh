@@ -58,7 +58,7 @@ install_from_shell() {
     fi
 
     # autojump
-    if ! command -v autojump &>/dev/null; then
+    if ! command -v j &>/dev/null; then
         git clone https://github.com/wting/autojump.git ~/.zsh/autojump
         cd  ~/.zsh/autojump
         python ~/.zsh/autojump/install.py
