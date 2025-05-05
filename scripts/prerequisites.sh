@@ -20,13 +20,15 @@ install_homebrew() {
     if [[ "$(get_platform)" == "osx" ]]; then
         export HOMEBREW_CASK_OPTS="--appdir=/Applications"
     fi
-    if hash brew &>/dev/null; then
+    if command -v brew &>/dev/null; then
         warning "Homebrew already installed"
     else
         sudo --validate
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         
         if [[ "$(get_platform)" == "linux" ]]; then
+            sudo chown -R root:root /home/linuxbrew/.linuxbrew/Cellar
+            sudo chmod -R 777 /home/linuxbrew/.linuxbrew/Cellar
             echo >> ~/.zshrc
             echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
         fi
