@@ -22,6 +22,7 @@ alias -- -="cd -"
 alias s=ssh
 alias t=tmux
 alias autol=autoliter
+alias f=spf
 
 # Include custom aliases
 if [[ -f ~/.aliases.local ]]; then

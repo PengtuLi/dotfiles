@@ -6,10 +6,10 @@ This repository contains my dotfiles, which are the config files and scripts I u
 
 - **Editor**: [NeoVim](https://neovim.io/). 
 - **Multiplexer**: [Tmux](https://github.com/tmux/tmux/wiki)
-- **Main Terminal**: neovim 
+- **Main Terminal**: [Ghostty](https://ghostty.org/)
 - **Shell Prompt**: [Starship](https://starship.rs/)
 - **Window Management**: [Rectangle](https://github.com/rxhanson/Rectangle) for resizing windows, paired with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) for switching between applications.
-- **File Manager**: [Ranger](https://github.com/ranger/ranger)
+- **File Manager**: [Superfile](https://superfile.netlify.app/)
 
 ## Custom Window Management
 
@@ -18,15 +18,6 @@ I'm not a fan of the default window management solutions that macOS provides, li
 ### Tab Key as Hyperkey
 
 The `Tab` key acts as a regular `Tab` when tapped, but when held, it provides additional functionalities.
-
-### Access Window Layer
-
-Holding `Tab + W` enables a window management layer, where other keys become shortcuts to resize the current window using Rectangle.
-
-**Examples:**
-
-- `Tab + W + H`: Resize window to the left half
-- `Tab + W + L`: Resize window to the right half
 
 ### Access Exposé Layer
 
@@ -51,4 +42,3 @@ To delete all symlinks created by the installation script, run:
 ./scripts/symlinks.sh --delete
 ```
 
-This will remove the symlinks but will not delete the actual configuration files, allowing you to easily revert to your previous configuration if needed.

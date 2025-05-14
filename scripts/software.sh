@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 get_pac_list() {
     # Define the list of standard packages for brew install
-    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux"
+    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux superfile"
 
     # Define the base list of cask packages for brew install --cask
     local cask_pac_list_from_brew="spacedrive"
@@ -40,6 +40,12 @@ check_zsh_config() {
 }
 
 install_from_brew() {
+    # check for except
+    if [[ $1 == "superfile" ]] && command -v spf &>/dev/null; then
+        warning "$1 has already installed."
+        return 0
+    fi
+
     if command -v $1 &>/dev/null || [ -e "/Applications/$1.app" ]; then
         warning "$1 has already installed."
     else
@@ -86,7 +92,7 @@ install_from_shell() {
     fi
 
     # autojump
-    if ! command -v j &>/dev/null; then
+    if ! command -v autojump &>/dev/null; then
         git clone https://github.com/wting/autojump.git ~/.zsh/autojump
         cd  ~/.zsh/autojump
         python ~/.zsh/autojump/install.py
