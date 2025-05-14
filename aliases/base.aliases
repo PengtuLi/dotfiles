@@ -1,0 +1,29 @@
+# ENV
+export EDITOR=nvim
+export VISUAL=code
+export TMUX_THEME=nord
+
+# Unix
+alias ll="ls -al"
+alias ln="ln -v"
+alias mkdir="mkdir -p"
+alias e=$EDITOR
+alias v=$VISUAL
+
+# Pretty print the path
+alias path='echo $PATH | tr -s ":" "\n"'
+
+# Easier navigation: ..., ...., ....., and -
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias -- -="cd -"
+
+alias s=ssh
+alias t=tmux
+alias autol=autoliter
+
+# Include custom aliases
+if [[ -f ~/.aliases.local ]]; then
+  source ~/.aliases.local
+fi

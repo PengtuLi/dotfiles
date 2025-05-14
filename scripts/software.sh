@@ -5,7 +5,26 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 . $SCRIPT_DIR/utils.sh
 
-pac_list_from_brew="gh nvim ghostty git starship tldr lazygit"
+get_pac_list() {
+    # Define the list of standard packages for brew install
+    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux"
+
+    # Define the base list of cask packages for brew install --cask
+    local cask_pac_list_from_brew="spacedrive"
+
+    # Get the current platform
+    local platform
+    platform="$(get_platform)"
+
+    # Check if the platform is osx (macOS)
+    if [[ "${platform}" == "osx" ]]; then
+        cask_pac_list_from_brew="${cask_pac_list_from_brew} rectangle"
+    fi
+
+    # Output the two lists, each on a new line
+    echo "${pac_list_from_brew}"
+    echo "${cask_pac_list_from_brew}"
+}
 
 check_zsh_config() {
     # specific zsh config
@@ -13,13 +32,22 @@ check_zsh_config() {
         echo >> ~/.zshrc
         echo 'eval "$(starship init zsh)"' >> ~/.zshrc
     fi
+
+    if [[ $1 == "tmux" ]]; then
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+
 }
 
 install_from_brew() {
-    if command -v $1 &>/dev/null; then
+    if command -v $1 &>/dev/null || [ -e "/Applications/$1.app" ]; then
         warning "$1 has already installed."
     else
-        brew install $1
+        if [[ $2 == "cask" ]]; then
+            brew install --cask $1
+        else
+            brew install $1
+        fi
         check_zsh_config $1
     fi
 
@@ -89,12 +117,36 @@ install_from_shell() {
         warning "miniconda has already installed"
     fi
 
+    if ! command -v autoliter &>/dev/null; then
+        git clone https://github.com/PengtuLi/autoLiterature.git ~/Desktop/autoLiterature/
+        cd  ~/Desktop/autoLiterature/
+        python setup.py install
+        cd $SCRIPT_DIR
+    else
+        warning "autoLiterature has already installed"
+    fi
+
+
 }
 
 install_software() {
     
+    if {
+        IFS= read -r pac_list_from_brew
+        IFS= read -r cask_pac_list_from_brew
+    } < <(get_pac_list); then
+        # 函数调用成功，并且成功读取了两行
+        echo "普通包列表: ${pac_list_from_brew}"
+        echo "Cask包列表: ${cask_pac_list_from_brew}"
+    else
+        echo "获取包列表失败"
+    fi
+
     for package in $pac_list_from_brew; do
         install_from_brew $package
+    done
+    for cask_package in $cask_pac_list_from_brew; do
+        install_from_brew $cask_package cask
     done
 
     install_from_shell

@@ -5,6 +5,7 @@
 . scripts/osx-defaults.sh
 . scripts/symlinks.sh
 . scripts/software.sh
+. scripts/aliases.sh
 
 info "Dotfiles intallation initialized..."
 read -p "Install apps? [y/n] " install_apps
@@ -43,6 +44,13 @@ fi
 #
 # register_keyboard_shortcuts
 # apply_osx_system_defaults
+#
+printf "\n"
+info "===================="
+info "Aliases"
+info "===================="
+
+add_aliases
 
 printf "\n"
 info "===================="
