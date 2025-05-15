@@ -128,6 +128,9 @@ install_from_shell() {
         source ~/miniconda3/bin/activate
         conda init --all
         source ~/.zshrc
+
+        # no base show
+        conda config --set changeps1 false
     else
         warning "miniconda has already installed"
     fi
