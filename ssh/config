@@ -5,6 +5,7 @@ Host x299-torch
   Port 10919
 
 Host x299-torch-new
+  SetEnv TERM=xterm-256color
   HostName 172.18.216.209
   User root
   Port 10920

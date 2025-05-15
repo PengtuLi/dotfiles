@@ -172,7 +172,8 @@ install_fonts() {
     # nerd font
     if [[ $(get_platform) == "linux" ]]; then
         info "install nerd font jetbrains-mono"
-        sudo pacman -S --noconfirm ttf-jetbrains-mono-nerd
+        brew install --cask font-jetbrains-mono-nerd-font
+        # sudo pacman -S --noconfirm ttf-jetbrains-mono-nerd
     elif [[ $(get_platform) == "osx" ]]; then
         info "install nerd font jetbrains-mono"
         brew install --cask font-jetbrains-mono-nerd-font

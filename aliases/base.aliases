@@ -1,4 +1,5 @@
 # ENV
+# export TERM=xterm-256color
 export EDITOR=nvim
 export VISUAL=code
 export TMUX_THEME=nord
@@ -24,6 +25,7 @@ alias s=ssh
 alias t=tmux
 alias autol=autoliter
 alias f=spf
+alias lg=lazygit
 
 alias yb-s=yabai --start-service
 alias yb-r=yabai --restart-service
