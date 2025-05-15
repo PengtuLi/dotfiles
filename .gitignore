@@ -5,3 +5,5 @@ test.sh
 
 spell/
 # lazy-lock.json
+
+**/*.Ds_Store

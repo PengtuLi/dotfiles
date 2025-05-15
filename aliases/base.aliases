@@ -2,6 +2,7 @@
 export EDITOR=nvim
 export VISUAL=code
 export TMUX_THEME=nord
+export HOMEBREW_NO_AUTO_UPDATE
 
 # Unix
 alias ll="ls -al"
@@ -23,6 +24,13 @@ alias s=ssh
 alias t=tmux
 alias autol=autoliter
 alias f=spf
+
+alias yb-s=yabai --start-service
+alias yb-r=yabai --restart-service
+alias yb-d=yabai --stop-service
+alias sk-s=skhd --start-service
+alias sk-r=skhd --restart-service
+alias sk-d=skhd --stop-service
 
 # Include custom aliases
 if [[ -f ~/.aliases.local ]]; then

@@ -18,7 +18,8 @@ get_pac_list() {
 
     # Check if the platform is osx (macOS)
     if [[ "${platform}" == "osx" ]]; then
-        cask_pac_list_from_brew="${cask_pac_list_from_brew} rectangle"
+        cask_pac_list_from_brew="${cask_pac_list_from_brew} rectangle karabiner-elements"
+        pac_list_from_brew="${pac_list_from_brew} koekeishiya/formulae/yabai koekeishiya/formulae/skhd"
     fi
 
     # Output the two lists, each on a new line
@@ -42,6 +43,14 @@ check_zsh_config() {
 install_from_brew() {
     # check for except
     if [[ $1 == "superfile" ]] && command -v spf &>/dev/null; then
+        warning "$1 has already installed."
+        return 0
+    fi
+    if [[ $1 == "koekeishiya/formulae/yabai" ]] && command -v yabai &>/dev/null; then
+        warning "$1 has already installed."
+        return 0
+    fi
+    if [[ $1 == "koekeishiya/formulae/skhd" ]] && command -v skhd &>/dev/null; then
         warning "$1 has already installed."
         return 0
     fi
