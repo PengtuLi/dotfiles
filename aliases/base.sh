@@ -35,6 +35,8 @@ alias sk-r=skhd --restart-service
 alias sk-d=skhd --stop-service
 
 # Include custom aliases
-if [[ -f ~/.aliases.local ]]; then
-  source ~/.aliases.local
-fi
+# alias_path=$(readlink -f ~/mylink)
+# if [[ -f ./proxy.aliases ]]; then
+#   echo exist
+#   source ./proxy.aliases
+# fi

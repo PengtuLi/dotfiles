@@ -1,3 +1,8 @@
+Host *
+  SetEnv TERM=xterm-256color
+  ServerAliveInterval 600
+  ServerAliveCountMax 100
+  TCPKeepAlive yes
 
 Host x299-torch
   HostName 172.18.216.209
@@ -5,7 +10,6 @@ Host x299-torch
   Port 10919
 
 Host x299-torch-new
-  SetEnv TERM=xterm-256color
   HostName 172.18.216.209
   User root
   Port 10920
@@ -16,13 +20,9 @@ Host tecent-server
   Port 22
 
 Host x299-lpt
-  SetEnv TERM=xterm-256color
   HostName 172.18.216.209 
   User lpt
   Port 22
-  ServerAliveInterval 600      
-  ServerAliveCountMax 100
-  TCPKeepAlive yes
 
 Host x299-cwh
   HostName 172.18.216.209
