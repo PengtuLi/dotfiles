@@ -3,7 +3,7 @@
 export EDITOR=nvim
 export VISUAL=code
 export TMUX_THEME=nord
-export HOMEBREW_NO_AUTO_UPDATE
+export HOMEBREW_NO_AUTO_UPDATE=true
 
 alias ali=show_aliases
 
@@ -13,6 +13,7 @@ alias ln="ln -v"
 alias mkdir="mkdir -p"
 alias e=$EDITOR
 alias v=$VISUAL
+alias c=clear
 
 # Pretty print the path
 alias path='echo $PATH | tr -s ":" "\n"'
@@ -25,17 +26,24 @@ alias -- -="cd -"
 
 alias s=ssh
 alias t=tmux
-alias t-d="tmux kill-server && rm -rf /tmp/tmux-*"
+alias t-dS='tmux kill-server && rm -rf /tmp/tmux-*'
+alias t-ds='tmux kill-session'
+alias t-a='tmux attach -t'
 alias autol=autoliter
 alias f=spf
 alias lg=lazygit
+alias b="bat --color=always"
 
-alias yb-s=yabai --start-service
-alias yb-r=yabai --restart-service
-alias yb-d=yabai --stop-service
-alias sk-s=skhd --start-service
-alias sk-r=skhd --restart-service
-alias sk-d=skhd --stop-service
+alias ff="fzf"
+alias ff-p='fzf --preview="bat --color=always {}"'
+alias ff-pm='fzf --multi --preview="bat --color=always {}"'
+
+alias yb-s='yabai --start-service'
+alias yb-r='yabai --restart-service'
+alias yb-d='yabai --stop-service'
+alias sk-s='skhd --start-service'
+alias sk-r='skhd --restart-service'
+alias sk-d='skhd --stop-service'
 
 # Include custom aliases
 # alias_path=$(readlink -f ~/mylink)

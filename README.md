@@ -11,6 +11,7 @@ This repository contains my dotfiles, which are the config files and scripts I u
 - **Window Management**: [Rectangle](https://github.com/rxhanson/Rectangle) for resizing windows, paired with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) for switching between applications.
 - **File Manager**: [Superfile](https://superfile.netlify.app/)
 - **hotkey-macos** [Karabiner-Elements](https://karabiner-elements.pqrs.org/) as my hotkey set tool in macos
+- **fzf** [fzf](https://github.com/junegunn/fzf) as fuzzy finder
 
 ## Setup
 
@@ -89,6 +90,8 @@ tmux kill-server && rm -rf /tmp/tmux-*
 ## Essential Shortcuts
 
 - Prefix: `CTRL + b`
+- reload cinfig: `Prefix + r`
+- which key: `Predix + space`
 
 - Create new tmux window: `Prefix + c`
 - Navigate to window: `Prefix + number`
@@ -97,18 +100,21 @@ tmux kill-server && rm -rf /tmp/tmux-*
 - Explore all windows: `Prefix + w`
 - Rename window: `Prefix + ,`
 - Rename session: `Prefix + $`
+- Detach: `Prefix + d`
 
 - Save sessions: `Prefix + CTRL + s`
-- Detach: `Prefix + d`
 - Restore session: `Prefix + CTRL + r`
 - Install plugins: `Prefix + I`
 - list all shortcuts: `Prefix + ?`
 
 - close panel: `Prefix + x`
+- close all other panel: `Prefix + e`
+- close window: `Prefix + &`
 - places us in copy mode: `Prefix + [`
 - split window: `Prefix + -or|`
 - resize panel: `Prefix + hjkl`
 - switch panel: `ctrl + hjkl\`
+- switch panel: `ctrl + q + number`
 
 ## Useful Snippets
 
@@ -122,3 +128,5 @@ if which tmux 2>&1 >/dev/null; then
   fi
 fi
 ```
+
+## fzf

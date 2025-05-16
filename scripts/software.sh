@@ -7,10 +7,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 get_pac_list() {
     # Define the list of standard packages for brew install
-    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux superfile"
+    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux superfile yq bat htop"
 
     # Define the base list of cask packages for brew install --cask
-    local cask_pac_list_from_brew="spacedrive"
+    local cask_pac_list_from_brew=""
 
     # Get the current platform
     local platform
@@ -18,8 +18,8 @@ get_pac_list() {
 
     # Check if the platform is osx (macOS)
     if [[ "${platform}" == "osx" ]]; then
-        cask_pac_list_from_brew="${cask_pac_list_from_brew} rectangle karabiner-elements"
         pac_list_from_brew="${pac_list_from_brew} koekeishiya/formulae/yabai koekeishiya/formulae/skhd"
+        cask_pac_list_from_brew="${cask_pac_list_from_brew} rectangle karabiner-elements spacedrive"
     fi
 
     # Output the two lists, each on a new line
@@ -110,10 +110,9 @@ install_from_shell() {
     else
         warning "autojump has already installed"
     fi
-    
+
     # miniconda3
     if ! command -v conda &>/dev/null; then
-        
         if [[ $(get_platform) == "linux" ]]; then
             wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
         elif [[ $(get_platform) == "osx" ]]; then
@@ -144,6 +143,13 @@ install_from_shell() {
         warning "autoLiterature has already installed"
     fi
 
+    # fzf
+    if [ ! -d "$HOME/.fzf" ]; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+        ~/.fzf/install
+    else
+        warning "fzf has already installed"
+    fi
 
 }
 
