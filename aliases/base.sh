@@ -5,6 +5,8 @@ export VISUAL=code
 export TMUX_THEME=nord
 export HOMEBREW_NO_AUTO_UPDATE
 
+alias ali=show_aliases
+
 # Unix
 alias ll="ls -al"
 alias ln="ln -v"
@@ -41,3 +43,15 @@ alias sk-d=skhd --stop-service
 #   echo exist
 #   source ./proxy.aliases
 # fi
+#
+
+show_aliases(){
+    alias | while read -r line; do
+        alias_name="${line%%=*}"
+        alias_command="${line#*=}"
+        # 计算虚线长度
+        dash_length=$((20 - ${#alias_name}))
+        dashes=$(printf '%*s' "$dash_length" | tr ' ' '-')
+        printf "\033[31m%-s\033[0m \033[37m%s\033[0m \033[32m%s\033[0m\n" "$alias_name" "$dashes" "$alias_command"
+    done
+}
