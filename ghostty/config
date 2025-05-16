@@ -5,24 +5,13 @@
 # on Ghostty's website, at https://ghostty.org/docs/config.
 
 # Config syntax crash course
-# ==========================
-# # The config file consists of simple key-value pairs,
-# # separated by equals signs.
-# font-family = Iosevka
-# window-padding-x = 2
-#
 # # Spacing around the equals sign does not matter.
 # # All of these are identical:
 # key=value
 # key= value
 # key =value
 # key = value
-#
-# # Any line beginning with a # is a comment. It's not possible to put
-# # a comment after a config option, since it would be interpreted as a
-# # part of the value. For example, this will have a value of "#123abc":
-# background = #123abc
-#
+
 # # Empty values are used to reset config keys to default.
 # key =
 #
@@ -30,7 +19,6 @@
 # # which is explained in the docs for that config option.
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
-#
 
 # font
 font-family = "JetBrainsMono Nerd Font"
@@ -69,3 +57,11 @@ keybind = alt+ctrl+0=equalize_splits
 keybind = alt+plus=increase_font_size:1
 keybind = alt+minus=decrease_font_size:1
 # keybind = alt+0=reset_font_sizes:0
+
+# padding
+window-padding-x=0
+window-padding-y=0
+# window-decoration = false
+window-padding-balance = true
+macos-titlebar-style = transparent
+window-step-resize=true

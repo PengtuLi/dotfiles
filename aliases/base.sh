@@ -23,6 +23,7 @@ alias -- -="cd -"
 
 alias s=ssh
 alias t=tmux
+alias t-d="tmux kill-server && rm -rf /tmp/tmux-*"
 alias autol=autoliter
 alias f=spf
 alias lg=lazygit
