@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 get_pac_list() {
     # Define the list of standard packages for brew install
-    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux superfile yq bat htop"
+    local pac_list_from_brew="gh nvim ghostty git starship tldr lazygit bear tmux superfile yq bat htop eza thefuck"
 
     # Define the base list of cask packages for brew install --cask
     local cask_pac_list_from_brew=""
@@ -32,6 +32,11 @@ check_zsh_config() {
     if [[ $1 == "starship" ]]; then
         echo >> ~/.zshrc
         echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+    fi
+    if [[ $1 == "thefuck" ]]; then
+        echo >> ~/.zshrc
+        echo 'eval $(thefuck --alias)' >> ~/.zshrc
+        echo 'eval $(thefuck --alias fk)' >> ~/.zshrc
     fi
 
     if [[ $1 == "tmux" ]]; then
@@ -146,7 +151,15 @@ install_from_shell() {
     # fzf
     if [ ! -d "$HOME/.fzf" ]; then
         git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-        ~/.fzf/install
+        echo '# Set up fzf key bindings and fuzzy completion' >> ~/.zshrc
+        echo "
+# --------- set fzf
+if [[ ! "\$PATH" == */Users/tutu/.fzf/bin* ]]; then
+  PATH="\${PATH:+\${PATH}:}/Users/tutu/.fzf/bin"
+fi
+" >> ~/.zshrc
+        echo 'source <(fzf --zsh)' >> ~/.zshrc
+
     else
         warning "fzf has already installed"
     fi
@@ -154,7 +167,7 @@ install_from_shell() {
 }
 
 install_software() {
-    
+
     if {
         IFS= read -r pac_list_from_brew
         IFS= read -r cask_pac_list_from_brew
@@ -177,7 +190,7 @@ install_software() {
 }
 
 install_fonts() {
-    
+
     # nerd font
     if [[ $(get_platform) == "linux" ]]; then
         info "install nerd font jetbrains-mono"

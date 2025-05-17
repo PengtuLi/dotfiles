@@ -8,7 +8,11 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 alias ali=show_aliases
 
 # Unix
-alias ll="ls -al"
+if command -v eza &>/dev/null; then
+  alias ll="eza --color=always --long --git"
+else
+  alias ll="ls -al"
+fi
 alias ln="ln -v"
 alias mkdir="mkdir -p"
 alias e=$EDITOR

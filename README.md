@@ -4,7 +4,7 @@ This repository contains my dotfiles, which are the config files and scripts I u
 
 ## Essential Tools
 
-- **Editor**: [NeoVim](https://neovim.io/). 
+- **Editor**: [NeoVim](https://neovim.io/).
 - **Multiplexer**: [Tmux](https://github.com/tmux/tmux/wiki)
 - **Main Terminal**: [Ghostty](https://ghostty.org/)
 - **Shell Prompt**: [Starship](https://starship.rs/)
@@ -130,3 +130,12 @@ fi
 ```
 
 ## fzf
+
+```shell
+### shortkey
+
+- Paste the selected files and directories onto the command-line: `CTRL-T`
+- Paste the selected command from history onto the command-line: `CTRL-R`
+- cd into the selected directory: `ALT-C`
+
+```
