@@ -91,7 +91,10 @@ alias s-proxy=ssh_proxyjump
 alias s-tc=ssh_copy_terminfo
 alias s-fk=fix_ssh_key
 
-alias 316="ssh 316-pc-zhuhai"
+alias 316="s 316-pc-zhuhai"
+alias x299="ss x299-torch-16660"
+alias x299-p="ss x299-torch-16660-proxy"
+
 
 # nginx
 alias ng-d="nginx -s stop"
