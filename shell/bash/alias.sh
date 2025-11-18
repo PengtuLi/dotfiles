@@ -28,7 +28,7 @@ alias lg=lazygit
 # ls
 if command -v eza &>/dev/null; then
     alias ls="eza --color=always --icons=always"
-    alias ll="ls --long --git -h --total-size"
+    alias ll="ls -alh --git "
     alias tree="ls --long --tree --level=3"
 else
     alias ll="ls -al"

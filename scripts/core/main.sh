@@ -160,6 +160,9 @@ run_component() {
         shell_scripts)
             script_path="$ROOT_DIR/scripts/core/shell_scripts.sh"
             ;;
+        mesh)
+            script_path="$ROOT_DIR/scripts/core/mesh.sh"
+            ;;
         extras)
             script_path="$ROOT_DIR/scripts/extras/${PLATFORM}.sh"
             args=()
