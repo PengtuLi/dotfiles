@@ -1,0 +1,78 @@
+{
+  "TLDR": {
+    "prefix": "tldr",
+    "body": [":::info[TLDR]", "", "$1", "", ":::"],
+    "description": "TLDR note admonition"
+  },
+  "Admonition: note": {
+    "prefix": "note",
+    "body": [":::note", "", "$1", "", ":::"],
+    "description": "note admonition block"
+  },
+  "Admonition: tip": {
+    "prefix": "tip",
+    "body": [":::tip", "", "$1", "", ":::"],
+    "description": "tip admonition block"
+  },
+  "Admonition: info": {
+    "prefix": "info",
+    "body": [":::info", "", "$1", "", ":::"],
+    "description": "info admonition block"
+  },
+  "Admonition: warning": {
+    "prefix": "warning",
+    "body": [":::warning", "", "$1", "", ":::"],
+    "description": "warning admonition block"
+  },
+  "Admonition: danger": {
+    "prefix": "danger",
+    "body": [":::danger", "", "$1", "", ":::"],
+    "description": "danger admonition block"
+  },
+  "Details": {
+    "prefix": "details",
+    "body": [
+      "<details>",
+      "",
+      "<summary>$1</summary>",
+      "",
+      "$2",
+      "",
+      "</details>"
+    ],
+    "description": "details"
+  },
+  "Paper": {
+    "prefix": "paper",
+    "body": [
+      "- `$1` **$2**. $3 et.al. **$4**, [link]($5)",
+      "  - PKU",
+      "  - research problem:",
+      "  - key insight:",
+      "  - key idea:",
+      "  - core method:",
+      "  - TLDR:"
+    ],
+    "description": "single paper note"
+  },
+  "daily-task": {
+    "prefix": "day-report",
+    "body": [
+      "### $1周$2",
+      "",
+      "目标推进:",
+      "",
+      "- 1",
+      "",
+      "收获与反思:",
+      "",
+      "- 1",
+      "",
+      "日记:",
+      "",
+      "- 1",
+      ""
+    ],
+    "description": "daily task note"
+  }
+}

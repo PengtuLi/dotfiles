@@ -1,0 +1,226 @@
+#!/usr/bin/env bash
+# SSH server selector with fzf
+# 用于快速浏览、选择和连接 SSH 配置中定义的主机
+
+SSH_CONFIG="$HOME/.ssh/config"
+
+# 解析 SSH 配置文件，提取主机信息
+# 输出格式: host\x1Fuser\x1Fhostname\x1Fport\x1Fproxy
+parse_hosts() {
+    awk '
+    BEGIN {
+        host = ""
+        separator = "\x1F"
+    }
+    /^Host / {
+        if (host != "*" && host != "" && hostname != "") {
+            print host separator user separator hostname separator port separator proxy
+        }
+        host = $2
+        hostname = ""
+        user = "unknown"
+        port = "22"
+        proxy = ""
+        next
+    }
+    /^  / && host != "*" {
+        key = $1
+        if (key == "HostName") {
+            for (i = 2; i <= NF; i++) hostname = hostname ? hostname " " $i : $i
+        } else if (key == "User") {
+            user = $2
+        } else if (key == "Port") {
+            port = $2
+        } else if (key == "ProxyJump") {
+            for (i = 2; i <= NF; i++) proxy = proxy ? proxy " " $i : $i
+        }
+    }
+    END {
+        if (host != "*" && host != "" && hostname != "") {
+            print host separator user separator hostname separator port separator proxy
+        }
+    }
+    ' "$SSH_CONFIG" | sort
+}
+
+# 格式化主机信息用于显示
+# 颜色: 青色=host, 黄色=user/port, 绿色=hostname, 灰色=proxy
+format_display() {
+    while IFS=$'\x1F' read -r host user hostname port proxy; do
+        if [[ -n "$proxy" ]]; then
+            printf "\033[36m%-25s\033[0m \033[33m%s\033[0m@\033[32m%s\033[0m:\033[33m%s\033[0m \033[90m(via %s)\033[0m\n" "$host" "$user" "$hostname" "$port" "$proxy"
+        else
+            printf "\033[36m%-25s\033[0m \033[33m%s\033[0m@\033[32m%s\033[0m:\033[33m%s\033[0m\n" "$host" "$user" "$hostname" "$port"
+        fi
+    done
+}
+
+# 显示帮助信息
+show_help() {
+    cat <<EOF
+Usage: ssh-select [COMMAND] [HOST]
+
+Commands:
+    (none)          fzf 选择并连接
+    connect|ssh     连接到主机
+    info            显示主机详情
+    ping            测试连接
+    edit            编辑配置
+    list            列出主机
+
+Options:
+    -h, --help      显示帮助
+EOF
+    exit 0
+}
+
+# 从 SSH 配置中提取主机的完整配置
+get_host_info() {
+    local host=$1
+    awk -v h="$host" '
+    BEGIN { found=0 }
+    /^Host / {
+        if ($2 == h) { found=1; print "Host " $2; next }
+        else if (found) exit
+    }
+    found && /^  / { print }
+    ' "$SSH_CONFIG"
+}
+
+# 从主机别名获取实际 hostname
+get_hostname() {
+    local host=$1
+    awk -v h="$host" '
+    BEGIN { current="" }
+    /^Host / { current=$2; next }
+    /^  HostName / && current==h { $1=""; sub(/^ /, ""); print; exit }
+    ' "$SSH_CONFIG"
+}
+
+# 测试主机连接
+get_ping_result() {
+    local host=$1
+    local hostname=$(get_hostname "$host")
+    if [[ -n "$hostname" ]]; then
+        echo -e "\033[33mPing: $hostname\033[0m"
+        echo "---"
+        ping -c 3 "$hostname" 2>&1
+    else
+        echo "Host not found"
+    fi
+}
+
+# 连接到 SSH 主机
+do_connect() {
+    ssh "$1"
+}
+
+# fzf 交互式主菜单
+main_menu() {
+    local tmpfile=$(mktemp)
+    parse_hosts > "$tmpfile"
+
+    # 创建编辑脚本
+    local edit_script=$(mktemp)
+    cat > "$edit_script" <<'EDIT'
+#!/bin/bash
+# 定位并编辑 SSH 配置中的特定主机
+host="$1"
+line=$(awk -v h="$host" '/^Host / && $2 == h { print NR; exit }' ~/.ssh/config)
+if [[ -n "$line" ]]; then
+    ${EDITOR:-vim} "+$line" ~/.ssh/config
+else
+    ${EDITOR:-vim} ~/.ssh/config
+fi
+EDIT
+    chmod +x "$edit_script"
+
+    # 创建 info 脚本（显示主机配置）
+    local info_script=$(mktemp)
+    cat > "$info_script" <<'INFO'
+#!/bin/bash
+SSH_CONFIG="$HOME/.ssh/config"
+host="$1"
+
+# 从 SSH 配置中提取主机的完整配置
+awk -v h="$host" '
+BEGIN { found=0 }
+/^Host / {
+    if ($2 == h) { found=1; print "Host " $2; next }
+    else if (found) exit
+}
+found && /^  / { print }
+' "$SSH_CONFIG" | less -R
+INFO
+    chmod +x "$info_script"
+
+    # 创建预览脚本
+    local preview_script=$(mktemp)
+    cat > "$preview_script" <<'PREVIEW'
+#!/bin/bash
+SSH_CONFIG="$HOME/.ssh/config"
+
+# 从带颜色代码的输出中提取纯文本主机名
+input="$1"
+host=$(echo "$input" | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $1}')
+
+# 获取 hostname 并执行 ping
+hostname=$(awk -v h="$host" '
+    BEGIN { current="" }
+    /^Host / { current=$2; next }
+    /^  HostName / && current==h { $1=""; sub(/^ /, ""); print; exit }
+' "$SSH_CONFIG")
+
+if [[ -n "$hostname" ]]; then
+    echo -e "\033[33mPing: $hostname\033[0m"
+    echo "---"
+    ping -c 3 "$hostname" 2>&1
+else
+    echo "Host not found"
+fi
+PREVIEW
+    chmod +x "$preview_script"
+
+    # fzf 选择界面
+    local result=$(cat "$tmpfile" | format_display | fzf \
+        --ansi \
+        --prompt='SSH > ' \
+        --header='Ctrl-i=info  Ctrl-e=edit  Enter=connect' \
+        --preview-window='right:33%:wrap' \
+        --preview="$preview_script {}" \
+        --bind='ctrl-i:execute(echo {} | sed "s/\x1b\[[0-9;]*m//g" | awk "{print \$1}" | xargs '"$info_script"')' \
+        --bind='ctrl-e:execute(echo {} | sed "s/\x1b\[[0-9;]*m//g" | awk "{print \$1}" | xargs '"$edit_script"')' \
+        --delimiter=' ' \
+        --nth=1)
+
+    # 清理临时文件
+    rm -f "$tmpfile" "$preview_script" "$edit_script" "$info_script"
+
+    [[ -z "$result" ]] && return 0
+    local host=$(echo "$result" | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $1}')
+    do_connect "$host"
+}
+
+# 主入口
+main() {
+    [[ "$1" == "-h" || "$1" == "--help" ]] && show_help
+    local cmd=$1 host=$2
+
+    case $cmd in
+        connect|ssh) do_connect "${host:-$(main_menu)}" ;;
+        info)
+            local h="${host:-$(parse_hosts | format_display | fzf --ansi --nth=1)}"
+            [[ -n "$h" ]] && { h=$(echo "$h" | awk '{print $1}'); get_host_info "$h"; }
+            ;;
+        ping)
+            local h="${host:-$(parse_hosts | format_display | fzf --ansi --nth=1)}"
+            [[ -n "$h" ]] && { h=$(echo "$h" | awk '{print $1}'); get_ping_result "$h"; }
+            ;;
+        edit) ${EDITOR:-vim} "$SSH_CONFIG" ;;
+        list) parse_hosts | format_display ;;
+        "") main_menu ;;
+        *) do_connect "$cmd" ;;
+    esac
+}
+
+main "$@"

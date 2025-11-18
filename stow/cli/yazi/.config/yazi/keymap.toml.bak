@@ -1,0 +1,10 @@
+[mgr]
+prepend_keymap = [
+  { on = "e", run = 'shell "nvim --server /tmp/lpt-nvim.sock --remote $@"', desc = "Open selected files in existing Neovim session" },
+  # Seeking
+  { on = "<C-k>", run = "seek -10", desc = "Seek up 10L in the preview" },
+  { on = "<C-j>", run = "seek 10",  desc = "Seek down 10L in the preview" },
+  # 禁用预设的 J 和 K
+  { on = "J", run = "noop", desc = "已禁用" },
+  { on = "K", run = "noop", desc = "已禁用" },
+]

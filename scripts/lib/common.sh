@@ -59,4 +59,3 @@ append_to_zshrc_if_missing() {
         info "已向 $ZSHRC 追加: $line"
     fi
 }
-

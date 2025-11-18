@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Copy terminfo to remote host for proper terminal support
+
+if [ $# -lt 1 ]; then
+    echo "Usage: ssh-copy-terminfo <host>"
+    echo "Example: ssh-copy-terminfo user@server"
+    exit 1
+fi
+
+infocmp -x xterm-ghostty | ssh "$1" 'mkdir -p ~/.terminfo && tic -o ~/.terminfo -'

@@ -1,0 +1,21 @@
+# theme config
+# Pick a softer palette.
+set -g @catppuccin_flavor 'frappe'
+set -g @catppuccin_window_status_style "basic"
+
+run ~/.config/tmu/plugins/tmux/catppuccin.tmux
+
+# Make the status line more pleasant.
+set -g status-left-length 100
+set -g status-left ""
+
+set -g @catppuccin_window_text "#W"
+set -g @catppuccin_window_current_text "#W"
+
+# Ensure that everything on the right side of the status line
+# is included.
+set -g status-right-length 100
+
+set -g status-right "#{E:@catppuccin_status_application}"
+set -ag status-right "#{E:@catppuccin_status_uptime}"
+set -ag status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '

@@ -1,0 +1,59 @@
+{
+  "nvim": {
+    "install": "True",
+    "brew": "neovim",
+    "config": ["~/.config/nvim"]
+  },
+  "yazi": {
+    "install": "True",
+    "config": ["~/.config/yazi"]
+  },
+  "fd": {
+    "install": "True"
+  },
+  "file": {
+    "install": "True"
+  },
+  "gh": {
+    "install": "True",
+    "config": ["~/.config/gh"]
+  },
+  "lazygit": {
+    "install": "True",
+    "config": ["~/.config/lazygit/*.yml"]
+  },
+  "tmux": {
+    "install": "True",
+
+    "config": ["~/.config/tmux/*.conf"]
+  },
+  "git": {
+    "config": ["~/.gitconfig", "~/.gitignore_global"]
+  },
+  "delta": {
+    "install": "True",
+    "config": ["~/.delta.themes.gitconfig"]
+  },
+  "gdb": {
+    "install": "False",
+    "config": ["~/.gdbinit"]
+  },
+  "pudb": {
+    "config": ["~/.config/pudb"]
+  },
+  "fzf": {
+    "install": "True"
+  },
+  "zoxide": {
+    "install": "True"
+  },
+  "bash-completion@2": {
+    "install": "True"
+  },
+  "tree-sitter-cli": {
+    "install": "True"
+  },
+  "claude-code": {
+    "install": "True"
+  }
+}

@@ -1,0 +1,43 @@
+[user]
+	name = Orion Li
+	email = "373595331@qq.com"
+[credential "https://github.com"]
+	helper =
+	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[core]
+	excludesfile = ~/.gitignore_global
+	pager = delta
+[pull]
+	rebase = true
+[diff]
+  colorMoved = default
+[interactive]
+	diffFilter = delta --color-only --features=interactive
+
+# delta related
+[include]
+  path = ~/.delta.themes.gitconfig
+[delta]
+  features = Monokai
+	navigate = true
+  line-numbers = true
+  side-by-side = true
+  ; features = catppuccin-frappe
+  ; features = github
+  ; features = "Monokai Extended"
+  ; syntax-theme = "Visual Studio Dark+"
+  ; features = "Darcula"
+[delta "interactive"]
+  keep-plus-minus-markers = true

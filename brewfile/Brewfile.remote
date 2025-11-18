@@ -1,0 +1,5 @@
+# sync & remote
+brew "rclone"
+brew "rsync"
+brew "fswatch"
+# brew "sshfs" # use system package manager!!!!

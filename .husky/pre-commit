@@ -1,1 +1,5 @@
+# crypt hook
 bash scripts/crypt/encrypt-secret.sh
+
+# Run pre-commit hooks
+pre-commit run

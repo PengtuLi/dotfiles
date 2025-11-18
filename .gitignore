@@ -1,7 +1,7 @@
 tags
 test.sh
 .luarc.json
-
+.venv/
 
 node_modules/
 **/*.DS_Store
@@ -10,21 +10,30 @@ mihomo-clash/config/
 !mihomo-clash/config/ui/
 !mihomo-clash/config/config.yaml.sops
 
-stow/linux/fcitx5/.config/fcitx5/
-!stow/linux/fcitx5/.config/fcitx5/conf/classicui.conf
+stow/gui/fcitx5/.config/fcitx5/conf/*
+stow/gui/fcitx5/.config/fcitx5/config
+stow/gui/fcitx5/.config/fcitx5/profile
+!stow/gui/fcitx5/.config/fcitx5/conf/classicui.conf
 
-stow/common/tmux/.config/tmux/plugins/
+stow/cli/tmux/.config/tmux/plugins/
 
-stow/common/rclone/.config/rclone/rclone.conf
+stow/cli/rclone/.config/rclone/rclone.conf
 
-stow/common/vscode/Code/
-!stow/common/vscode/Code/User/snippets/
-!stow/common/vscode/Code/User/*.json
+stow/gui/vscode/Code/
+!stow/gui/vscode/Code/User/snippets/
+!stow/gui/vscode/Code/User/*.json
 
-# stow/common/ssh/.ssh/authorized_keys
-stow/common/ssh/.ssh/known_hosts
-stow/common/ssh/.ssh/known_hosts.old
-stow/common/ssh/.ssh/sockets/
-stow/common/ssh/.ssh/id_rsa
-stow/common/ssh/.ssh/config
+stow/cli/ssh/.ssh/known_hosts
+stow/cli/ssh/.ssh/known_hosts.old
+stow/cli/ssh/.ssh/sockets/
+stow/cli/ssh/.ssh/*_rsa
+stow/cli/ssh/.ssh/config
 
+stow/cli/gh/.config/gh/hosts.yml
+stow/cli/gh/.config/gh/config.yml
+
+stow/gui/karabiner/.config/karabiner/
+!stow/gui/karabiner/.config/karabiner/karabiner.json
+
+stow/cli/pudb/.config/pudb/
+!stow/cli/pudb/.config/pudb/pudb.cfg

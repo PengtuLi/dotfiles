@@ -291,5 +291,3 @@ elif [[ "$(get_platform)" == "linux" ]] && is_arch_linux; then
 else
     echo "未安装mihomo系统服务，请手动启动"
 fi
-
-

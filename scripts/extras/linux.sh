@@ -110,7 +110,7 @@ After=graphical-session.target
 Requisite=graphical-session.target
 
 [Service]
-ExecStart=/usr/bin/swayidle -w timeout 1200 'niri msg action power-off-monitors' timeout 1800 'hyprlock' before-sleep 'hyprlock'
+ExecStart=/usr/bin/swayidle -w timeout 1800 'niri msg action power-off-monitors' timeout 3600 'hyprlock' before-sleep 'hyprlock'
 Restart=on-failure
 EOF
 
@@ -220,4 +220,3 @@ fi
 
 
 success "Linux 额外步骤完成"
-

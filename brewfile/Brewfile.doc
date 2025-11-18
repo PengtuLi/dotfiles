@@ -1,0 +1,7 @@
+# document
+brew "presenterm"
+brew "pandoc"
+# pdf engine
+brew "glow"
+# npm init slidev@latest
+# brew "typer"

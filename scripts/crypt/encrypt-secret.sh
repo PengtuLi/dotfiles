@@ -10,12 +10,14 @@ then
     exit 1
 fi
 
-SSH_KEY_SOURCE="stow/common/ssh/.ssh/id_rsa"
-SSH_KEY_SOPS="stow/common/ssh/.ssh/id_rsa.sops"
-SSH_CONFIG="stow/common/ssh/.ssh/config"
-SSH_CONFIG_SOPS="stow/common/ssh/.ssh/config.sops"
-CLASH_CONFIG_SOURCE="$ROOT_DIR/mihomo-clash/config/config.yaml"
-CLASH_CONFIG_SOPS="$ROOT_DIR/mihomo-clash/config/config.yaml.sops"
+SSH_KEY="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa"
+SSH_KEY_SOPS=$SSH_KEY.sops
+SSH_CONFIG="$ROOT_DIR/stow/cli/ssh/.ssh/config"
+SSH_CONFIG_SOPS=$SSH_CONFIG.sops
+CLASH_CONFIG="$ROOT_DIR/mihomo-clash/config/config.yaml"
+CLASH_CONFIG_SOPS=$CLASH_CONFIG.sops
+GH_HOST="$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml"
+GH_HOST_SOPS=$GH_HOST.sops
 
 # --- 加密逻辑 ---
 
@@ -77,11 +79,9 @@ encrypt_if_changed() {
     fi
 }
 
-# 1. 加密 SSH 私钥
-encrypt_if_changed "$SSH_KEY_SOURCE" "$SSH_KEY_SOPS" "SSH key" "normal"
+encrypt_if_changed "$SSH_KEY" "$SSH_KEY_SOPS" "SSH key" "normal"
 encrypt_if_changed "$SSH_CONFIG" "$SSH_CONFIG_SOPS" "SSH config" "normal"
-
-# 2. 加密 Clash 配置文件
-encrypt_if_changed "$CLASH_CONFIG_SOURCE" "$CLASH_CONFIG_SOPS" "Clash config" "force"
+encrypt_if_changed "$CLASH_CONFIG" "$CLASH_CONFIG_SOPS" "Clash config" "force"
+encrypt_if_changed "$GH_HOST" "$GH_HOST_SOPS" "gh auth" "normal"
 
 echo "Pre-commit encryption hook finished."

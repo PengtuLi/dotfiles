@@ -1,50 +1,30 @@
-# client
-brew "Adembc/homebrew-tap/lazyssh" # ssh manager tool
+# tool
+brew "bear"                  # C/C++ compile_commands.json 生成器
 
-# font
-cask "font-jetbrains-mono-nerd-font"
-cask "font-maple-mono-nf-cn"
+# # macOS 特有软件
+cask "karabiner-elements"                # 键盘映射/改键
+cask "mos"
+cask "caffeine"
+cask "stats"
+# cask "battery-toolkit"
+brew "batt"                              # cli battery-toolkit
+cask "the-unarchiver"
+# cask "lunar" # unlock XDR display
+cask "jordanbaird-ice"
+cask "google-drive"
+cask "vlc"                               # media player
+cask "google-chrome"
+# cask "wpsoffice-cn"
+cask "tencent-meeting"
+cask "ghostty"                           # GPU 加速终端
+cask "spotify"
+cask "visual-studio-code"                # vscode
 
-# macos
-brew "yq"                    # YAML 处理工具
-brew 'typos-cli'
+# WM
 # tap "koekeishiya/formulae"   # 第三方仓库：yabai/skhd
 # tap "mhaeuser/mhaeuser"
-#
-# brew "nginx"                 # Web 服务器
-# brew "bear"                  # C/C++ compile_commands.json 生成器
-#
-# # macOS 特有软件
 # brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
 # brew "koekeishiya/formulae/skhd"  # 键盘快捷键守护进程
-# brew "sniffnet"                   # Comfortably monitor your Internet traffic
-#
-# # cask "rectangle"                         # 拖拽式窗口分屏
-# cask "karabiner-elements"                # 键盘映射/改键
-# cask "mos"
-# cask "caffeine"
-# cask "stats"
-# cask "battery-toolkit"
-# cask "jordanbaird-ice"
-# cask "lunar" # unlock XDR display
-# cask "google-drive"
-# cask "the-unarchiver"
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# cask "vlc"                               # media player
-# cask "google-chrome"
-# cask "wpsoffice-cn"
-# cask "tencent-meeting"
-# cask "ghostty"                           # GPU 加速终端
-# cask "spotify"
-# cask "visual-studio-code"                # vscode
-# # ding talk
-
-
+cask "nikitabobko/tap/aerospace"
+tap "FelixKratz/formulae"
+brew "borders"

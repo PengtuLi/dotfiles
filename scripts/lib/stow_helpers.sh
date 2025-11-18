@@ -21,8 +21,9 @@ stow_packages() {
       target="$HOME/Library/Application Support"
     elif [[ "$pkg" =~ ^(vscode)$ ]] && is_linux; then
       target="$HOME/.config"
-    elif [[ "$pkg" =~ ^(nginx)$ ]]; then
-      target="/opt/homebrew/etc"
+    elif [[ "$pkg" =~ ^(smb)$ ]]; then
+      target="/etc"
+      IFSUDO=sudo
     else
       target="$HOME"
     fi

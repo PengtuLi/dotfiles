@@ -1,0 +1,42 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  # ============== 通用钩子 ==============
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-json
+        exclude: ^stow/gui/vscode/
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: trailing-whitespace
+      - id: detect-private-key
+
+  # ============== Python ==============
+  # ruff: 快速的 Python linter 和 formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
+
+  # ============== Markdown ==============
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.20.0
+    hooks:
+      - id: markdownlint-cli2
+        exclude: ^(stow/cli/yazi/|stow/gui/azote/|stow/gui/ghostty/)
+        args: ["--disable", "MD013", "MD033", "MD045"]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks

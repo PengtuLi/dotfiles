@@ -1,0 +1,52 @@
+gui:
+  # Fraction of the total screen width to use for the left side section. You may
+  # want to pick a small number (e.g. 0.2) if you're using a narrow screen, so
+  # that you can see more of the main section.
+  # Number from 0 to 1.0.
+  sidePanelWidth: 0.25
+  # expandedSidePanelWeight: 2
+  # If true, show the number of lines changed per file in the Files view
+  showNumstatInFilesView: true
+  nerdFontsVersion: "3"
+  # If true, show the command log
+  showCommandLog: true
+  # Whether to stack UI components on top of each other.
+  # One of 'auto' (default) | 'always' | 'never'
+  portraitMode: auto
+
+  theme:
+    activeBorderColor:
+      - "#ff966c"
+      - "bold"
+    inactiveBorderColor:
+      - "#589ed7"
+    searchingActiveBorderColor:
+      - "#ff966c"
+      - "bold"
+    optionsTextColor:
+      - "#82aaff"
+    selectedLineBgColor:
+      - "#2d3f76"
+    cherryPickedCommitFgColor:
+      - "#82aaff"
+    cherryPickedCommitBgColor:
+      - "#c099ff"
+    markedBaseCommitFgColor:
+      - "#82aaff"
+    markedBaseCommitBgColor:
+      - "#ffc777"
+    unstagedChangesColor:
+      - "#c53b53"
+    defaultFgColor:
+      - "#c8d3f5"
+git:
+  diff:
+    showFileDiffStats: true
+  pagers:
+    - # A cool feature of delta is --hyperlinks, which renders clickable links for the line numbers in the left margin, and lazygit supports these. To use them, set the pager: config to delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"; this allows you to click on an underlined line number in the diff to jump right to that same line in your editor.
+      colorArg: always
+      pager: delta --paging=never --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+
+os:
+  # editPreset: "nvim"
+  # open: "code {{filename}}"
