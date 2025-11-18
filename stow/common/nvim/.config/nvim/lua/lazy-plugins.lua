@@ -27,7 +27,7 @@ require('lazy').setup({
   require 'custom-plugins.todo-comments',
   -- require 'custom-plugins.bufferline',
   require 'custom-plugins.vim-tmux-navigator',
-  require 'custom-plugins.duck',
+  -- require 'custom-plugins.duck',
   -- require 'custom-plugins.animation',
   -- require 'custom-plugins.markview',
   -- require 'custom-plugins.peek',
@@ -35,6 +35,7 @@ require('lazy').setup({
   require 'custom-plugins.hardtime',
   -- require 'custom-plugins.lazygit',
   require 'custom-plugins.harpoon',
+  -- require 'custom-plugins.yazi',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!

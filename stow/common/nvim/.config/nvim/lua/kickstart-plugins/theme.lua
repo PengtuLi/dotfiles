@@ -5,6 +5,7 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
+        transparent = false, -- Enable this to disable setting the background color
         styles = {
           -- Style to be applied to different syntax groups
           -- Value is any valid attr-list value for `:help nvim_set_hl`
@@ -18,7 +19,7 @@ return {
         },
       }
 
-      vim.cmd.colorscheme 'tokyonight-storm'
+      vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 }

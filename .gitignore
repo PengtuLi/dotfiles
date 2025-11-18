@@ -28,3 +28,6 @@ stow/common/ssh/.ssh/sockets/
 stow/common/ssh/.ssh/id_rsa
 stow/common/ssh/.ssh/config
 
+stow/osx/karabiner/.config/karabiner/
+!stow/osx/karabiner/.config/karabiner/karabiner.json
+

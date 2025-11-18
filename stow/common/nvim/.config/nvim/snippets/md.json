@@ -46,13 +46,33 @@
     "prefix": "paper",
     "body": [
       "- `$1` **$2**. $3 et.al. **$4**, [link]($5)",
-      "- PKU",
-      "- research problem:",
-      "- key insight:",
-      "- key idea:",
-      "- core method:",
-      "- TLDR:"
+      "  - PKU",
+      "  - research problem:",
+      "  - key insight:",
+      "  - key idea:",
+      "  - core method:",
+      "  - TLDR:"
     ],
     "description": "single paper note"
+  },
+  "daily-task": {
+    "prefix": "day-report",
+    "body": [
+      "### $1周$2",
+      "",
+      "目标推进:",
+      "",
+      "- 1",
+      "",
+      "收获与反思:",
+      "",
+      "- 1",
+      "",
+      "日记:",
+      "",
+      "- 1",
+      ""
+    ],
+    "description": "daily task note"
   }
 }

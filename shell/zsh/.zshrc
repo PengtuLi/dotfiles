@@ -7,6 +7,7 @@ fi
 # export TERM=xterm-256color
 export EDITOR=nvim
 export VISUAL=nvim
+export NVIM_SOCK="/tmp/lpt-nvim.sock"
 # export TMUX_THEME=nord
 export HOMEBREW_NO_AUTO_UPDATE=true
 export XDG_CONFIG_HOME="$HOME/.config" # useful for macos

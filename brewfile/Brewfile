@@ -1,7 +1,6 @@
 # server
 brew "nvim"                  # Neovim 编辑器
 brew "npm"                   # need to install mason plugin
-brew "gh"                    # 官方 GitHub CLI
 brew "starship"              # 星舰终端提示符
 brew "tmux"                  # 终端复用器
 brew "tmuxinator"            # tmux tool
@@ -14,7 +13,6 @@ brew "ripgrep"               # 递归搜索
 brew "stow"                  # dotfiles 管理
 brew "gdb"                   # gdb debugger
 brew "fastfetch"             # maintained neofetch
-# brew "superfile"             # file manager
 brew "zoxide"                # jump cd
 brew "tig"                   # text-mode interface for Git (for git log)
 brew "lazygit"               # 交互式 Git TUI
@@ -25,7 +23,6 @@ brew "atuin"                 # history sync
 
 ### yazi fm
 brew "yazi"
-brew "sevenzip"
 brew "fd"
 
 brew "tldr"                  # tldr 文档查看

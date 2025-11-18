@@ -1,6 +1,3 @@
-# client
-brew "Adembc/homebrew-tap/lazyssh" # ssh manager tool
-
 # rclone
 brew "rclone"
 

@@ -3,7 +3,7 @@ return {
   'L3MON4D3/LuaSnip',
   version = '2.*',
   build = 'make install_jsregexp',
-  event = 'InsertEnter',
+  event = 'VeryLazy',
   dependencies = {
     -- `friendly-snippets` contains a variety of premade snippets.
     --    See the README about individual language/framework/plugin snippets:
@@ -28,9 +28,9 @@ return {
 
     -- custom snippets
     require('luasnip.loaders.from_vscode').lazy_load {
-      paths = { './snippets' }, -- 相对于 $MYVIMRC（即 init.lua 所在目录）
+      paths = { vim.fn.stdpath 'config' .. '/snippets' },
     }
-    require('luasnip').filetype_extend('markdown', { 'mdx' })
+    -- require('luasnip').filetype_extend('markdown', { 'mdx' })
 
     local ls = require 'luasnip'
     --   vim.keymap.set({ 'i', 's' }, '<C-E>', function()

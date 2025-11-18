@@ -70,8 +70,8 @@ return {
         { 's', group = '[s]ourround' },
         { '<leader>a', group = '[a]uto-session' },
         { '<leader>t', group = '[t]oggle' },
-        { '<leader>h', group = 'git [h]unk', mode = { 'n', 'v' } },
-        { '<leader>k', group = 'duc[k]', mode = { 'n' } },
+        { '<leader>g', group = '[g]it hunk', mode = { 'n', 'v' } },
+        { '<leader>u', group = 'd[u]ck', mode = { 'n' } },
         { '<leader>b', group = '[b]uffer', mode = { 'n' } },
 
         -- other built-in useful

@@ -10,5 +10,8 @@ return {
       ['<Left>'] = false,
       ['<Right>'] = false,
     },
+    restricted_keys = {
+      ['+'] = false,
+    },
   },
 }

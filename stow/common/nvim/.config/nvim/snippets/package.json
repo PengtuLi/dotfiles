@@ -4,9 +4,9 @@
     "snippets": [
       {
         "language": [
-          "mdx"
+          "markdown"
         ],
-        "path": "./mdx.json"
+        "path": "./md.json"
       },
       {
         "language": [

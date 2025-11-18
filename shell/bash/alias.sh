@@ -18,6 +18,7 @@ show_aliases(){
 alias ln="ln -v"
 alias md="mkdir -p"
 alias e=$EDITOR
+alias E="$EDITOR --listen $NVIM_SOCK"
 alias v=$VISUAL
 alias c=clear
 alias pst=pstree
@@ -28,8 +29,8 @@ alias lg=lazygit
 # ls
 if command -v eza &>/dev/null; then
     alias ls="eza --color=always --icons=always"
-    alias ll="ls --long --git -h --total-size"
-    alias tree="ls --long --tree --level=3"
+    alias ll="eza -alhgM --git "
+    alias tree="eza -alhgM --tree --level=3"
 else
     alias ll="ls -al"
 fi
@@ -91,7 +92,7 @@ alias s-proxy=ssh_proxyjump
 alias s-tc=ssh_copy_terminfo
 alias s-fk=fix_ssh_key
 
-alias 316="s 316-pc-zhuhai"
+alias 316="s zh-316-pc-mesh"
 alias x299="ss x299-torch-16660"
 alias x299-p="ss x299-torch-16660-proxy"
 

@@ -1,8 +1,7 @@
 return {
   { -- Autocompletion
     'saghen/blink.cmp',
-    event = 'InsertEnter',
-
+    event = 'VeryLazy',
     version = '1.*',
     dependencies = {
       -- lua cmp source

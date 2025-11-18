@@ -1,0 +1,4 @@
+[mgr]
+prepend_keymap = [
+  { on = "e", run = 'shell "nvim --server /tmp/lpt-nvim.sock --remote $@"', desc = "Open selected files in existing Neovim session" }
+]
