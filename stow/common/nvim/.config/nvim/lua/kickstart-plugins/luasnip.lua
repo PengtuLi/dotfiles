@@ -28,7 +28,7 @@ return {
 
     -- custom snippets
     require('luasnip.loaders.from_vscode').lazy_load {
-      paths = { './snippets' }, -- 相对于 $MYVIMRC（即 init.lua 所在目录）
+      paths = { vim.fn.stdpath 'config' .. '/snippets' },
     }
     require('luasnip').filetype_extend('markdown', { 'mdx' })
 
