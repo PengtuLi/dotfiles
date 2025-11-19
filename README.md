@@ -12,6 +12,8 @@ This repository contains my dotfiles, which are the config files and scripts I u
 <!-- - **File Manager**: [Superfile](https://superfile.netlify.app/) -->
 - **hotkey-macos** [Karabiner-Elements](https://karabiner-elements.pqrs.org/) as my hotkey set tool in macos
 - **fzf** [fzf](https://github.com/junegunn/fzf/) as fuzzy finder
+- **easytier** as mesh
+- **smb** as nas
 
 ## Ghostty
 
