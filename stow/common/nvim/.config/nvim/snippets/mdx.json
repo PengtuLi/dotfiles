@@ -45,13 +45,13 @@
   "Paper": {
     "prefix": "paper",
     "body": [
-      "- `$1` **$2**. $3 et.al. **$4**, [link]($5)",
-      "- PKU",
-      "- research problem:",
-      "- key insight:",
-      "- key idea:",
-      "- core method:",
-      "- TLDR:"
+      "  - `$1` **$2**. $3 et.al. **$4**, [link]($5)",
+      "  - PKU",
+      "  - research problem:",
+      "  - key insight:",
+      "  - key idea:",
+      "  - core method:",
+      "  - TLDR:"
     ],
     "description": "single paper note"
   }
