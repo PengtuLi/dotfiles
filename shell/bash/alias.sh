@@ -91,6 +91,7 @@ alias s-kc="ssh-copy-id"
 alias s-proxy=ssh_proxyjump
 alias s-tc=ssh_copy_terminfo
 alias s-fk=fix_ssh_key
+alias sshfs-m=sshfs_mount
 
 alias 316="s zh-316-pc-mesh"
 alias x299="ss x299-torch-16660"
