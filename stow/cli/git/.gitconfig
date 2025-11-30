@@ -1,6 +1,6 @@
 [user]
-	name = Orion Li
-	email = lpt373595331@gmail.com
+	name = aa
+	email = test.aa
 [credential "https://github.com"]
   helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
 [credential "https://gist.github.com"]

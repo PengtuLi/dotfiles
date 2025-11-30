@@ -9,24 +9,22 @@ brew "btop"                  # better top
 brew "eza"                   # ls 的现代化替代
 brew "thefuck"               # 历史命令纠错
 brew "pstree"                # 以树状图显示进程
-brew "ripgrep"               # 递归搜索
 brew "stow"                  # dotfiles 管理
 brew "gdb"                   # gdb debugger
 brew "fastfetch"             # maintained neofetch
 brew "zoxide"                # jump cd
-brew "tig"                   # text-mode interface for Git (for git log)
+# brew "tig"                   # text-mode interface for Git (for git log)
 brew "lazygit"               # 交互式 Git TUI
 # brew "lazydocker"            # 交互式 docker TUI
 # brew "gitui"                 # fast but in developed, maybe use later
 brew "git-delta"             # enhanced diff for git,bat...
 brew "atuin"                 # history sync
+brew "tldr"                  # tldr 文档查看
 
 ### yazi fm
 brew "yazi"
 brew "fd"
-
-brew "tldr"                  # tldr 文档查看
-# brew "navi"                    # cml cheatsheet tool
+brew "ripgrep"               # 递归搜索
 
 # secret
 brew "sops"

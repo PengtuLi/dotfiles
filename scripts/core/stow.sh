@@ -13,18 +13,14 @@ if ! command -v stow &>/dev/null; then
     exit 1
 fi
 
-STOW_COMMON_DIR="$ROOT_DIR/stow/common"
-info "stow $STOW_COMMON_DIR"
-stow_packages "$STOW_COMMON_DIR"
+STOW_CLI_DIR="$ROOT_DIR/stow/cli"
+info "stow $STOW_CLI_DIR"
+stow_packages "$STOW_CLI_DIR"
 
-if [[ "$PLATFORM" == linux ]] ; then
-    LINUX_DIR="$ROOT_DIR/stow/linux"
-    info "stow $LINUX_DIR"
-    stow_packages "$LINUX_DIR"
-elif [[ "$PLATFORM" == osx ]] ; then
-    OSX_DIR="$ROOT_DIR/stow/osx"
-    info "stow $OSX_DIR"
-    stow_packages "$OSX_DIR"
+if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ] || [ "$MACHINE" == "Mac" ]; then
+    GUI_DIR="$ROOT_DIR/stow/gui"
+    info "stow $GUI_DIR"
+    stow_packages "$GUI_DIR"
 fi
 
 info "stow shell/zsh"

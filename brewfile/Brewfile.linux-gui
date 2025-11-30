@@ -1,5 +1,6 @@
 # rclone
 brew "rclone"
+brew "sshfs"
 
 # font
 cask "font-jetbrains-mono-nerd-font"

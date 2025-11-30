@@ -21,7 +21,7 @@ source "$CONFIG_FILE"
 
 if [[ ! -v BREW_BUNDLE_PRESET_COMPONENTS["$PRESET"] ]]; then
     error "未知的预设: $PRESET"
-    error "有效预设: macos, linux-gui, linux-tty, linux-container"
+    error "有效预设: macos, linux-gui, linux-headless"
     exit 1
 fi
 
@@ -53,63 +53,3 @@ brew bundle --force --file "$BREWFILE"
 
 # 若文件不存在则先创建
 [[ -f "$ZSHRC" ]] || touch "$ZSHRC"
-
-# autojump, legacy
-# if ! command -v autojump &>/dev/null; then
-#     git clone https://github.com/wting/autojump.git ~/.zsh/autojump
-#     cd  ~/.zsh/autojump
-#     python3 ~/.zsh/autojump/install.py
-#     append_to_zshrc_if_missing '[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] && source ~/.autojump/etc/profile.d/autojump.sh'
-# else
-#     warning "autojump has already installed"
-# fi
-
-# # zoxide
-# if command -v starship &>/dev/null; then
-#     append_to_zshrc_if_missing '# zoxide'
-#     append_to_zshrc_if_missing 'eval "$(zoxide init zsh)"'
-# fi
-#
-# # fzf
-# if [ ! -d "$HOME/.fzf" ]; then
-#     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-#     ${HOME}/.fzf/install --key-bindings --completion
-#     cat >> "$ZSHRC" <<'EOF'
-# # --------- set fzf ----------
-# if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
-#   PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
-#   source <(fzf --zsh)
-# fi
-# # --------- end fzf ----------
-# EOF
-# fi
-
-# # starship prompt 初始化
-# if command -v starship &>/dev/null; then
-#     append_to_zshrc_if_missing 'eval "$(starship init zsh)"'
-# fi
-#
-# # thefuck 命令修正
-# if command -v thefuck &>/dev/null; then
-#     append_to_zshrc_if_missing 'eval $(thefuck --alias)'
-#     append_to_zshrc_if_missing 'eval $(thefuck --alias fk)'
-# fi
-
-# fastfetch
-# if command -v fastfetch &>/dev/null; then
-#     if ! grep -Fxq 'if [ ! -n "$TMUX" ]; then' "$ZSHRC" || \
-    #         ! grep -Fxq '    fastfetch' "$ZSHRC" || \
-    #         ! grep -Fxq 'fi' "$ZSHRC"; then
-#         cat >> "$ZSHRC" << 'EOF'
-#
-# # Add fastfetch in tmux
-# if [ ! -n "$TMUX" ]; then
-#     fastfetch
-# fi
-#
-# EOF
-#         info "已向 $ZSHRC 追加 fastfetch TMUX 检测配置"
-#     fi
-# fi
-
-# ----------------------------------------------

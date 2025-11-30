@@ -10,17 +10,16 @@ function help() {
 Usage: $0 [--preset <preset>] | [--platform <platform> [OPTIONS] ]
 
 Predefined platform presets:
-  macos             → full macOS setup (brew, GUI apps, dotfiles, etc.)
+  osx               → full macOS setup (brew, GUI apps, dotfiles, etc.)
   linux-gui         → Linux desktop with GUI support (archlinux)
-  linux-tty         → Linux TTY/server (no GUI)
-  linux-container   → Minimal container setup (CLI only)
+  linux-headless    → (CLI only)
 
 OPTIONS:
   --install <comp>        Install specific component(s) (comma-separated)
                           Components: proxy, conda, prerequisites, stow, zsh_plugin, shell_scripts, extras, brew_bundle(only for preset)
 
 Examples:
-  $0 --preset macos
+  $0 --preset osx
   $0 --preset linux-gui
   $0 --platform linux --install conda,zsh_plugin
 EOF
