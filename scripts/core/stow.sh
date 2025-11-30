@@ -17,7 +17,7 @@ STOW_CLI_DIR="$ROOT_DIR/stow/cli"
 info "stow $STOW_CLI_DIR"
 stow_packages "$STOW_CLI_DIR"
 
-if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ] || [ "$MACHINE" == "Mac" ]; then
+if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ] || [ "${MACHINE:-}" = "Mac" ]; then
     GUI_DIR="$ROOT_DIR/stow/gui"
     info "stow $GUI_DIR"
     stow_packages "$GUI_DIR"
