@@ -136,7 +136,7 @@ return {
         float = { border = 'rounded', source = true, severity_sort = true },
         update_in_insert = false,
         underline = { severity = vim.diagnostic.severity.ERROR },
-        virtual_lines,
+        virtual_lines = false,
         signs = vim.g.have_nerd_font and {
           text = {
             [vim.diagnostic.severity.ERROR] = '󰅚 ',
@@ -173,16 +173,38 @@ return {
         clangd = {}, -- c, c++
         ruff = {}, -- python
         eslint = {}, -- js, ts
-        lua_ls = { -- lua
+        lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
           -- capabilities = {},
           settings = {
-            -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-            diagnostics = { disable = { 'missing-fields' } },
+            Lua = {
+              completion = {
+                callSnippet = 'Replace',
+              },
+              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+              -- diagnostics = { disable = { 'missing-fields' } },
+            },
           },
         },
-        -- typos_lsp = {},
+        harper_ls = {
+          settings = {
+            ['harper-ls'] = {
+
+              linters = {
+                SentenceCapitalization = false,
+                SpellCheck = false,
+              },
+              markdown = {
+                IgnoreLinkTitle = false,
+              },
+              diagnosticSeverity = 'hint',
+              dialect = 'American',
+              maxFileLength = 120000,
+              excludePatterns = {},
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -206,7 +228,7 @@ return {
         'typos', -- spell check
 
         -----------DAP
-        'debugpy', -- py
+        -- 'debugpy', -- py
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
