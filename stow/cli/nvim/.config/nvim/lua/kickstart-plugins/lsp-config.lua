@@ -187,24 +187,24 @@ return {
             },
           },
         },
-        harper_ls = {
-          settings = {
-            ['harper-ls'] = {
-
-              linters = {
-                SentenceCapitalization = false,
-                SpellCheck = false,
-              },
-              markdown = {
-                IgnoreLinkTitle = false,
-              },
-              diagnosticSeverity = 'hint',
-              dialect = 'American',
-              maxFileLength = 120000,
-              excludePatterns = {},
-            },
-          },
-        },
+        -- harper_ls = {
+        --   settings = {
+        --     ['harper-ls'] = {
+        --
+        --       linters = {
+        --         SentenceCapitalization = false,
+        --         SpellCheck = false,
+        --       },
+        --       markdown = {
+        --         IgnoreLinkTitle = false,
+        --       },
+        --       diagnosticSeverity = 'hint',
+        --       dialect = 'American',
+        --       maxFileLength = 120000,
+        --       excludePatterns = {},
+        --     },
+        --   },
+        -- },
       }
 
       -- Ensure the servers and tools above are installed
