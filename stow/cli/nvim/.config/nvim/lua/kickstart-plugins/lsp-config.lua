@@ -172,6 +172,7 @@ return {
         bashls = {}, -- shell
         clangd = {}, -- c, c++
         ruff = {}, -- python
+        pyright = {},
         eslint = {}, -- js, ts
         lua_ls = {
           -- cmd = { ... },
