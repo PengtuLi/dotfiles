@@ -34,7 +34,7 @@ return {
         sh = { 'beautysh' },
         zsh = { 'beautysh' },
         c = { 'clang-format' },
-        python = { 'ruff' },
+        python = { 'ruff_format' },
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
         css = { 'prettierd' },
