@@ -18,26 +18,10 @@ echo "export LANG=en_US.UTF-8" >> ~/.zshrc
 ZSHRC="$HOME/.zshrc"
 
 CODE_BLOCK=EOF
-# --- Pytorch/CUDA Docker Image Environment Loader ---
-# This script loads essential environment variables from the container's main process (PID 1)
-# into the current SSH session. This ensures that tools like conda, nvcc, and python work correctly.
+source /etc/profile
+conda deactivate
+conda activate base
 
-# Define a list of variable prefixes we want to import.
-# Using a '|' separated string for grep's ERE mode.
-VARS_TO_LOAD="^PATH=|^LD_LIBRARY_PATH=|^CONDA_|^CUDA_|^CUDNN_|^NVIDIA_"
-
-# Read the environment from PID 1, convert null separators to newlines,
-# filter for the variables we want, and then loop through and export them.
-for item in $(cat /proc/1/environ | tr '\0' '\n' | /bin/grep -E "$VARS_TO_LOAD")
-do
-  # Using quotes "$item" is a robust way to handle values that might contain spaces.
-  export "$item"
-done
-
-# Optional: Unset the temporary variable for a cleaner environment
-unset VARS_TO_LOAD
-
-# --- End of Loader ---
 EOF
 
 # 检查 ~/.zshrc 是否已存在该代码块
