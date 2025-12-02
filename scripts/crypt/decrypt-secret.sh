@@ -13,11 +13,6 @@ decrypt_if_needed() {
     local target_file=$2
     local chmod_perms=$3
 
-    # 1. 检查源文件是否存在
-    if [ ! -f "$source_file" ]; then
-        return
-    fi
-
     # 根据文件扩展名确定文件类型
     local input_type="binary"  # 默认为 binary
     # if [[ "$source_file" == *.yaml.sops ]] || [[ "$source_file" == *.yml.sops ]]; then
@@ -55,12 +50,12 @@ decrypt_if_needed() {
     fi
 }
 
-SSH_KEY_SOPS="$ROOT_DIR/stow/common/ssh/.ssh/id_rsa.sops"
-SSH_KEY_TARGET="$ROOT_DIR/stow/common/ssh/.ssh/id_rsa"
+SSH_KEY_SOPS="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa.sops"
+SSH_KEY_TARGET="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa"
 CLASH_CONFIG_SOPS="$ROOT_DIR/mihomo-clash/config/config.yaml.sops"
 CLASH_CONFIG_TARGET="$ROOT_DIR/mihomo-clash/config/config.yaml"
-SSH_CONFIG_SOPS="stow/common/ssh/.ssh/config.sops"
-SSH_CONFIG_TARGET="stow/common/ssh/.ssh/config"
+SSH_CONFIG_SOPS="stow/cli/ssh/.ssh/config.sops"
+SSH_CONFIG_TARGET="stow/cli/ssh/.ssh/config"
 
 # 解密 SSH 密钥 (二进制文件)
 decrypt_if_needed "$SSH_KEY_SOPS" "$SSH_KEY_TARGET" "600"

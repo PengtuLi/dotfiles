@@ -10,10 +10,10 @@ then
     exit 1
 fi
 
-SSH_KEY_SOURCE="stow/common/ssh/.ssh/id_rsa"
-SSH_KEY_SOPS="stow/common/ssh/.ssh/id_rsa.sops"
-SSH_CONFIG="stow/common/ssh/.ssh/config"
-SSH_CONFIG_SOPS="stow/common/ssh/.ssh/config.sops"
+SSH_KEY_SOURCE="stow/cli/ssh/.ssh/id_rsa"
+SSH_KEY_SOPS="stow/cli/ssh/.ssh/id_rsa.sops"
+SSH_CONFIG="stow/cli/ssh/.ssh/config"
+SSH_CONFIG_SOPS="stow/cli/ssh/.ssh/config.sops"
 CLASH_CONFIG_SOURCE="$ROOT_DIR/mihomo-clash/config/config.yaml"
 CLASH_CONFIG_SOPS="$ROOT_DIR/mihomo-clash/config/config.yaml.sops"
 
