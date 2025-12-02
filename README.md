@@ -14,6 +14,7 @@ This repository contains my dotfiles, which are the config files and scripts I u
 - **fzf** [fzf](https://github.com/junegunn/fzf/) as fuzzy finder
 - **easytier** as mesh
 - **smb** as nas
+- zsh atuin ...
 
 ## Ghostty
 
