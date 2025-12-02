@@ -46,7 +46,7 @@ return {
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('gra', vim.lsp.buf.code_action, 'goto Code [a]ction', { 'n', 'x' })
+          map('gra', require('fzf-lua').lsp_code_actions, 'goto Code [a]ction', { 'n', 'x' })
 
           -- Find references for the word under your cursor.
           map('grr', require('fzf-lua').lsp_references, 'goto [r]eferences')
