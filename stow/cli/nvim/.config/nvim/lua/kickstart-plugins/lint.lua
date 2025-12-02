@@ -26,12 +26,12 @@ return {
         -- rst = { "vale" },
         -- ruby = { "ruby" },
         -- terraform = { "tflint" },
-        yaml = { 'cfn_lint' },
+        yaml = {},
         ['yaml.ghaction'] = { 'actionlint' },
-        json = { 'cfn_lint' },
-        text = { 'vale' },
-        markdown = { 'vale' },
-        latex = { 'vale' },
+        json = {},
+        text = {},
+        markdown = {},
+        latex = {},
         -- maybe trufflehog
       }
 

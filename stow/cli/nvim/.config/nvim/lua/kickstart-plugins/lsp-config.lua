@@ -161,11 +161,9 @@ return {
         },
       }
 
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
-      local capabilities = require('blink.cmp').get_lsp_capabilities()
+      -- NOTE: The following line is now commented as blink.cmp extends capabilities by default from its internal code:
+      -- https://github.com/Saghen/blink.cmp/blob/102db2f5996a46818661845cf283484870b60450/plugin/blink-cmp.lua
+      -- local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       -- Enable the following language servers
       local servers = {
@@ -188,24 +186,25 @@ return {
             },
           },
         },
-        -- harper_ls = {
-        --   settings = {
-        --     ['harper-ls'] = {
-        --
-        --       linters = {
-        --         SentenceCapitalization = false,
-        --         SpellCheck = false,
-        --       },
-        --       markdown = {
-        --         IgnoreLinkTitle = false,
-        --       },
-        --       diagnosticSeverity = 'hint',
-        --       dialect = 'American',
-        --       maxFileLength = 120000,
-        --       excludePatterns = {},
-        --     },
-        --   },
-        -- },
+        harper_ls = {
+          settings = {
+            ['harper-ls'] = {
+              linters = {
+                SentenceCapitalization = false,
+                SpellCheck = false,
+                OrthographicConsistency = false,
+                SplitWords = false,
+              },
+              markdown = {
+                IgnoreLinkTitle = false,
+              },
+              diagnosticSeverity = 'hint',
+              dialect = 'American',
+              maxFileLength = 120000,
+              excludePatterns = {},
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -224,7 +223,7 @@ return {
 
         -----------Linter
         -- 'cfn-lint', -- yaml, json
-        'vale', -- text, markdown
+        -- 'vale', -- text, markdown
         'actionlint', -- ghaction-yaml
         'typos', -- spell check
 
@@ -233,19 +232,18 @@ return {
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      -- Either merge all additional server configs from the `servers.mason` and `servers.others` tables
+      -- to the default language server configs as provided by nvim-lspconfig or
+      -- define a custom server config that's unavailable on nvim-lspconfig.
+      for server, config in pairs(servers) do
+        if not vim.tbl_isempty(config) then
+          vim.lsp.config(server, config)
+        end
+      end
+
+      -- After configuring our language servers, we now enable them
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
       }
     end,
   },
