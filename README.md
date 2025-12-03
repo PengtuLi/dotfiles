@@ -24,22 +24,14 @@ This repository contains my dotfiles, which are the config files and scripts I u
 alt   + shift + ,       reload_config
 alt   + shift + 0       equalize_splits
 alt   + shift + enter   toggle_split_zoom
+alt   + d               new_split:down
 alt   + shift + d       new_split:right
 alt   + shift + h       resize_split:left,20
 alt   + shift + j       resize_split:down,20
 alt   + shift + k       resize_split:up,20
 alt   + shift + l       resize_split:right,20
-alt   + shift + w       close_tab:this
 ctrl  + shift + c       copy_to_clipboard
 ctrl  + shift + v       paste_from_clipboard
-alt   + digit_1         goto_tab:1
-alt   + digit_2         goto_tab:2
-alt   + digit_3         goto_tab:3
-alt   + digit_4         goto_tab:4
-alt   + digit_5         goto_tab:5
-alt   + digit_6         goto_tab:6
-alt   + digit_7         goto_tab:7
-alt   + digit_8         goto_tab:8
 alt   + equal           increase_font_size:1
 alt   + minus           decrease_font_size:1
 alt   + 0               reset_font_size
@@ -57,19 +49,38 @@ alt   + page_down       scroll_page_down
 alt   + page_up         scroll_page_up
 alt   + arrow_down      jump_to_prompt:1
 alt   + arrow_up        jump_to_prompt:-1
-alt   + c               clear_screen
-alt   + d               new_split:down
 alt   + h               goto_split:left
 alt   + j               goto_split:down
 alt   + k               goto_split:up
 alt   + l               goto_split:right
 alt   + n               new_window
 alt   + t               new_tab
-alt   + w               close_window
-alt   + f4              close_window
-copy                    copy_to_clipboard
-paste                   paste_from_clipboard
+alt   + w               close_tab
+alt   + shift + w       close_window
 
+```
+
+## Yazi
+
+```text
+# open file
+o O e
+# search
+f s S z Z /
+# help
+f1
+# copy path
+c[]
+# file
+a r y x d p(P)
+# file info
+Tab
+# select
+v C-a Space
+# task
+w
+# sort
+,
 ```
 
 ## Tmux
