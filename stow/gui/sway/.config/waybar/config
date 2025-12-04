@@ -1,8 +1,8 @@
 {
   "reload_style_on_change": true,
   "position": "top",
-  "height": 20, // Waybar height (to be removed for auto height)
-  "margin-bottom": -11,
+  "height": 12, // Waybar height (to be removed for auto height)
+  "margin-bottom": -8,
   "spacing": 0,
 
 
