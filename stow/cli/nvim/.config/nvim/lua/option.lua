@@ -93,3 +93,6 @@ vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,
 -- 拼写检查
 vim.opt.spell = false
 vim.opt.spelllang = 'en_us,cjk' -- 支持中英文（cjk 可选）
+
+-- 24-bit colour
+vim.opt.termguicolors = true

@@ -24,8 +24,8 @@ This repository contains my dotfiles, which are the config files and scripts I u
 alt   + shift + ,       reload_config
 alt   + shift + 0       equalize_splits
 alt   + shift + enter   toggle_split_zoom
-alt   + d               new_split:down
-alt   + shift + d       new_split:right
+alt   + s               new_split:down
+alt   + v               new_split:right
 alt   + shift + h       resize_split:left,20
 alt   + shift + j       resize_split:down,20
 alt   + shift + k       resize_split:up,20
@@ -131,7 +131,7 @@ tmux kill-server && rm -rf /tmp/tmux-*
 - close all other panel: `Prefix + e`
 - close window: `Prefix + &`
 - places us in copy mode: `Prefix + [`
-- split window: `Prefix + -or|`
+- split window: `Prefix + s or v`
 - resize panel: `Prefix + hjkl`
 - switch panel: `ctrl + hjkl\`
 - switch panel: `ctrl + q + number`

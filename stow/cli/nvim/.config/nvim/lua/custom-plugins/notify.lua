@@ -13,9 +13,6 @@ return {
   config = function(_, opts)
     require('notify').setup(opts)
 
-    -- 24-bit colour
-    vim.opt.termguicolors = true
-
     vim.notify = require 'notify'
   end,
 }
