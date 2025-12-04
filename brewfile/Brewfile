@@ -29,3 +29,5 @@ brew "ripgrep"               # 递归搜索
 # secret
 brew "sops"
 brew "age"
+
+brew "code2prompt"
