@@ -73,7 +73,7 @@ return {
           map('<leader>ss', require('fzf-lua').lsp_document_symbols, 'search document [s]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
-          map('<leader>sS', require('fzf-lua').lsp_workspace_symbols, 'search workspace [S]ymbols')
+          map('<leader>sS', require('fzf-lua').lsp_live_workspace_symbols, 'search workspace [S]ymbols')
 
           -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
