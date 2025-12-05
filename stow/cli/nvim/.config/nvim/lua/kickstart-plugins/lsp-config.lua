@@ -73,7 +73,16 @@ return {
           map('<leader>ss', require('fzf-lua').lsp_document_symbols, 'search document [s]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
-          map('<leader>sS', require('fzf-lua').lsp_live_workspace_symbols, 'search workspace [S]ymbols')
+          map('<leader>so', require('fzf-lua').lsp_live_workspace_symbols, 'search workspace symb[o]ls')
+
+          vim.keymap.set('n', '<leader>sS', function()
+            require('fzf-lua').lsp_document_symbols {
+              -- 正则过滤：匹配行首非缩进字符的行
+              regex_filter = '^[^ │└├]',
+              -- 修改提示符，方便区分
+              prompt = 'TopLevel> ',
+            }
+          end, { desc = 'LSP Document Symbols (Top Level)' })
 
           -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
