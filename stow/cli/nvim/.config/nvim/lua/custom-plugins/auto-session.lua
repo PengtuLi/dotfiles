@@ -18,6 +18,12 @@ return {
 
     session_lens = {
       picker = 'fzf',
+      mappings = {
+        -- Mode can be a string or a table, e.g. {"i", "n"} for both insert and normal mode
+        delete_session = { 'i', '<C-x>' }, -- mode and key for deleting a session from the picker
+        alternate_session = { 'i', '<C-s>' }, -- mode and key for swapping to alternate session from the picker
+        copy_session = { 'i', '<C-y>' }, -- mode and key for copying a session from the picker
+      },
     },
   },
 }
