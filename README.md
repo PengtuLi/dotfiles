@@ -43,7 +43,6 @@ alt   + 5               goto_tab:5
 alt   + 6               goto_tab:6
 alt   + 7               goto_tab:7
 alt   + 8               goto_tab:8
-alt   + 9               last_tab
 alt   + enter           toggle_fullscreen
 alt   + page_down       scroll_page_down
 alt   + page_up         scroll_page_up
@@ -81,6 +80,9 @@ v C-a Space
 w
 # sort
 ,
+# move
+h j k l
+H J K L
 ```
 
 ## Tmux
