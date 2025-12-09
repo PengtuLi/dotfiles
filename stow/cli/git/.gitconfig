@@ -28,9 +28,8 @@
 [include]
   path = ~/.delta.themes.gitconfig
 [delta]
-  features = colibri
+  features = Monokai
 	navigate = true
-  ; light = false
   line-numbers = true
   side-by-side = true
   ; features = catppuccin-frappe
