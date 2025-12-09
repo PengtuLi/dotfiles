@@ -31,3 +31,5 @@ stow/cli/ssh/.ssh/config
 stow/gui/karabiner/.config/karabiner/
 !stow/gui/karabiner/.config/karabiner/karabiner.json
 
+stow/cli/pudb/.config/pudb/
+!stow/cli/pudb/.config/pudb/pudb.cfg
