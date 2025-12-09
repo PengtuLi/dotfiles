@@ -21,7 +21,8 @@
 # resize-overlay-duration = 4s 200ms
 
 # theme = GitHub Dark Default
-theme = Sonokai
+# theme = Sonokai
+theme = TokyoNight Moon
 # custom-shader = shaders/bettercrt.glsl
 custom-shader = shaders/cursor_blaze.glsl
 
