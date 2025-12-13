@@ -21,11 +21,10 @@ stow/gui/vscode/Code/
 !stow/gui/vscode/Code/User/snippets/
 !stow/gui/vscode/Code/User/*.json
 
-# stow/common/ssh/.ssh/authorized_keys
 stow/cli/ssh/.ssh/known_hosts
 stow/cli/ssh/.ssh/known_hosts.old
 stow/cli/ssh/.ssh/sockets/
-stow/cli/ssh/.ssh/id_rsa
+stow/cli/ssh/.ssh/*_rsa
 stow/cli/ssh/.ssh/config
 
 stow/gui/karabiner/.config/karabiner/
