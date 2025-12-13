@@ -95,7 +95,7 @@ alias sshfs-m=sshfs_mount
 
 alias 316="s zh-316-pc-mesh"
 alias x299="ss x299-torch-16660"
-alias x299-j="ss -j zh-316-pc-mesh x299-torch-16660"
+alias x299-p="ss -J zh-316-pc-mesh x299-torch-16660"
 
 
 # nginx
