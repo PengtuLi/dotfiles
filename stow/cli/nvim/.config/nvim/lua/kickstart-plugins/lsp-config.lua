@@ -73,7 +73,7 @@ return {
           map('<leader>ss', require('fzf-lua').lsp_document_symbols, 'search document [s]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
-          map('<leader>so', require('fzf-lua').lsp_live_workspace_symbols, 'search workspace symb[o]ls')
+          map('<leader>so', require('fzf-lua').lsp_workspace_symbols, 'search workspace symb[o]ls')
 
           vim.keymap.set('n', '<leader>sS', function()
             require('fzf-lua').lsp_document_symbols {

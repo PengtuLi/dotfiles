@@ -17,6 +17,12 @@ return {
         ['<C-y>'] = { 'select_and_accept', 'fallback' },
         ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
         ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
+        -- fzf like
+        ['<C-k>'] = { 'select_prev', 'fallback_to_mappings' },
+        ['<C-j>'] = { 'select_next', 'fallback_to_mappings' },
+        ['<C-u>'] = { 'scroll_documentation_up', 'fallback_to_mappings' },
+        ['<C-d>'] = { 'scroll_documentation_down', 'fallback_to_mappings' },
+
         ['<Tab>'] = {
           function(cmp)
             if cmp.snippet_active() then
@@ -47,10 +53,19 @@ return {
 
         menu = {
           min_width = 30,
-          max_height = 15,
+          max_height = 20,
           border = nil, -- Defaults to `vim.o.winborder` on nvim 0.11+
+          -- AVAILABLE COMPONENTS
+          -- `kind_icon`: Shows the icon for the kind of the item
+          -- `kind`: Shows the kind of the item as text (e.g. `Function`)
+          -- `label`: Shows the label of the item as well as the `label_detail` (e.g. `into(as Into)` where `into` is the label and `(as Into)` is the label detail)
+          -- If the `label_detail` is missing from your items, ensure you’ve setup LSP capabilities <../installation> and that your LSP supports the feature
+          -- `label_description`: Shows the label description of the item (e.g. `date-fns/formatDistance`, the module that the item will be auto-imported from)
+          -- If the `label_description` is missing from your items, ensure you’ve setup LSP capabilities <../installation> and that your LSP supports the feature
+          -- `source_name`: Shows the name of the source that provided the item, from the `sources.providers.*.name` (e.g. `LSP`)
+          -- `source_id`: Shows the id of the source that provided the item, from the `sources.providers[id]` (e.g. `lsp`)
           draw = {
-            columns = { { 'kind_icon' }, { 'label', gap = 1 }, { 'label_description', 'source_name', gap = 1 } },
+            columns = { { 'kind_icon', 'kind' }, { 'label', gap = 1 }, { 'label_description', 'source_name', gap = 1 } },
           },
         },
       },

@@ -6,7 +6,7 @@ return {
     opts = {
       modes = {
         search = {
-          enabled = true, -- 启用增强搜索
+          enabled = false, -- 增强搜索 / or :
         },
       },
     },

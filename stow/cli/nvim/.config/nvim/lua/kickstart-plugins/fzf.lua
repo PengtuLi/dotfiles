@@ -61,7 +61,7 @@ return {
       lsp = {
         symbols = {
           fzf_opts = {
-            ['--delimiter'] = '\\t',
+            ['--delimiter'] = ' ',
             -- 隐藏第1个字段（即隐藏 line:col: 这一坨东西），显示第2个字段及之后的内容
             ['--with-nth'] = '3..',
           },
