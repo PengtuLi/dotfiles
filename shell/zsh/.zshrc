@@ -40,7 +40,6 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
 --info default
 --prompt='🔍 '
 --pointer='👉'
---height 40%
 --bind 'ctrl-space:toggle+down'
 --bind 'ctrl-j:down,ctrl-k:up'
 --bind 'ctrl-d:half-page-down,ctrl-u:half-page-up'
