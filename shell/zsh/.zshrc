@@ -34,10 +34,22 @@ eval $(thefuck --alias)
 eval $(thefuck --alias fk)
 
 # fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
+    export FZF_DEFAULT_OPTS="
+-m
+--info default
+--prompt='🔍 '
+--pointer='👉'
+--height 40%
+--bind 'ctrl-space:toggle+down'
+--bind 'ctrl-j:down,ctrl-k:up'
+--bind 'ctrl-d:half-page-down,ctrl-u:half-page-up'
+--bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
+--bind 'alt-b:preview-page-down,alt-f:preview-page-up'
+--bind 'ctrl-\\:toggle-preview'
+"
     PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
-    source <(fzf --zsh)
+    FZF_ALT_C_COMMAND= source <(fzf --zsh)
 fi
 
 # antidote
@@ -59,14 +71,18 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
 zstyle ':completion:*' menu no
-# preview directory's content with eza when completing cd
+
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# preview content with eza when completing cd
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always $realpath'
 # custom fzf flags
-# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
 zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
-# To make fzf-tab follow FZF_DEFAULT_OPTS.
-# switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
+zstyle ':fzf-tab:*' fzf-bindings 'ctrl-space:toggle+down'
+zstyle ':fzf-tab:*' continuous-trigger ''
+
 
 autoload -Uz compinit && compinit
 

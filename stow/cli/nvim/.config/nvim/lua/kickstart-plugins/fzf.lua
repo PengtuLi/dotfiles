@@ -9,39 +9,64 @@ return {
     local actions = fzf_lua.actions
 
     fzf_lua.setup {
+      winopts = {
+        height = 0.9, -- window height
+        width = 0.9, -- window width
+        row = 0.50, -- window row position (0=top, 1=bottom)
+        col = 0.50, -- window col position (0=left, 1=right)
+        -- Backdrop opacity, 0 is fully opaque, 100 is fully transparent (i.e. disabled)
+        backdrop = 100,
+        preview = {},
+      },
       keymap = {
         -- Below are the default binds, setting any value in these tables will override
         -- the defaults, to inherit from the defaults change [1] from `false` to `true`
         builtin = {
-          -- neovim `:tmap` mappings for the fzf win
-          -- true,        -- uncomment to inherit all the below in your custom config
+          false,
           ['<F1>'] = 'toggle-help',
           ['<F2>'] = 'toggle-fullscreen',
-          -- Only valid with the 'builtin' previewer
-          ['<F3>'] = 'toggle-preview-wrap',
-          ['<F4>'] = 'toggle-preview',
-          -- Rotate preview clockwise/counter-clockwise
-          ['<F5>'] = 'toggle-preview-cw',
-          -- Preview toggle behavior default/extend
-          ['<F6>'] = 'toggle-preview-behavior',
-          -- `ts-ctx` binds require `nvim-treesitter-context`
-          ['<F7>'] = 'toggle-preview-ts-ctx',
-          ['<F8>'] = 'preview-ts-ctx-dec',
-          ['<F9>'] = 'preview-ts-ctx-inc',
+          -- -- Only valid with the 'builtin' previewer
+          -- ['<F3>'] = 'toggle-preview-wrap',
+          -- ['<F4>'] = 'toggle-preview',
+          -- -- Rotate preview clockwise/counter-clockwise
+          -- ['<F5>'] = 'toggle-preview-cw',
+          -- -- Preview toggle behavior default/extend
+          -- ['<F6>'] = 'toggle-preview-behavior',
+
+          ['<A-b>'] = 'preview-page-up',
+          ['<A-f>'] = 'preview-page-down',
+          ['<A-d>'] = 'preview-half-page-down',
+          ['<A-u>'] = 'preview-half-page-up',
         },
         fzf = {
+          false,
           -- fzf '--bind=' options
-          -- true,        -- uncomment to inherit all the below in your custom config
           ['ctrl-d'] = 'half-page-down',
           ['ctrl-u'] = 'half-page-up',
           ['alt-a'] = 'toggle-all',
-          ['alt-g'] = 'first',
-          ['alt-G'] = 'last',
           -- Only valid with fzf previewers (bat/cat/git/etc)
-          ['f3'] = 'toggle-preview-wrap',
-          ['f4'] = 'toggle-preview',
-          ['shift-down'] = 'preview-page-down',
-          ['shift-up'] = 'preview-page-up',
+          ['alt-d'] = 'preview-half-page-down',
+          ['alt-u'] = 'preview-half-page-up',
+        },
+        actions = {
+          files = {
+            false, -- uncomment to inherit all the below in your custom config
+            -- Pickers inheriting these actions:
+            --   files, git_files, git_status, grep, lsp, oldfiles, quickfix, loclist,
+            --   tags, btags, args, buffers, tabs, lines, blines
+            -- `file_edit_or_qf` opens a single selection or sends multiple selection to quickfix
+            -- replace `enter` with `file_edit` to open all files/bufs whether single or multiple
+            -- replace `enter` with `file_switch_or_edit` to attempt a switch in current tab first
+            ['enter'] = FzfLua.actions.file_edit_or_qf,
+            ['ctrl-s'] = FzfLua.actions.file_split,
+            ['ctrl-v'] = FzfLua.actions.file_vsplit,
+            ['ctrl-t'] = FzfLua.actions.file_tabedit,
+            ['alt-q'] = FzfLua.actions.file_sel_to_qf,
+            ['alt-Q'] = FzfLua.actions.file_sel_to_ll,
+            ['alt-i'] = FzfLua.actions.toggle_ignore,
+            ['alt-h'] = FzfLua.actions.toggle_hidden,
+            -- ['alt-f'] = FzfLua.actions.toggle_follow,
+          },
         },
       },
       buffers = {
