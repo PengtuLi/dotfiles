@@ -3,21 +3,20 @@ cask "font-jetbrains-mono-nerd-font"
 cask "font-maple-mono-nf-cn"
 
 # tool
-brew "yq"                    # YAML 处理工具
-brew 'typos-cli'
 brew "bear"                  # C/C++ compile_commands.json 生成器
 
 tap "koekeishiya/formulae"   # 第三方仓库：yabai/skhd
 tap "mhaeuser/mhaeuser"
 
 # # macOS 特有软件
-brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
+# brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
 brew "koekeishiya/formulae/skhd"  # 键盘快捷键守护进程
 cask "karabiner-elements"                # 键盘映射/改键
 cask "mos"
 cask "caffeine"
 cask "stats"
-cask "battery-toolkit"
+# cask "battery-toolkit"
+brew "batt"                              # cli battery-toolkit
 cask "the-unarchiver"
 # cask "lunar" # unlock XDR display
 cask "jordanbaird-ice"

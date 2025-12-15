@@ -56,8 +56,6 @@
 # shift + alt - 3 : yabai -m window --space 3;
 # shift + alt - 4 : yabai -m window --space 4;
 # shift + alt - 5 : yabai -m window --space 5;
-# shift + alt - 6 : yabai -m window --space 6;
-# shift + alt - 7 : yabai -m window --space 7;
 
 
 # --- 桌面/Space 切换 (你的核心需求) ---
@@ -69,9 +67,9 @@ cmd - 3 : yabai -m space --focus 3
 cmd - 4 : yabai -m space --focus 4
 
 # --- 快速启动应用 ---
+cmd - 6 : open -a "Spotify"
 cmd - 9 : open -a "ghostty"
 cmd - 0 : open -a "Google Chrome"
-# cmd - c      : open -a "Visual Studio Code"
 
 # --- 窗口操作 (即使不平铺，这些依然很有用) ---
 # 最大化
