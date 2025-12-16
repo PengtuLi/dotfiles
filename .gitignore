@@ -10,7 +10,9 @@ mihomo-clash/config/
 !mihomo-clash/config/ui/
 !mihomo-clash/config/config.yaml.sops
 
-stow/gui/fcitx5/.config/fcitx5/
+stow/gui/fcitx5/.config/fcitx5/conf/*
+stow/gui/fcitx5/.config/fcitx5/config
+stow/gui/fcitx5/.config/fcitx5/profile
 !stow/gui/fcitx5/.config/fcitx5/conf/classicui.conf
 
 stow/cli/tmux/.config/tmux/plugins/
