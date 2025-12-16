@@ -33,6 +33,15 @@ apply_osx_system_defaults() {
     # Do not rearrange spaces automatically
     defaults write com.apple.dock "mru-spaces" -bool false
 
+    # window arrange by app
+    defaults write com.apple.dock expose-group-apps -bool true
+
+    # Displays have separate Spaces
+    defaults write com.apple.spaces spans-displays -bool true
+
+    # Dock auto hide
+    defaults write com.apple.dock autohide -bool true
+
 }
 
 if [ "$(basename "$0")" = "$(basename "${BASH_SOURCE[0]}")" ]; then

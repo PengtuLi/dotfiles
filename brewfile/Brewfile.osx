@@ -5,12 +5,8 @@ cask "font-maple-mono-nf-cn"
 # tool
 brew "bear"                  # C/C++ compile_commands.json 生成器
 
-tap "koekeishiya/formulae"   # 第三方仓库：yabai/skhd
-tap "mhaeuser/mhaeuser"
 
 # # macOS 特有软件
-# brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
-brew "koekeishiya/formulae/skhd"  # 键盘快捷键守护进程
 cask "karabiner-elements"                # 键盘映射/改键
 cask "mos"
 cask "caffeine"
@@ -29,4 +25,12 @@ cask "ghostty"                           # GPU 加速终端
 cask "spotify"
 cask "visual-studio-code"                # vscode
 
+# WM
+# tap "koekeishiya/formulae"   # 第三方仓库：yabai/skhd
+# tap "mhaeuser/mhaeuser"
+# brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
+# brew "koekeishiya/formulae/skhd"  # 键盘快捷键守护进程
+cask "nikitabobko/tap/aerospace"
+tap "FelixKratz/formulae"
+brew "borders"
 

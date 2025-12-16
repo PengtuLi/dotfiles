@@ -337,7 +337,6 @@ binds {
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // or do a four-finger swipe up on a touchpad.
     Mod+Tab repeat=false { toggle-overview; }
-
     Mod+Q repeat=false { close-window; }
 
     Mod+H     { focus-column-left; }
