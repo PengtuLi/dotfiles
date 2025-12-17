@@ -36,4 +36,5 @@ add_scripts
 # sync & mount
 chmod +x $ROOT_DIR/scripts/sync/*.sh
 sudo ln -sf $ROOT_DIR/scripts/sync/auto_rsync.sh /usr/bin/Rsync
+sudo ln -sf $ROOT_DIR/scripts/sync/auto_mount.sh /usr/bin/Mount
 

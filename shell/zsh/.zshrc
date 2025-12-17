@@ -28,7 +28,28 @@ setopt extended_history     # 记录时间戳（格式：:start_time:elapsed;com
 
 
 # starship
-eval "$(starship init zsh)"
+# 检测当前目录是否在 SSHFS (fuse.sshfs) 挂载点下
+_in_sshfs() {
+    local dir="$PWD"
+    while [[ "$dir" != "/" ]]; do
+        if mount -t fuse.sshfs 2>/dev/null | command grep -qF " $dir "; then
+            return 0
+        fi
+        dir="${dir:h}"  # 去掉最后一级目录（Zsh 特有语法）
+    done
+    return 1
+}
+
+# 只有不在 SSHFS 目录中时才初始化 starship
+if ! _in_sshfs; then
+    eval "$(starship init zsh)"
+else
+    # 使用一个轻量、简洁但非原始的 prompt
+    setopt PROMPT_SUBST
+    autoload -U colors && colors
+    # 示例：username@hostname:cwd $
+    PROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[blue]%}%m%{$reset_color%}:%{$fg[yellow]%}%~%{$reset_color%}\$ "
+fi
 
 eval $(thefuck --alias)
 eval $(thefuck --alias fk)
