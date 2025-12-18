@@ -1,15 +1,13 @@
 sshfs_mount(){
     sshfs \
-        -o reconnect \
-        -o cache=yes \
-        -o cache_timeout=600 \
-        -o kernel_cache \
+        -o default_permissions \
         -o uid=$(id -u) \
         -o gid=$(id -g) \
-        $1 $2
+        -o reconnect \
+        -o ServerAliveInterval=15 \
+        -o ServerAliveCountMax=3
+    $1 $2
 }
-
-
 cheatsh() {
     curl -s "cht.sh/$1"
 }

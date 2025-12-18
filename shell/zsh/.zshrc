@@ -26,30 +26,45 @@ setopt share_history        # 所有 zsh 会话共享历史（可选，超实用
 setopt hist_ignore_dups     # 忽略重复命令
 setopt extended_history     # 记录时间戳（格式：:start_time:elapsed;command）
 
-
-# starship
-# 检测当前目录是否在 SSHFS (fuse.sshfs) 挂载点下
+# 保存上一次是否在 SSHFS 的状态
+_LAST_IN_SSHFS="unknown"
 _in_sshfs() {
     local dir="$PWD"
     while [[ "$dir" != "/" ]]; do
         if mount -t fuse.sshfs 2>/dev/null | command grep -qF " $dir "; then
             return 0
         fi
-        dir="${dir:h}"  # 去掉最后一级目录（Zsh 特有语法）
+        dir="${dir:h}"
     done
     return 1
 }
-
-# 只有不在 SSHFS 目录中时才初始化 starship
-if ! _in_sshfs; then
-    eval "$(starship init zsh)"
-else
-    # 使用一个轻量、简洁但非原始的 prompt
-    setopt PROMPT_SUBST
-    autoload -U colors && colors
-    # 示例：username@hostname:cwd $
-    PROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[blue]%}%m%{$reset_color%}:%{$fg[yellow]%}%~%{$reset_color%}\$ "
-fi
+_update_prompt() {
+    if _in_sshfs; then
+        export STARSHIP_DISABLE=1
+        setopt PROMPT_SUBST
+        autoload -U colors && colors
+        PROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[blue]%}%m%{$reset_color%}:%{$fg[yellow]%}%~%{$reset_color%}\$ "
+        _LAST_IN_SSHFS=1
+    else
+        unset STARSHIP_DISABLE
+        eval "$(starship init zsh --print-full-init)"
+        _LAST_IN_SSHFS=0
+    fi
+}
+# 初始设置
+_update_prompt
+chpwd() {
+    local currently_in_sshfs
+    if _in_sshfs; then
+        currently_in_sshfs=1
+    else
+        currently_in_sshfs=0
+    fi
+    # 仅当状态改变时更新 prompt
+    if [[ "$_LAST_IN_SSHFS" != "$currently_in_sshfs" ]]; then
+        _update_prompt
+    fi
+}
 
 eval $(thefuck --alias)
 eval $(thefuck --alias fk)
