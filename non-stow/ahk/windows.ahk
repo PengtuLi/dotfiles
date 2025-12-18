@@ -1,4 +1,4 @@
-#Requires AutoHotkey v2.0
+﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; Win + o → 切换/启动 Chrome
@@ -42,7 +42,7 @@
     }
 }
 
-; Win + 0 → 切换/启动 Spotify
+; Win + 8 → 切换/启动 Code
 #8:: {
     codeWin := WinExist("ahk_exe Code.exe")
     if (codeWin) {
@@ -50,9 +50,18 @@
             WinRestore(codeWin)
         WinActivate(codeWin)
     } else {
-        ; Spotify 通常通过 Windows Store 或官方安装，路径较固定
-        spotifyPath := "C:\Users\PC\scoop\apps\vscode\Code.exe"
-        Run(spotifyPath)
+        ; Code 通常通过 Windows Store 或官方安装，路径较固定
+        codePath := "C:\Users\PC\scoop\apps\vscode\current\Code.exe"
+        Run(codePath)
+            if (!WinWait("ahk_exe Code.exe",, 10)) {
+                MsgBox("Code 窗口启动超时", "提示", "IconWarning")
+            } else {
+                newWin := WinExist("Ghostty ahk_class RAIL_WINDOW")
+                if (newWin) {
+                    WinMaximize(newWin)
+                    WinActivate(newWin)
+                }
+	}
     }
 }
 
