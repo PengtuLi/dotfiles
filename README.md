@@ -4,17 +4,42 @@ This repository contains my dotfiles, which are the config files and scripts I u
 
 ## Essential Tools
 
-- **Editor**: [NeoVim](https://neovim.io/).
-- **Multiplexer**: [Tmux](https://github.com/tmux/tmux/wiki)
-- **Main Terminal**: [Ghostty](https://ghostty.org/)
-- **Shell Prompt**: [Starship](https://starship.rs/)
-- **Window Management**: [Rectangle](https://github.com/rxhanson/Rectangle/) for resizing windows, paired with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) for switching between applications.
-<!-- - **File Manager**: [Superfile](https://superfile.netlify.app/) -->
-- **hotkey-macos** [Karabiner-Elements](https://karabiner-elements.pqrs.org/) as my hotkey set tool in macos
-- **fzf** [fzf](https://github.com/junegunn/fzf/) as fuzzy finder
-- **easytier** as mesh
-- **smb** as nas
-- zsh atuin ...
+### Core Development Environment
+
+- **Editor**: NeoVim (Lua configuration with lazy.nvim plugin manager)
+- **Multiplexer**: Tmux with tmuxinator for session management
+- **Shell**: Zsh with atuin (history), zoxide (navigation), fzf (search)
+- **Prompt**: Starship cross-shell prompt
+- **Terminal**: Ghostty (modern terminal emulator)
+
+### File Management
+
+- **File Manager**: Yazi (modern terminal file manager)
+- **Git**: Lazygit for terminal git operations
+- **Search**: fzf integrated throughout the system
+
+### Platform-Specific
+
+- **macOS**: Rectangle (window management), Karabiner (keyboard remapping)
+- **Linux**: Sway (Wayland compositor), headless server support
+
+### Git Hooks and Quality
+
+- Uses Husky for pre-commit hooks
+- Commitlint for conventional commit message formatting
+- SOPS with Age encryption for secrets management
+
+### Remote Integration
+
+- Docker volume mounting via SSHFS
+- Auto-sync capabilities for remote development
+
+## Network Features
+
+- mihomo/Clash proxy support with automatic updates
+- rclone
+- SMB/NAS file sharing setup
+- easytier
 
 ## Ghostty
 
@@ -149,15 +174,13 @@ tmux kill-server && rm -rf /tmp/tmux-*
 
 - Paste the selected files and directories onto the command-line: `CTRL-T`
 - Paste the selected command from history onto the command-line: `CTRL-R`
-- cd into the selected directory: `ALT-C`
-- auto complete: `command [dir]/[fzf pattern]** + TAB` (linux error)
+- auto complete: `command [dir]/[fzf pattern]** + TAB`
 
 ### fzf-tab
 
 - Just press Tab as usual~
 - Ctrl+Space: select multiple results, can be configured by fzf-bindings tag
-- F1/F2: switch between groups, can be configured by switch-group tag
-- /: trigger continuous completion (useful when completing a deep path), can be configured by continuous-trigger tag
+- </>: switch between groups, can be configured by switch-group tag
 
 ```
 
