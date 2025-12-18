@@ -5,8 +5,8 @@ sshfs_mount(){
         -o gid=$(id -g) \
         -o reconnect \
         -o ServerAliveInterval=15 \
-        -o ServerAliveCountMax=3
-    $1 $2
+        -o ServerAliveCountMax=3 \
+        $1 $2
 }
 cheatsh() {
     curl -s "cht.sh/$1"
