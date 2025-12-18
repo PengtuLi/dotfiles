@@ -1,4 +1,4 @@
-﻿#Requires AutoHotkey v2.0
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; Win + o → 切换/启动 Chrome
@@ -39,6 +39,20 @@
         } catch as e {
             MsgBox("启动 Ghostty 失败：`n" e.Message, "错误", "IconX")
         }
+    }
+}
+
+; Win + 0 → 切换/启动 Spotify
+#8:: {
+    codeWin := WinExist("ahk_exe Code.exe")
+    if (codeWin) {
+        if (WinGetMinMax(codeWin) = -1)
+            WinRestore(codeWin)
+        WinActivate(codeWin)
+    } else {
+        ; Spotify 通常通过 Windows Store 或官方安装，路径较固定
+        spotifyPath := "C:\Users\PC\scoop\apps\vscode\Code.exe"
+        Run(spotifyPath)
     }
 }
 
