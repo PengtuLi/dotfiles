@@ -31,7 +31,7 @@ font-family = "Maple Mono NF CN"
 # font-family = "JetBrainsMono Nerd Font"
 # font-family = Source Code Pro
 # font-family = WenQuanYi Micro Hei
-# font-size = 16
+font-size = 18
 font-synthetic-style = false
 font-thicken = false
 font-feature = "+calt, cv01"
@@ -65,6 +65,9 @@ keybind = alt+7=goto_tab:7
 keybind = alt+8=goto_tab:8
 keybind = alt+9=goto_tab:9
 
+keybind = alt+[=previous_tab
+keybind = alt+]=next_tab
+
 # paste
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard
@@ -72,10 +75,10 @@ keybind = ctrl+shift+c=copy_to_clipboard
 keybind = ctrl+shift+v=paste_from_clipboard
 
 # shell prompt history
-keybind = alt+up=jump_to_prompt:-1
-keybind = alt+down=jump_to_prompt:1
-keybind = alt+page_up=scroll_page_up
-keybind = alt+page_down=scroll_page_down
+keybind = alt+left=jump_to_prompt:-1
+keybind = alt+right=jump_to_prompt:1
+keybind = alt+up=scroll_page_up
+keybind = alt+down=scroll_page_down
 
 # config
 keybind = alt+shift+,=reload_config

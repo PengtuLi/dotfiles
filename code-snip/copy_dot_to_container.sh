@@ -15,7 +15,7 @@ stow_upload_config() {
     fi
 
     # 要上传的子目录列表
-    local tools=("git" "gdb" "pudb")
+    local tools=("git" "gdb" "pudb" "nvim" "yazi" "tmux" "gh")
 
     for tool in "${tools[@]}"; do
         local src="$local_base/$tool"

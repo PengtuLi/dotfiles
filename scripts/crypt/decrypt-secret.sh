@@ -50,18 +50,18 @@ decrypt_if_needed() {
     fi
 }
 
-SSH_KEY_SOPS="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa.sops"
-SSH_KEY_TARGET="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa"
-CLASH_CONFIG_SOPS="$ROOT_DIR/mihomo-clash/config/config.yaml.sops"
-CLASH_CONFIG_TARGET="$ROOT_DIR/mihomo-clash/config/config.yaml"
-SSH_CONFIG_SOPS="stow/cli/ssh/.ssh/config.sops"
-SSH_CONFIG_TARGET="stow/cli/ssh/.ssh/config"
+SSH_KEY="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa"
+SSH_KEY_SOPS=$SSH_KEY.sops
+SSH_CONFIG="$ROOT_DIR/stow/cli/ssh/.ssh/config"
+SSH_CONFIG_SOPS=$SSH_CONFIG.sops
+CLASH_CONFIG="$ROOT_DIR/mihomo-clash/config/config.yaml"
+CLASH_CONFIG_SOPS=$CLASH_CONFIG.sops
+GH_HOST="$ROOT_DIR/stow/cli/gh/hosts.yml"
+GH_HOST_SOPS=$GH_HOST.sops
 
-# 解密 SSH 密钥 (二进制文件)
-decrypt_if_needed "$SSH_KEY_SOPS" "$SSH_KEY_TARGET" "600"
-decrypt_if_needed "$SSH_CONFIG_SOPS" "$SSH_CONFIG_TARGET" ""
-
-# 解密 Clash 配置 (YAML 文件)
-decrypt_if_needed "$CLASH_CONFIG_SOPS" "$CLASH_CONFIG_TARGET" ""
+decrypt_if_needed "$SSH_KEY_SOPS" "$SSH_KEY" "600"
+decrypt_if_needed "$SSH_CONFIG_SOPS" "$SSH_CONFIG" ""
+decrypt_if_needed "$CLASH_CONFIG_SOPS" "$CLASH_CONFIG" ""
+decrypt_if_needed "$GH_HOST_SOPS" "$GH_HOST" "600"
 
 echo "🔐 Secrets decryption process finished."

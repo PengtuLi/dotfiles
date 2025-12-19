@@ -1,45 +1,83 @@
 #!/bin/bash
 
-# 固定参数部分
-# pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel
+# 默认参数
 IMAGE="pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel"
 WORKSPACE_VOL="/home/lpt:/root/host"
 SHARE_VOL="/share:/share"
 DEFAULT_SHELL="/bin/zsh"
-CPU_PROFILER="--privileged"
+PRIVILEGE="--privileged"
 GPU="--gpus all"
 IPC="--ipc host"
+CONTAINER_NAME="lpt"
+PORT_MAP="16660:22"
 
-# 提示用户输入容器名称
-read -p "请输入容器名称 (默认: lpt): " CONTAINER_NAME
-CONTAINER_NAME=${CONTAINER_NAME:-lpt}
+# 解析命令行参数
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --name)
+            CONTAINER_NAME="$2"
+            shift 2
+            ;;
+        --port)
+            PORT_MAP="$2"
+            shift 2
+            ;;
+        --workspace)
+            WORKSPACE_VOL="$2"
+            shift 2
+            ;;
+        --share)
+            SHARE_VOL="$2"
+            shift 2
+            ;;
+        --image)
+            IMAGE="$2"
+            shift 2
+            ;;
+        --no-privileged)
+            PRIVILEGE=""
+            shift
+            ;;
+        --no-gpu)
+            GPU=""
+            shift
+            ;;
+        --no-ipc)
+            IPC=""
+            shift
+            ;;
+        --help| -h)
+            echo "用法: $0 [选项]"
+            echo "选项:"
+            echo "  --name NAME          容器名称 (默认: lpt)"
+            echo "  --port HOST:CONTAINER  SSH 端口映射 (默认: 16660:22)"
+            echo "  --workspace HOST:CONT 宿主机工作目录挂载 (默认: /home/lpt:/root/host)"
+            echo "  --share HOST:CONT    共享目录挂载 (默认: /share:/share)"
+            echo "  --image IMAGE        镜像名称 (默认: pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel)"
+            echo "  --no-privileged      不使用 --privileged"
+            echo "  --no-gpu             不使用 --gpus all"
+            echo "  --no-ipc             不使用 --ipc host"
+            echo "  --help, -h           显示此帮助"
+            exit 0
+            ;;
+        *)
+            echo "未知参数: $1" >&2
+            exit 1
+            ;;
+    esac
+done
 
-# 提示用户输入 SSH 端口映射
-read -p "请输入主机SSH端口 (默认: 16660:22): " PORT_MAP
-PORT_MAP=${PORT_MAP:-16660:22}
+# 构建命令（注意换行和空格处理）
+CMD="docker run -itd \\
+  --name $CONTAINER_NAME \\
+  -p $PORT_MAP \\
+  -v $WORKSPACE_VOL \\
+  -v $SHARE_VOL \\
+  $GPU \\
+  $IPC \\
+  $PRIVILEGE \\
+  $IMAGE \\
+  /bin/bash"
 
-# 构建最终命令
-CMD="docker run -itd \
-  --name $CONTAINER_NAME \
-  -p $PORT_MAP \
-  -v $WORKSPACE_VOL \
-  -v $SHARE_VOL \
-  $GPU \
-  $IPC \
-  $CPU_PROFILER \
-  $IMAGE \
-  /bin/bash \
-  "
-
-# 打印并运行命令
-echo -e "\n即将运行以下命令：\n"
+# 输出命令字符串
 echo "$CMD"
-echo ""
-
-eval $CMD
-
-echo -e "\n✅ 容器已启动！容器名: $CONTAINER_NAME"
-
-echo "run init container"
-
-docker exec $CONTAINER_NAME /bin/bash /root/host/dotfiles/code-snip/ssh-install.sh

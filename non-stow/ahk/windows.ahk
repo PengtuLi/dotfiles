@@ -26,7 +26,7 @@
         WinActivate(ghosttyWin)
     } else {
         try {
-            Run("wsl -e ghostty", , "Hide")
+            Run('wsl.exe ~ -e sh -lc "ghostty"', , 'Hide')
             if (!WinWait("Ghostty ahk_class RAIL_WINDOW",, 10)) {
                 MsgBox("Ghostty 窗口启动超时！`n请确保已安装 ghostty 并可在 WSL 中运行。", "提示", "IconWarning")
             } else {
@@ -56,7 +56,7 @@
             if (!WinWait("ahk_exe Code.exe",, 10)) {
                 MsgBox("Code 窗口启动超时", "提示", "IconWarning")
             } else {
-                newWin := WinExist("Ghostty ahk_class RAIL_WINDOW")
+                newWin := WinExist("ahk_exe Code.exe")
                 if (newWin) {
                     WinMaximize(newWin)
                     WinActivate(newWin)
@@ -104,12 +104,17 @@
         WinActivate(spotifyWin)
     } else {
         ; Spotify 通常通过 Windows Store 或官方安装，路径较固定
-        spotifyPath := "C:\Users\PC\scoop\apps\Spotify\Spotify.exe"
-        if (!FileExist(spotifyPath)) {
-            ; 尝试通过 Start Menu 启动（适用于 Store 版或路径变动）
-            Run("spotify:")
-        } else {
+        spotifyPath := "C:\Users\PC\scoop\apps\Spotify\current\Spotify.exe"
             Run(spotifyPath)
-        }
+	     if (!WinWait("ahk_exe Spotify.exe",, 10)) {
+                MsgBox("Spotify 窗口启动超时", "提示", "IconWarning")
+            } else {
+                newWin := WinExist("ahk_exe Spotify.exe")
+                if (newWin) {
+                    WinMaximize(newWin)
+                    WinActivate(newWin)
+                }
+	}
+
     }
 }

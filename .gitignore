@@ -29,6 +29,8 @@ stow/cli/ssh/.ssh/sockets/
 stow/cli/ssh/.ssh/*_rsa
 stow/cli/ssh/.ssh/config
 
+stow/cli/gh/hosts.yml
+
 stow/gui/karabiner/.config/karabiner/
 !stow/gui/karabiner/.config/karabiner/karabiner.json
 

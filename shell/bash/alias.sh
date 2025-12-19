@@ -29,10 +29,10 @@ alias lg=lazygit
 # ls
 if command -v eza &>/dev/null; then
     alias ls="eza --color=always --icons=always"
-    alias ll="eza -alhgM --git "
+    alias ll="eza -alhgM"
     alias tree="eza -alhgM --tree --level=3"
 else
-    alias ll="ls -al"
+    alias ll="ls -alF"
 fi
 
 # ripgrep
