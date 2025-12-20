@@ -7,15 +7,15 @@ source "$ROOT_DIR/scripts/lib/common.sh"
 install_SMB(){
 
     # nas
-    sudo chmod 644 $ROOT_DIR/scripts/mesh/nas/smb.conf
+    sudo chmod 644 $ROOT_DIR/stow/gui/nas/smb.conf
     sudo mkdir -p /etc/samba/
 
     # 检查目标文件是否存在，如果存在则删除
-    if [ -e /etc/samba/smb.conf ] || [ -L /etc/samba/smb.conf ]; then
-        sudo rm /etc/samba/smb.conf
-    fi
+    # if [ -e /etc/samba/smb.conf ] || [ -L /etc/samba/smb.conf ]; then
+    #     sudo rm /etc/samba/smb.conf
+    # fi
 
-    sudo ln -s $ROOT_DIR/scripts/mesh/nas/smb.conf /etc/samba/smb.conf
+    # sudo ln -s $ROOT_DIR/scripts/mesh/nas/smb.conf /etc/samba/smb.conf
     sudo smbpasswd -a tutu
 
     # 启动 SMB 文件共享服务
