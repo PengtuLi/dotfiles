@@ -36,3 +36,9 @@ brew "age"
 
 # ai
 brew "code2prompt"
+
+# venv
+brew "uv"
+
+# benchmark
+brew "hyperfine"

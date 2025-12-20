@@ -12,7 +12,7 @@ export NVIM_SOCK="/tmp/lpt-nvim.sock"
 export HOMEBREW_NO_AUTO_UPDATE=true
 export XDG_CONFIG_HOME="$HOME/.config" # useful for macos
 export TERMINFO_DIRS="/usr/share/terminfo"
-export SOPS_AGE_KEY="$(cat ~/.age.key)"
+export SOPS_AGE_KEY=$_SOPS_AGE_KEY
 export SOPS_AGE_SSH_PRIVATE_KEY_FILE=""
 
 
@@ -78,9 +78,11 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
 --pointer='👉'
 --bind 'ctrl-space:toggle+down'
 --bind 'ctrl-j:down,ctrl-k:up'
+--bind 'ctrl-n:down,ctrl-p:up'
 --bind 'ctrl-d:half-page-down,ctrl-u:half-page-up'
---bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
---bind 'alt-b:preview-page-down,alt-f:preview-page-up'
+--bind 'ctrl-f:page-down,ctrl-b:page-up'
+--bind 'ctrl-alt-d:preview-half-page-down,ctrl-alt-u:preview-half-page-up'
+--bind 'ctrl-alt-b:preview-page-down,ctrl-alt-b:preview-page-up'
 --bind 'ctrl-\\:toggle-preview'
 "
     PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"

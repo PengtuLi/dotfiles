@@ -116,6 +116,9 @@ alias T="tmuxinator"
 alias T-s="tmuxinator start"
 alias T-S="tmuxinator stop"
 
+# uv
+alias uv-a="source ./.venv/bin/activate"
+
 # proxy
 alias sP=set_local_proxy
 alias usP=unset_local_proxy

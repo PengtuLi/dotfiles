@@ -77,8 +77,10 @@ keybind = ctrl+shift+v=paste_from_clipboard
 # shell prompt history
 keybind = alt+left=jump_to_prompt:-1
 keybind = alt+right=jump_to_prompt:1
-keybind = alt+up=scroll_page_up
-keybind = alt+down=scroll_page_down
+keybind = alt+d=scroll_page_fractional:0.5
+keybind = alt+u=scroll_page_fractional:-0.5
+keybind = alt+f=scroll_page_up
+keybind = alt+b=scroll_page_down
 
 # config
 keybind = alt+shift+,=reload_config

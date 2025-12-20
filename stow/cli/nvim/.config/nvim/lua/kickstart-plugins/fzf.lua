@@ -33,10 +33,10 @@ return {
           -- -- Preview toggle behavior default/extend
           -- ['<F6>'] = 'toggle-preview-behavior',
 
-          ['<A-b>'] = 'preview-page-up',
-          ['<A-f>'] = 'preview-page-down',
-          ['<A-d>'] = 'preview-half-page-down',
-          ['<A-u>'] = 'preview-half-page-up',
+          ['<C-A-b>'] = 'preview-page-up',
+          ['<C-A-f>'] = 'preview-page-down',
+          ['<C-A-d>'] = 'preview-half-page-down',
+          ['<C-A-u>'] = 'preview-half-page-up',
         },
         fzf = {
           false,
@@ -45,8 +45,8 @@ return {
           ['ctrl-u'] = 'half-page-up',
           ['alt-a'] = 'toggle-all',
           -- Only valid with fzf previewers (bat/cat/git/etc)
-          ['alt-d'] = 'preview-half-page-down',
-          ['alt-u'] = 'preview-half-page-up',
+          ['ctrl-shift-d'] = 'preview-half-page-down',
+          ['ctrl-shift-u'] = 'preview-half-page-up',
         },
         actions = {
           files = {

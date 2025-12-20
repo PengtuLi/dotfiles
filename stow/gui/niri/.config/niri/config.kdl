@@ -222,6 +222,7 @@ layout {
 }
 
 spawn-at-startup "swww img ~/workspace/dotfiles/static/wallpaper/2.png"
+spawn-at-startup "ghostty"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
