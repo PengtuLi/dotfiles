@@ -11,6 +11,31 @@ return {
       } or ''
     end
 
+    -- green filename highlight
+    local green_hl_filename = {
+      'filename',
+      file_status = true, -- Displays file status (readonly status, modified status)
+      newfile_status = true, -- Display new file status (new file means no write after created)
+      path = 0,
+      -- 0: Just the filename
+      -- 1: Relative path
+      -- 2: Absolute path
+      -- 3: Absolute path, with tilde as the home directory
+      -- 4: Filename and parent dir, with tilde as the home directory
+
+      symbols = {
+        modified = '[●]', -- Text to show when the file is modified.
+        readonly = '[]', -- Text to show when the file is non-modifiable or readonly.
+        unnamed = '[?]', -- Text to show for unnamed buffers.
+        newfile = '[+]', -- Text to show for newly created file before first write
+      },
+      color = {
+        fg = 'White',
+        bg = 'Green',
+        gui = 'bold', -- 字体样式 (加粗)
+      },
+    }
+
     require('lualine').setup {
       options = {
         icons_enabled = true,
@@ -25,11 +50,11 @@ return {
         always_divide_middle = true,
         always_show_tabline = true,
         globalstatus = false,
-        refresh = {
-          statusline = 100,
-          tabline = 100,
-          winbar = 100,
-        },
+        -- refresh = {
+        --   statusline = 100,
+        --   tabline = 100,
+        --   winbar = 100,
+        -- },
       },
       sections = {
         lualine_a = { 'mode' },
@@ -48,29 +73,7 @@ return {
             color = { fg = 'White', gui = 'bold,italic' }, -- 路径颜色 (Dracula 紫色或灰色)
             shorting_target = 40, -- Shortens path to leave 40 spaces in the window
           },
-          {
-            'filename',
-            file_status = true, -- Displays file status (readonly status, modified status)
-            newfile_status = true, -- Display new file status (new file means no write after created)
-            path = 0,
-            -- 0: Just the filename
-            -- 1: Relative path
-            -- 2: Absolute path
-            -- 3: Absolute path, with tilde as the home directory
-            -- 4: Filename and parent dir, with tilde as the home directory
-
-            symbols = {
-              modified = '[●]', -- Text to show when the file is modified.
-              readonly = '[]', -- Text to show when the file is non-modifiable or readonly.
-              unnamed = '[?]', -- Text to show for unnamed buffers.
-              newfile = '[+]', -- Text to show for newly created file before first write
-            },
-            color = {
-              fg = 'White',
-              bg = 'Green',
-              gui = 'bold', -- 字体样式 (加粗)
-            },
-          },
+          green_hl_filename,
         },
         lualine_x = {
           'searchcount',
@@ -101,7 +104,7 @@ return {
       inactive_sections = {
         lualine_a = {},
         lualine_b = {},
-        lualine_c = { 'filename' },
+        lualine_c = { green_hl_filename },
         lualine_x = {},
         lualine_y = {},
         lualine_z = { 'progress', '%l:%LLOC' },

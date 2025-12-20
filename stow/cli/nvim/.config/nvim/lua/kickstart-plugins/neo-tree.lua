@@ -20,7 +20,7 @@ return {
       require('neo-tree').setup {
         window = {
           position = 'left',
-          width = '25%',
+          width = 0.25,
         },
         filesystem = {
           filtered_items = {

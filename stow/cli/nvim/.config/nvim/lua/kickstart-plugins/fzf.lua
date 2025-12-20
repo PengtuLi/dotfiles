@@ -41,12 +41,12 @@ return {
         fzf = {
           false,
           -- fzf '--bind=' options
-          ['ctrl-d'] = 'half-page-down',
-          ['ctrl-u'] = 'half-page-up',
+          -- ['ctrl-d'] = 'half-page-down',
+          -- ['ctrl-u'] = 'half-page-up',
           ['alt-a'] = 'toggle-all',
           -- Only valid with fzf previewers (bat/cat/git/etc)
-          ['ctrl-shift-d'] = 'preview-half-page-down',
-          ['ctrl-shift-u'] = 'preview-half-page-up',
+          -- ['ctrl-alt-d'] = 'preview-half-page-down',
+          -- ['ctrl-alt-u'] = 'preview-half-page-up',
         },
         actions = {
           files = {

@@ -103,7 +103,7 @@
       "keys": "alt+b"
     },
     {
-      "id": null,
+      "id": "Terminal.FindText",
       "keys": "ctrl+shift+f"
     },
     {
@@ -209,10 +209,6 @@
     {
       "id": null,
       "keys": "ctrl+numpad_minus"
-    },
-    {
-      "id": "Terminal.FindText",
-      "keys": "ctrl+f"
     },
     {
       "id": null,

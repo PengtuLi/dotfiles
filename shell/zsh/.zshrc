@@ -82,7 +82,7 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
 --bind 'ctrl-d:half-page-down,ctrl-u:half-page-up'
 --bind 'ctrl-f:page-down,ctrl-b:page-up'
 --bind 'ctrl-alt-d:preview-half-page-down,ctrl-alt-u:preview-half-page-up'
---bind 'ctrl-alt-b:preview-page-down,ctrl-alt-b:preview-page-up'
+--bind 'ctrl-alt-f:preview-page-down,ctrl-alt-b:preview-page-up'
 --bind 'ctrl-\\:toggle-preview'
 "
     PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
