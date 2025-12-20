@@ -19,8 +19,6 @@
 	rebase = true
 [diff]
   colorMoved = default
-[merge]
-  conflictStyle = zdiff3
 [interactive]
 	diffFilter = delta --color-only --features=interactive
 
