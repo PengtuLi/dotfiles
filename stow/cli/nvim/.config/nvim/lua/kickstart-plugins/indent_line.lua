@@ -1,7 +1,8 @@
 return {
   {
     'lukas-reineke/indent-blankline.nvim',
-    event = { 'BufNewFile', 'BufRead' },
+    -- event = { 'BufNewFile', 'BufRead' },
+    event = 'VeryLazy',
     config = function()
       -- vim.opt.listchars:append "eol:↴"
       local highlight = {
@@ -47,8 +48,9 @@ return {
       local ibl = require 'ibl'
       ibl.setup {
         indent = {
+          -- highlight = { 'Function', 'Label' },
           highlight = highlight,
-          tab_char = '║',
+          tab_char = '*',
           -- char = '▎',
           char = '▏',
           smart_indent_cap = true,
@@ -58,11 +60,16 @@ return {
           show_start = true,
           show_end = true,
           priority = 1024,
+          show_exact_scope = true,
           char = {
-            '▍',
+            '▌',
           },
         },
       }
+
+      local hooks = require 'ibl.hooks'
+      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_tab_indent_level)
     end,
   },
 }

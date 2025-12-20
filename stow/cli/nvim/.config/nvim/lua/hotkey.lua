@@ -5,9 +5,6 @@
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>d', vim.diagnostic.setloclist, { desc = 'Open [d]iagnostic Quickfix list' })
-
 -- 将 s 和 S 映射为原来的 r 和 R 功能
 -- vim.keymap.set('n', 'r', 's', { expr = false, desc = 'substitute' })
 -- vim.keymap.set('n', 'R', 'S', { expr = false, desc = 'substitute line' })

@@ -18,12 +18,12 @@ return {
     event = 'VeryLazy',
     dependencies = {
       { 'mason-org/mason.nvim', opts = {} },
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
-      'mason-org/mason-lspconfig.nvim',
+      {'WhoIsSethDaniel/mason-tool-installer.nvim'},
+      {'mason-org/mason-lspconfig.nvim'},
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      {'j-hui/fidget.nvim'},
       -- Allows extra capabilities provided by blink.cmp
-      'saghen/blink.cmp',
+      {'saghen/blink.cmp'},
     },
     config = function()
       --  This function gets run when an LSP attaches to a particular buffer.
@@ -84,18 +84,8 @@ return {
             }
           end, { desc = 'LSP Document Symbols (Top Level)' })
 
-          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
-          ---@param client vim.lsp.Client
-          ---@param method vim.lsp.protocol.Method
-          ---@param bufnr? integer some lsp support methods only in specific files
-          ---@return boolean
-          local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-              return client:supports_method(method, bufnr)
-            else
-              return client.supports_method(method, { bufnr = bufnr })
-            end
-          end
+          -- Diagnostic keymaps
+          vim.keymap.set('n', '<leader>d', vim.diagnostic.setloclist, { desc = 'Open [d]iagnostic Quickfix list' })
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -103,7 +93,7 @@ return {
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -130,7 +120,7 @@ return {
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, 'toggle inlay [h]ints')
@@ -157,7 +147,7 @@ return {
         virtual_text = {
           source = true,
           spacing = 2,
-          virt_text_pos = 'right_align',
+          virt_text_pos = 'eol_right_align',
           format = function(diagnostic)
             local diagnostic_message = {
               [vim.diagnostic.severity.ERROR] = diagnostic.message,
@@ -196,6 +186,7 @@ return {
           },
         },
         harper_ls = {
+          filetypes = { 'markdown', 'mdx' }, -- 仅在 markdown 文件中启用
           settings = {
             ['harper-ls'] = {
               linters = {
@@ -229,17 +220,21 @@ return {
         'codespell', -- spell check
         'beautysh', -- bash sh zsh
         'stylua', -- lua
+        'typos-lsp', -- spell check
 
         -----------Linter
         -- 'cfn-lint', -- yaml, json
         -- 'vale', -- text, markdown
         'actionlint', -- ghaction-yaml
-        'typos', -- spell check
 
         -----------DAP
         -- 'debugpy', -- py
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup {
+        ensure_installed = ensure_installed,
+        run_on_start = true,
+        start_delay = 3000,
+      }
 
       -- Either merge all additional server configs from the `servers.mason` and `servers.others` tables
       -- to the default language server configs as provided by nvim-lspconfig or
@@ -253,6 +248,7 @@ return {
       -- After configuring our language servers, we now enable them
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_enable = true,
       }
     end,
   },

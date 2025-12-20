@@ -14,7 +14,7 @@ return {
   opts = {
     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
     -- log_level = 'debug',
-    show_auto_restore_notif = true,
+    -- show_auto_restore_notif = true,
 
     session_lens = {
       picker = 'fzf',

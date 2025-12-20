@@ -1,5 +1,6 @@
 return {
   'ibhagwan/fzf-lua',
+  event = 'VeryLazy',
   -- optional for icon support
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 
@@ -35,18 +36,12 @@ return {
 
           ['<C-A-b>'] = 'preview-page-up',
           ['<C-A-f>'] = 'preview-page-down',
-          ['<C-A-d>'] = 'preview-half-page-down',
           ['<C-A-u>'] = 'preview-half-page-up',
+          ['<C-A-d>'] = 'preview-half-page-down',
         },
         fzf = {
           false,
           -- fzf '--bind=' options
-          ['ctrl-d'] = 'half-page-down',
-          ['ctrl-u'] = 'half-page-up',
-          ['alt-a'] = 'toggle-all',
-          -- Only valid with fzf previewers (bat/cat/git/etc)
-          ['ctrl-shift-d'] = 'preview-half-page-down',
-          ['ctrl-shift-u'] = 'preview-half-page-up',
         },
         actions = {
           files = {
@@ -86,9 +81,9 @@ return {
       lsp = {
         symbols = {
           fzf_opts = {
-            ['--delimiter'] = ' ',
+            -- ['--delimiter'] = ' ',
             -- 隐藏第1个字段（即隐藏 line:col: 这一坨东西），显示第2个字段及之后的内容
-            ['--with-nth'] = '3..',
+            -- ['--with-nth'] = '1..',
           },
         },
       },

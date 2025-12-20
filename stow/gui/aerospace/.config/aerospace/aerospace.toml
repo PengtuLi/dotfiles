@@ -5,7 +5,7 @@ config-version = 2
 # You can use it to add commands that run after AeroSpace startup.
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
-  'exec-and-forget borders inactive_color=0xffe1e3e4 active_color=0xFFFF0000 width=5.0'
+  'exec-and-forget borders active_color=0xff00ff00 inactive_color=0xffe1e3e4 hidpi=on width=5.0'
 ]
 
 # Start AeroSpace at login
@@ -21,7 +21,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 accordion-padding = 30
 
 # Possible values: tiles|accordion
-default-root-container-layout = 'tiles'
+default-root-container-layout = 'accordion'
 
 # Possible values: horizontal|vertical|auto
 # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
@@ -43,7 +43,7 @@ automatically-unhide-macos-hidden-apps = false
 # List of workspaces that should stay alive even when they contain no windows,
 # even when they are invisible.
 persistent-workspaces = ["1", "2", "3", "4",
-                         "I", "O"]
+                         "9", "0"]
 
 # A callback that runs every time binding mode changes
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -68,7 +68,7 @@ on-mode-changed = []
     inner.vertical =   6
     outer.left =       4
     outer.bottom =     4
-    outer.top =        0
+    outer.top =        4
     outer.right =      4
 
 # 'main' binding mode declaration
@@ -121,7 +121,7 @@ on-mode-changed = []
     cmd-u = 'workspace prev'
 
     cmd-enter = "macos-native-fullscreen"
-    cmd-f = "fullscreen"
+    # cmd-f = "fullscreen"
     # See: https://nikitabobko.github.io/AeroSpace/commands#resize
     # can change horizontal or vertical based on parent
     cmd-minus = 'resize smart -60'
@@ -132,8 +132,8 @@ on-mode-changed = []
     cmd-2 = 'workspace 2'
     cmd-3 = 'workspace 3'
     cmd-4 = 'workspace 4'
-    cmd-i = 'workspace I'
-    cmd-o = 'workspace O'
+    cmd-9 = 'workspace 9'
+    cmd-0 = 'workspace 0'
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     cmd-backslash = 'workspace-back-and-forth'
 
@@ -147,8 +147,9 @@ on-mode-changed = []
     cmd-ctrl-2 = 'move-node-to-workspace 2'
     cmd-ctrl-3 = 'move-node-to-workspace 3'
     cmd-ctrl-4 = 'move-node-to-workspace 4'
-    cmd-ctrl-i = 'move-node-to-workspace I'
-    cmd-ctrl-o = 'move-node-to-workspace O'
+    cmd-ctrl-9 = 'move-node-to-workspace 9'
+    cmd-ctrl-0 = 'move-node-to-workspace 0'
+
     cmd-ctrl-d = 'move-node-to-workspace next'
     cmd-ctrl-u = 'move-node-to-workspace prev'
 
@@ -156,8 +157,8 @@ on-mode-changed = []
     cmd-leftSquareBracket = 'join-with left'
     cmd-rightSquareBracket = 'join-with right'
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-    cmd-comma = 'layout tiles horizontal'
-    cmd-period = 'layout accordion horizontal'
+    cmd-comma = 'layout h_tiles'
+    cmd-period = 'layout h_accordion'
 
 
 # 'service' binding mode declaration.

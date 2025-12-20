@@ -13,25 +13,31 @@ return {
     lazy = false, -- neo-tree will lazily load itself
     cmd = 'Neotree',
     keys = {
-      { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
-      { '|', ':Neotree toggle source=buffers<CR>', desc = 'NeoTree reveal buffers', silent = true },
+      { '\\', ':Neotree toggle reveal float<CR>', desc = 'NeoTree reveal', silent = true },
+      { '|', ':Neotree toggle float source=buffers<CR>', desc = 'NeoTree reveal buffers', silent = true },
     },
     config = function()
+      vim.api.nvim_set_hl(0, 'NeoTreeIndent', { fg = '#F8F8F8' })
+
       require('neo-tree').setup {
+        default_component_configs = {
+          indent = {
+            with_markers = true,
+            indent_marker = '┃',
+            last_indent_marker = '┗',
+            indent_size = 2,
+            highlight = 'NeoTreeIndent',
+          },
+        },
         window = {
           position = 'left',
-          width = '25%',
+          width = 0.25,
         },
         filesystem = {
           filtered_items = {
             visible = true,
             show_hidden_count = true,
             hide_dotfiles = true,
-          },
-          window = {
-            mappings = {
-              ['\\'] = 'close_window',
-            },
           },
         },
       }

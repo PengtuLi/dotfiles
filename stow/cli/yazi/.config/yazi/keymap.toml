@@ -28,7 +28,7 @@ keymap = [
 	{ on = "l", run = "enter", desc = "Enter the child directory" },
 
 	{ on = "<C-o>", run = "back",    desc = "Back to previous directory" },
-	{ on = "<C-i>", run = "forward", desc = "Forward to next directory" },
+	{ on = "<Tab>", run = "forward", desc = "Forward to next directory" },
 
 	# Toggle
 	{ on = "<Space>", run = [ "toggle", "arrow next" ], desc = "Toggle the current selection state" },
@@ -39,11 +39,11 @@ keymap = [
 
   { on = "e", run = 'shell "nvim --server /tmp/lpt-nvim.sock --remote $@"', desc = "Open selected files in existing Neovim session" },
   # Seeking
-  { on = "<C-k>", run = "seek -10", desc = "Seek up 10L in the preview" },
-  { on = "<C-j>", run = "seek 10",  desc = "Seek down 10L in the preview" },
+  { on = "<C-A-k>", run = "seek -10", desc = "Seek up 10L in the preview" },
+  { on = "<C-A-j>", run = "seek 10",  desc = "Seek down 10L in the preview" },
 
 	# Spotting
-	{ on = "<Tab>", run = "spot", desc = "Spot hovered file" },
+	{ on = "\\", run = "spot", desc = "Spot hovered file" },
 
 	# Operation
 	{ on = "o",         run = "open",                        desc = "Open selected files" },
@@ -153,7 +153,7 @@ keymap = [
 
 keymap = [
 	{ on = "<Esc>", run = "close", desc = "Close the spot" },
-	{ on = "<Tab>", run = "close", desc = "Close the spot" },
+	{ on = "\\", run = "close", desc = "Close the spot" },
 
 	{ on = "k", run = "arrow prev", desc = "Previous line" },
 	{ on = "j", run = "arrow next", desc = "Next line" },

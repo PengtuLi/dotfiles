@@ -39,7 +39,7 @@ vim.g.clipboard = {
 -- no harm to +* register from dxc
 vim.keymap.set({ 'n', 'v' }, 'd', [["_d]])
 vim.keymap.set({ 'n', 'v' }, 'D', [["_D]])
-vim.keymap.set({ 'n', 'v' }, 'x', [["_x]])
+vim.keymap.set({ 'n' }, 'x', [["_x]]) -- v + x means clip
 vim.keymap.set({ 'n', 'v' }, 'X', [["_X]])
 vim.keymap.set({ 'n', 'v' }, 'c', [["_c]])
 vim.keymap.set({ 'n', 'v' }, 'C', [["_C]])
@@ -88,11 +88,19 @@ vim.opt.scrolloff = 5
 vim.o.confirm = true
 
 -- 设置会话保存内容（增强 auto-session 体验）
-vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
+vim.o.sessionoptions = 'buffers,curdir,folds,help,winsize,localoptions'
 
 -- 拼写检查
 vim.opt.spell = false
-vim.opt.spelllang = 'en_us,cjk' -- 支持中英文（cjk 可选）
+vim.opt.spelllang = 'en_us,cjk'
 
 -- 24-bit colour
 vim.opt.termguicolors = true
+
+-- auto read file change outside nvim
+vim.o.autoread = true
+vim.api.nvim_create_autocmd('FocusGained', {
+  callback = function()
+    vim.cmd 'checktime' -- 检查时，autoread 会控制是否自动加载
+  end,
+})

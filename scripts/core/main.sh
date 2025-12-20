@@ -153,9 +153,6 @@ run_component() {
             script_path="$ROOT_DIR/scripts/core/stow.sh"
             args=("$PLATFORM")
             ;;
-        zsh_plugin)
-            script_path="$ROOT_DIR/scripts/core/zsh_plugin.sh"
-            ;;
         shell_scripts)
             script_path="$ROOT_DIR/scripts/core/shell_scripts.sh"
             ;;

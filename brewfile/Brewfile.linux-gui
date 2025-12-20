@@ -1,9 +1,16 @@
-# rclone
+# sync & remote
 brew "rclone"
 brew "rsync"
 brew "fswatch"
 # brew "sshfs" # use system package manager!!!!
+
 # font
 cask "font-jetbrains-mono-nerd-font"
 cask "font-maple-mono-nf-cn"
 
+# document
+brew "presenterm"
+brew "pandoc"
+# pdf engine
+brew "glow"
+# npm init slidev@latest

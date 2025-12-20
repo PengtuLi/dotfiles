@@ -65,7 +65,7 @@ return {
           -- `source_name`: Shows the name of the source that provided the item, from the `sources.providers.*.name` (e.g. `LSP`)
           -- `source_id`: Shows the id of the source that provided the item, from the `sources.providers[id]` (e.g. `lsp`)
           draw = {
-            columns = { { 'kind_icon', 'kind' }, { 'label', gap = 1 }, { 'label_description', 'source_name', gap = 1 } },
+            columns = { { 'kind_icon', gap = 1, 'kind' }, { 'label', gap = 1 }, { 'label_description', 'source_name', gap = 1 } },
           },
         },
       },

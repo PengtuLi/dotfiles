@@ -21,6 +21,9 @@ stow_packages() {
       target="$HOME/Library/Application Support"
     elif [[ "$pkg" =~ ^(vscode)$ ]] && is_linux; then
       target="$HOME/.config"
+    elif [[ "$pkg" =~ ^(smb)$ ]]; then
+      target="/etc"
+      IFSUDO=sudo
     else
       target="$HOME"
     fi

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# sshfs mount wrapper with smart remount detection
+# Usage: sshfs-mount <local_dir> <remote_path>
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_sshfs_lib"
+
+show_help() {
+    echo "Usage: sshfs-mount <local_dir> <remote_path>"
+    echo "Example: sshfs-mount ncti-A6000-1 ncti-A6000-1:/"
+    exit 0
+}
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ $# -ne 2 ]; then
+    show_help
+fi
+
+sshfs_smart_mount "$1" "$2"
