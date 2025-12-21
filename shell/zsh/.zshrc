@@ -84,6 +84,7 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
 --bind 'ctrl-alt-d:preview-half-page-down,ctrl-alt-u:preview-half-page-up'
 --bind 'ctrl-alt-f:preview-page-down,ctrl-alt-b:preview-page-up'
 --bind 'ctrl-\\:toggle-preview'
+--bind 'alt-a:toggle-all'
 "
     PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
     FZF_ALT_C_COMMAND= source <(fzf --zsh)

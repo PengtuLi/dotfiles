@@ -35,18 +35,12 @@ return {
 
           ['<C-A-b>'] = 'preview-page-up',
           ['<C-A-f>'] = 'preview-page-down',
-          ['<C-A-d>'] = 'preview-half-page-down',
           ['<C-A-u>'] = 'preview-half-page-up',
+          ['<C-A-d>'] = 'preview-half-page-down',
         },
         fzf = {
           false,
           -- fzf '--bind=' options
-          -- ['ctrl-d'] = 'half-page-down',
-          -- ['ctrl-u'] = 'half-page-up',
-          ['alt-a'] = 'toggle-all',
-          -- Only valid with fzf previewers (bat/cat/git/etc)
-          -- ['ctrl-alt-d'] = 'preview-half-page-down',
-          -- ['ctrl-alt-u'] = 'preview-half-page-up',
         },
         actions = {
           files = {
