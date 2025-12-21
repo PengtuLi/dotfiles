@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+
+# A shell function to diagnose terminal and tmux configuration.
+term_check() {
+    # --- Helper variables for formatting ---
+    local color_reset='\033[0m'
+    local color_red='\033[0;31m'
+    local color_green='\033[0;32m'
+    local color_yellow='\033[0;33m'
+    local color_blue='\033[0;34m'
+    local color_bold='\033[1m'
+
+    # --- Nested helper function to print check items ---
+    _check_item() {
+        local message=$1
+        # Renamed 'status' to 'check_status' to avoid conflict with shell's read-only variable
+        local check_status=$2
+        local recommendation=$3
+        local status_color
+
+        case "$check_status" in
+            "OK")   status_color=$color_green ;;
+            "WARN") status_color=$color_yellow ;;
+            "FAIL") status_color=$color_red ;;
+            *)      status_color=$color_reset ;;
+        esac
+
+        printf "  %-40s [${status_color}%s${color_reset}]\n" "$message" "$check_status"
+        if [[ -n "$recommendation" ]]; then
+            printf "    └─ ${color_yellow}%s${color_reset}\n" "$recommendation"
+        fi
+    }
+
+    # --- Main Script Logic ---
+    echo -e "${color_bold}${color_blue}--- Terminal Environment Diagnostics ---${color_reset}\n"
+
+    # 1. General Terminal Info
+    echo -e "${color_bold}1. General Terminal Info${color_reset}"
+    if [[ -n "$TERM" ]]; then
+        _check_item "TERM variable is set to:" "'$TERM'"
+    else
+        _check_item "TERM variable is set:" "FAIL" "Your TERM environment variable is not set."
+    fi
+
+    # 2. Check for terminfo entry
+    if infocmp "$TERM" >/dev/null 2>&1; then
+        _check_item "Terminfo entry for '$TERM' found:" "OK"
+    else
+        _check_item "Terminfo entry for '$TERM' found:" "FAIL" "No terminfo entry found. Applications may not display correctly."
+    fi
+
+    echo -e "\n${color_bold}2. Color Support${color_reset}"
+
+    # 3. Check 256-color support
+    local num_colors
+    num_colors=$(tput colors 2>/dev/null || echo 0)
+    if [[ $num_colors -ge 256 ]]; then
+        _check_item "256-color support (tput colors):" "OK" "Reported $num_colors colors."
+    else
+        _check_item "256-color support (tput colors):" "WARN" "Reported only $num_colors colors."
+    fi
+
+    # 4. Check True Color (RGB) support
+    if [[ "$COLORTERM" == "truecolor" || "$COLORTERM" == "24bit" ]]; then
+        _check_item "COLORTERM is '$COLORTERM':" "OK" "Indicates terminal should support True Color."
+    else
+        _check_item "COLORTERM variable:" "WARN" "Not set to 'truecolor' or '24bit'. This is a common indicator for True Color support."
+    fi
+
+    # Visual test for True Color
+    printf "  Performing visual True Color test...\n"
+    printf "    └─ ${color_yellow}If you see a smooth gradient below, True Color is working.${color_reset}\n"
+    awk 'BEGIN{
+        s="/\\";
+        for (colnum = 0; colnum < 78; colnum++) {
+            r = 255 - (colnum*255/78);
+            g = colnum*510/78;
+            if (g>255) g = 510-g;
+            b = colnum*255/78;
+            printf "\033[48;2;%d;%d;%dm", r,g,b;
+            printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+            printf "%s", substr(s,colnum%2+1,1);
+        }
+        printf "\033[0m\n";
+    }'
+
+    echo -e "\n${color_bold}3. Tmux Specific Settings${color_reset}"
+
+    # 5. Check if inside tmux and its settings
+    if [[ -n "$TMUX" ]]; then
+        _check_item "Currently inside a tmux session:" "OK"
+
+        local tmux_default_term
+        tmux_default_term=$(tmux show-options -gqv default-terminal)
+        if [[ "$tmux_default_term" == "tmux-256color" || "$tmux_default_term" == "screen-256color" ]]; then
+            _check_item "tmux 'default-terminal' setting:" "OK" "Set to '$tmux_default_term'."
+        else
+            _check_item "tmux 'default-terminal' setting:" "WARN" "Set to '$tmux_default_term'. For best color support, use 'tmux-256color'."
+        fi
+
+        local tmux_term_features
+        tmux_term_features=$(tmux show-options -gqv terminal-features)
+        if [[ "$tmux_term_features" == *":RGB"* || "$tmux_term_features" == *":Tc"* ]]; then
+            _check_item "tmux RGB color passthrough:" "OK" "'terminal-features' includes an RGB/Tc definition."
+        else
+            _check_item "tmux RGB color passthrough:" "FAIL" "Missing RGB/Tc capability." "Add 'set -as terminal-features \",*:RGB\"' to your ~/.tmux.conf (replace * with your real TERM outside tmux)."
+        fi
+    else
+        _check_item "Currently inside a tmux session:" "INFO" "Not inside tmux. Skipping tmux checks."
+    fi
+
+    echo -e "\n${color_bold}${color_blue}--- Diagnostics Complete ---${color_reset}\n"
+}
+
+term_check

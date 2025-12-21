@@ -22,7 +22,6 @@ alias E="$EDITOR --listen $NVIM_SOCK"
 alias v=$VISUAL
 alias c=clear
 alias pst=pstree
-# alias autol=autoliter
 # alias f="spf -c ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml"
 alias lg=lazygit
 
@@ -43,6 +42,8 @@ alias grep="rg"
 alias path='echo $PATH | tr -s ":" "\n"'
 
 # Easier navigation: ..., ...., ....., and -
+alias cd="z"
+alias ..="cd ../"
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
@@ -59,12 +60,12 @@ alias ff-pm='fzf --multi --preview="bat --color=always {}" \
     --height 80% --layout reverse --tmux'
 
 # macos window manage
-alias yb-s='yabai --start-service'
-alias yb-r='yabai --restart-service'
-alias yb-d='yabai --stop-service'
-alias sk-s='skhd --start-service'
-alias sk-r='skhd --restart-service'
-alias sk-d='skhd --stop-service'
+# alias yb-s='yabai --start-service'
+# alias yb-r='yabai --restart-service'
+# alias yb-d='yabai --stop-service'
+# alias sk-s='skhd --start-service'
+# alias sk-r='skhd --restart-service'
+# alias sk-d='skhd --stop-service'
 
 # fastfetch
 alias ft=fastfetch
@@ -75,9 +76,6 @@ alias bt=btop
 # sleep
 alias sleep="systemctl hybrid-sleep"
 
-# navi
-alias nv="navi"
-
 # cheatsheet
 alias cht=cheatsh
 alias cht-ls='cht :list | ff'
@@ -85,13 +83,11 @@ alias cht-ls='cht :list | ff'
 # ssh
 alias s="ssh"
 alias ss="TERM=xterm-256color ssh"
-alias sfp="ssh -L 9190:localhost:9090"
+alias s-mihomo-forward="ssh -L 9190:localhost:9090"
 alias s-kg="ssh-keygen -t rsa -b 4096"
 alias s-kc="ssh-copy-id"
-alias s-proxy=ssh_proxyjump
-alias s-tc=ssh_copy_terminfo
-alias s-fk=fix_ssh_key
-alias _Mount=sshfs_mount
+alias s-tc=ssh-terminfo-copy
+alias s-kf=ssh-key-chmod-fix
 
 alias 316-m="s zh-316-pc-mesh"
 alias 316-f="s zh-316-pc-frp"
@@ -105,19 +101,20 @@ alias ng-r="nginx -s reload"
 alias ng="nginx"
 
 # tmux
-alias check=term_check
-alias t-e="touch ~/.tmux-auto-start"
-alias t-E="rm -f ~/.tmux-auto-start"
 alias t='tmux attach -t default || tmux new -s default'
-alias t-dS='tmux kill-server && rm -rf /tmp/tmux-*'
-alias t-ds='tmux kill-session'
-alias t-a='tmux attach -t'
+alias t-auto-on="touch ~/.tmux-auto-start"
+alias t-auto-off="rm -f ~/.tmux-auto-start"
+alias t-new='tmux new -s'
+alias t-attach='tmux attach -t'
+alias t-ls='tmux ls'
+alias t-kill='tmux kill-session'
+alias t-kill-server='tmux kill-server && rm -rf /tmp/tmux-*'
 alias T="tmuxinator"
 alias T-s="tmuxinator start"
 alias T-S="tmuxinator stop"
 
 # uv
-alias uv-a="source ./.venv/bin/activate"
+alias uv-a=uv-activate
 
 # proxy
 alias sP=set_local_proxy

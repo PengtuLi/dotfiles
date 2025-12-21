@@ -1,0 +1,9 @@
+basic:
+  yazi:
+    arch:
+      - pacman:yazi
+      - yay:yazi
+    ubuntu
+      - apt:yazi
+
+shell:

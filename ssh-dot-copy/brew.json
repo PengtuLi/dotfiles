@@ -1,0 +1,41 @@
+{
+  "nvim": {
+    "install": "True",
+    "brew": "neovim",
+    "config": ["~/.config/nvim"]
+  },
+  "yazi": {
+    "install": "True",
+    "config": ["~/.config/yazi/*.toml"]
+  },
+  "gh": {
+    "install": "True",
+    "config": ["~/.config/gh"]
+  },
+  "lazygit": {
+    "install": "True",
+    "config": ["~/.config/lazygit/*.yml"]
+  },
+  "tmux": {
+    "install": "True",
+
+    "config": ["~/.config/tmux/*.conf"]
+  },
+  "git": {
+    "config": [
+      "~/.gitconfig",
+      "~/.gitignore_global",
+      "~/.delta.themes.gitconfig"
+    ]
+  },
+  "gdb": {
+    "install": "True",
+    "config": ["~/.gdbinit"]
+  },
+  "pudb": {
+    "config": ["~/.config/pudb"]
+  },
+  "fzf": {
+    "install": "True"
+  }
+}

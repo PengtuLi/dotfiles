@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ================== 配置区 ==================
 LOG_FILE="$PWD/sync-auto.log"

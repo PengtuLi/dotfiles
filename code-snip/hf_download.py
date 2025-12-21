@@ -59,10 +59,10 @@ def main():
         repo_id=args.repo_id,
         repo_type=args.repo_type,
         local_dir=args.local_dir,
-        resume_download=args.resume_download or True,
+        # depreciate
+        # resume_download=args.resume_download or True,
         max_workers=args.max_workers,
         allow_patterns=allow_patterns,
-        token=args.hf_token,  # 也可以显式传 token
     )
 
     print(f"✅ 下载完成！路径: {args.local_dir}")

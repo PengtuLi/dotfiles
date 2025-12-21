@@ -1,7 +1,11 @@
-# Ghostty shell integration for zsh. This should be at the top of your bashrc!
-# if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
-#     builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
-# fi
+# Get the dotfiles root directory
+ZSH_DIR=${0:A:h}
+
+# ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# 禁用 ctrl+d 解释的 eof
+setopt IGNORE_EOF
 
 # ENV
 # export TERM=xterm-256color
@@ -15,7 +19,6 @@ export TERMINFO_DIRS="/usr/share/terminfo"
 export SOPS_AGE_KEY=$_SOPS_AGE_KEY
 export SOPS_AGE_SSH_PRIVATE_KEY_FILE=""
 
-
 # zsh history save
 HISTFILE=~/.zsh_history #记录历史命令的文件
 HISTSIZE=10000 #记录历史命令条数
@@ -25,46 +28,6 @@ setopt inc_append_history   # 每条命令立即写入文件
 setopt share_history        # 所有 zsh 会话共享历史（可选，超实用！）
 setopt hist_ignore_dups     # 忽略重复命令
 setopt extended_history     # 记录时间戳（格式：:start_time:elapsed;command）
-
-# 保存上一次是否在 SSHFS 的状态
-_LAST_IN_SSHFS="unknown"
-_in_sshfs() {
-    local dir="$PWD"
-    while [[ "$dir" != "/" ]]; do
-        if mount -t fuse.sshfs 2>/dev/null | command grep -qF " $dir "; then
-            return 0
-        fi
-        dir="${dir:h}"
-    done
-    return 1
-}
-_update_prompt() {
-    if _in_sshfs; then
-        export STARSHIP_DISABLE=1
-        setopt PROMPT_SUBST
-        autoload -U colors && colors
-        PROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[blue]%}%m%{$reset_color%}:%{$fg[yellow]%}%~%{$reset_color%}\$ "
-        _LAST_IN_SSHFS=1
-    else
-        unset STARSHIP_DISABLE
-        eval "$(starship init zsh --print-full-init)"
-        _LAST_IN_SSHFS=0
-    fi
-}
-# 初始设置
-_update_prompt
-chpwd() {
-    local currently_in_sshfs
-    if _in_sshfs; then
-        currently_in_sshfs=1
-    else
-        currently_in_sshfs=0
-    fi
-    # 仅当状态改变时更新 prompt
-    if [[ "$_LAST_IN_SSHFS" != "$currently_in_sshfs" ]]; then
-        _update_prompt
-    fi
-}
 
 eval $(thefuck --alias)
 eval $(thefuck --alias fk)
@@ -84,14 +47,11 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
 --bind 'ctrl-alt-d:preview-half-page-down,ctrl-alt-u:preview-half-page-up'
 --bind 'ctrl-alt-f:preview-page-down,ctrl-alt-b:preview-page-up'
 --bind 'ctrl-\\:toggle-preview'
+--bind 'alt-a:toggle-all'
 "
     PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
     FZF_ALT_C_COMMAND= source <(fzf --zsh)
 fi
-
-# antidote
-# source ~/.zsh/antidote/antidote.zsh
-# antidote load
 
 # zoxide
 eval "$(zoxide init zsh)"
@@ -99,6 +59,7 @@ eval "$(zoxide init zsh)"
 # atuin
 eval "$(atuin init zsh --disable-up-arrow)"
 
+# fzf-tab
 # 全局启用：即使未输入 - 或 --，也显示所有选项
 zstyle ':completion:*:*:*:*' complete-options true
 # 可选：显示补全描述和分组（配合 fzf-tab 更清晰）
@@ -120,8 +81,14 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:*' fzf-bindings 'ctrl-space:toggle+down'
 zstyle ':fzf-tab:*' continuous-trigger ''
 
-
 autoload -Uz compinit && compinit
+
+# Load shell modules
+for lib in "$ZSH_DIR/lib"/*.zsh; do
+    [ -r "$lib" ] && source "$lib"
+done
+[ -r "$ZSH_DIR/alias.zsh" ] && source "$ZSH_DIR/alias.zsh"
+[ -r "$ZSH_DIR/zsh_unplugged.zsh" ] && source "$ZSH_DIR/zsh_unplugged.zsh"
 
 # clone-only plugins
 # plugin-clone 'romkatv/zsh-bench@d7f9f821688bdff9365e630a8aaeba1fd90499b1'

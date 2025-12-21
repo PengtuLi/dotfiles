@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+# Proxy diagnostics tool - check environment, connectivity, and network
+
+check_proxy_env_vars() {
+    local required_vars=("http_proxy" "https_proxy" "HTTP_PROXY" "HTTPS_PROXY")
+    local missing=()
+    local invalid_format=()
+
+    for var in "${required_vars[@]}"; do
+        local value=$(printenv "$var")
+        if [ -z "$value" ]; then
+            missing+=("$var")
+        else
+            if [[ ! "$value" =~ ^https?://localhost:[0-9]+$ ]] && [[ ! "$value" =~ ^https?://127\.0\.0\.1:[0-9]+$ ]]; then
+                invalid_format+=("$var (value: $value)")
+            fi
+        fi
+    done
+
+    if [ ${#missing[@]} -eq 0 ] && [ ${#invalid_format[@]} -eq 0 ]; then
+        echo "[OK] All proxy environment variables are set correctly."
+        return 0
+    else
+        if [ ${#missing[@]} -gt 0 ]; then
+            echo "[WARN] Missing environment variables: ${missing[*]}"
+        fi
+        if [ ${#invalid_format[@]} -gt 0 ]; then
+            echo "[WARN] Invalid format: ${invalid_format[*]}"
+        fi
+        return 1
+    fi
+}
+
+test_proxy_reachability() {
+    local port=${HTTP_PROXY#*:*:}
+
+    if [ -z "$port" ]; then
+        echo "[WARN] Cannot extract port from HTTP_PROXY"
+        return 1
+    fi
+
+    echo -n "[TEST] Connecting to proxy server localhost:${port}... "
+
+    if bash -c "echo > /dev/tcp/localhost/$port" 2>/dev/null; then
+        echo "OK"
+        return 0
+    else
+        echo "FAILED"
+        echo "[ERROR] Proxy server not reachable. Check if the service is running."
+        return 1
+    fi
+}
+
+test_proxy_network() {
+    local http_url="http://www.google.com"
+
+    echo "[TEST] Testing network connectivity..."
+
+    echo -n "  HTTP: "
+    if curl -s -o /dev/null -w "%{http_code}" --proxy-insecure "$http_url" | grep -q "200"; then
+        echo "OK"
+    else
+        echo "FAILED"
+        return 1
+    fi
+
+    return 0
+}
+
+display_external_ip() {
+    local url="http://ifconfig.me"
+    echo -n "[INFO] Current external IP: "
+    curl -s "$url"
+    echo
+}
+
+# Main
+echo "=== Proxy Diagnostics ==="
+echo
+
+check_proxy_env_vars
+env_result=$?
+
+echo
+test_proxy_reachability
+reach_result=$?
+
+echo
+test_proxy_network
+network_result=$?
+
+echo
+display_external_ip
+
+echo
+if [ $env_result -eq 0 ] && [ $reach_result -eq 0 ] && [ $network_result -eq 0 ]; then
+    echo "[SUCCESS] All checks passed."
+    exit 0
+else
+    echo "[FAILED] Some checks failed."
+    exit 1
+fi

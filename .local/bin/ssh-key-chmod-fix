@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Fix SSH key permissions after git operations
+
+echo "Fixing SSH key permissions..."
+
+chmod 700 ~/.ssh >/dev/null 2>&1 || true
+chmod 600 ~/.ssh/id_rsa >/dev/null 2>&1 || true
+chmod 600 ~/.ssh/id_ed25519 >/dev/null 2>&1 || true
+
+echo "Done."

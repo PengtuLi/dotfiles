@@ -40,7 +40,7 @@ apply_osx_system_defaults() {
     defaults write com.apple.spaces spans-displays -bool true
 
     # Dock auto hide
-    defaults write com.apple.dock autohide -bool true
+    # defaults write com.apple.dock autohide -bool true
 
 }
 

@@ -3,6 +3,20 @@
   "$schema": "https://aka.ms/terminal-profiles-schema",
   "actions": [
     {
+      "command": {
+        "action": "sendInput",
+        "input": "\n"
+      },
+      "id": "User.sendInput.DFCDAF06"
+    },
+    {
+      "command": {
+        "action": "moveFocus",
+        "direction": "left"
+      },
+      "id": "User.moveFocus.2A0DA8E0"
+    },
+    {
       "command": "openCWD",
       "id": "User.openCWD"
     },
@@ -12,6 +26,12 @@
         "delta": 1
       },
       "id": "User.adjustFontSize.E04D5229"
+    },
+    {
+      "command": {
+        "action": "experimental.colorSelection"
+      },
+      "id": "User.experimental.colorSelection.D3F0B923"
     },
     {
       "command": {
@@ -28,17 +48,17 @@
     },
     {
       "command": {
-        "action": "splitPane",
-        "split": "right"
-      },
-      "id": "User.splitPane.864CD510"
-    },
-    {
-      "command": {
         "action": "moveFocus",
         "direction": "up"
       },
       "id": "User.moveFocus.6CD791B"
+    },
+    {
+      "command": {
+        "action": "splitPane",
+        "split": "right"
+      },
+      "id": "User.splitPane.864CD510"
     },
     {
       "command": "debugTerminalCwd",
@@ -58,16 +78,19 @@
     {
       "command": {
         "action": "moveFocus",
-        "direction": "left"
-      },
-      "id": "User.moveFocus.2A0DA8E0"
-    },
-    {
-      "command": {
-        "action": "moveFocus",
         "direction": "right"
       },
       "id": "User.moveFocus.87C324ED"
+    },
+    {
+      "command": {
+        "action": "setTabColor"
+      },
+      "id": "User.setTabColor.0"
+    },
+    {
+      "command": "openTabColorPicker",
+      "id": "User.openTabColorPicker"
     }
   ],
   "alwaysOnTop": false,
@@ -78,6 +101,18 @@
   "experimental.enableColorSelection": false,
   "focusFollowMouse": false,
   "keybindings": [
+    {
+      "id": "User.sendInput.DFCDAF06",
+      "keys": "shift+enter"
+    },
+    {
+      "id": "Terminal.OpenNewTab",
+      "keys": "alt+t"
+    },
+    {
+      "id": "Terminal.PrevTab",
+      "keys": "alt+["
+    },
     {
       "id": null,
       "keys": "alt+shift+down"
@@ -99,24 +134,20 @@
       "keys": "ctrl+shift+d"
     },
     {
-      "id": "Terminal.ScrollUpPage",
-      "keys": "alt+b"
-    },
-    {
-      "id": "Terminal.FindText",
-      "keys": "ctrl+shift+f"
-    },
-    {
-      "id": null,
-      "keys": "ctrl+comma"
+      "id": "Terminal.ResizePaneDown",
+      "keys": "alt+shift+j"
     },
     {
       "id": "Terminal.CloseWindow",
       "keys": "alt+shift+w"
     },
     {
-      "id": "Terminal.ResizePaneDown",
-      "keys": "alt+shift+j"
+      "id": "Terminal.ScrollUpPage",
+      "keys": "alt+b"
+    },
+    {
+      "id": null,
+      "keys": "ctrl+comma"
     },
     {
       "id": "Terminal.OpenNewWindow",
@@ -129,14 +160,6 @@
     {
       "id": null,
       "keys": "ctrl+plus"
-    },
-    {
-      "id": "Terminal.OpenNewTab",
-      "keys": "alt+t"
-    },
-    {
-      "id": "Terminal.PrevTab",
-      "keys": "alt+["
     },
     {
       "id": null,
@@ -271,10 +294,6 @@
       "keys": "alt+2"
     },
     {
-      "id": null,
-      "keys": "alt+left"
-    },
-    {
       "id": "Terminal.SwitchToTab2",
       "keys": "alt+3"
     },
@@ -323,6 +342,10 @@
       "keys": "ctrl+shift+m"
     },
     {
+      "id": "Terminal.FindText",
+      "keys": "alt+shift+f"
+    },
+    {
       "id": "User.selectOutput.D3F0B923",
       "keys": "alt+up"
     },
@@ -331,15 +354,15 @@
       "keys": "ctrl+shift+t"
     },
     {
-      "id": null,
-      "keys": "ctrl+shift+4"
-    },
-    {
       "id": "Terminal.ScrollUp",
       "keys": "alt+u"
     },
     {
       "id": null,
+      "keys": "ctrl+shift+4"
+    },
+    {
+      "id": "User.openTabColorPicker",
       "keys": "alt+down"
     },
     {
@@ -353,10 +376,6 @@
     {
       "id": null,
       "keys": "ctrl+numpad_plus"
-    },
-    {
-      "id": null,
-      "keys": "enter"
     },
     {
       "id": null,
@@ -477,6 +496,10 @@
     {
       "id": "Terminal.ResizePaneLeft",
       "keys": "alt+shift+h"
+    },
+    {
+      "id": null,
+      "keys": "enter"
     }
   ],
   "launchMode": "maximized",
@@ -496,7 +519,7 @@
         "face": "Maple Mono NF CN",
         "features": {
           "calt": 1,
-          "cv01": 0
+          "cv01": 1
         },
         "size": 12
       },
@@ -678,6 +701,8 @@
   "tabWidthMode": "equal",
   "theme": "dark",
   "themes": [],
+  "trimBlockSelection": false,
+  "trimPaste": false,
   "useAcrylicInTabRow": true,
   "warning.largePaste": false,
   "warning.multiLinePaste": false

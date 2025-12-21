@@ -39,8 +39,8 @@ keymap = [
 
   { on = "e", run = 'shell "nvim --server /tmp/lpt-nvim.sock --remote $@"', desc = "Open selected files in existing Neovim session" },
   # Seeking
-  { on = "<C-k>", run = "seek -10", desc = "Seek up 10L in the preview" },
-  { on = "<C-j>", run = "seek 10",  desc = "Seek down 10L in the preview" },
+  { on = "<C-A-k>", run = "seek -10", desc = "Seek up 10L in the preview" },
+  { on = "<C-A-j>", run = "seek 10",  desc = "Seek down 10L in the preview" },
 
 	# Spotting
 	{ on = "<Tab>", run = "spot", desc = "Spot hovered file" },

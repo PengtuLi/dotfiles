@@ -2,7 +2,6 @@ tags
 test.sh
 .luarc.json
 
-
 node_modules/
 **/*.DS_Store
 
@@ -29,7 +28,8 @@ stow/cli/ssh/.ssh/sockets/
 stow/cli/ssh/.ssh/*_rsa
 stow/cli/ssh/.ssh/config
 
-stow/cli/gh/hosts.yml
+stow/cli/gh/.config/gh/hosts.yml
+stow/cli/gh/.config/gh/config.yml
 
 stow/gui/karabiner/.config/karabiner/
 !stow/gui/karabiner/.config/karabiner/karabiner.json

@@ -20,9 +20,9 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-# theme = GitHub Dark Default
+theme = GitHub Dark Default
 # theme = Sonokai
-theme = TokyoNight Moon
+# theme = TokyoNight Moon
 # custom-shader = shaders/bettercrt.glsl
 custom-shader = shaders/cursor_blaze.glsl
 # font
@@ -31,11 +31,10 @@ font-family = "Maple Mono NF CN"
 # font-family = "JetBrainsMono Nerd Font"
 # font-family = Source Code Pro
 # font-family = WenQuanYi Micro Hei
-font-size = 18
+font-size = 16
 font-synthetic-style = false
 font-thicken = false
-font-feature = "+calt, cv01"
-
+font-feature = "+calt, +cv01"
 
 link-url = true
 clipboard-paste-protection = false
