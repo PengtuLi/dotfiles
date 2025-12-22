@@ -16,7 +16,7 @@ SSH_CONFIG="$ROOT_DIR/stow/cli/ssh/.ssh/config"
 SSH_CONFIG_SOPS=$SSH_CONFIG.sops
 CLASH_CONFIG="$ROOT_DIR/mihomo-clash/config/config.yaml"
 CLASH_CONFIG_SOPS=$CLASH_CONFIG.sops
-GH_HOST="$ROOT_DIR/stow/cli/gh/hosts.yml"
+GH_HOST="$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml"
 GH_HOST_SOPS=$GH_HOST.sops
 
 # --- 加密逻辑 ---
