@@ -3,6 +3,11 @@
 #     builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
 # fi
 
+# ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+# 禁用 ctrl+d 解释的 eof
+setopt IGNORE_EOF
+
 # ENV
 # export TERM=xterm-256color
 export EDITOR=nvim
@@ -14,7 +19,6 @@ export XDG_CONFIG_HOME="$HOME/.config" # useful for macos
 export TERMINFO_DIRS="/usr/share/terminfo"
 export SOPS_AGE_KEY=$_SOPS_AGE_KEY
 export SOPS_AGE_SSH_PRIVATE_KEY_FILE=""
-
 
 # zsh history save
 HISTFILE=~/.zsh_history #记录历史命令的文件

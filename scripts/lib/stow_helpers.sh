@@ -23,6 +23,7 @@ stow_packages() {
       target="$HOME/.config"
     elif [[ "$pkg" =~ ^(smb)$ ]]; then
       target="/etc"
+      IFSUDO=sudo
     else
       target="$HOME"
     fi

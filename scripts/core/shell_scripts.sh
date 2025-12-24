@@ -13,10 +13,10 @@ chmod +x "$ROOT_DIR/shell/zsh/zsh_unplugged.zsh"
 source "$ROOT_DIR/shell/zsh/zsh_unplugged.zsh"
 chmod +x "$ROOT_DIR/shell/zsh/.zshrc"
 source "$ROOT_DIR/shell/zsh/.zshrc"
-chmod +x "$ROOT_DIR/shell/bash/alias.sh"
-source "$ROOT_DIR/shell/bash/alias.sh"
-chmod +x "$ROOT_DIR/shell/bash/util.sh"
-source "$ROOT_DIR/shell/bash/util.sh"
+chmod +x "$ROOT_DIR/shell/zsh/alias.sh"
+source "$ROOT_DIR/shell/zsh/alias.sh"
+chmod +x "$ROOT_DIR/shell/zsh/util.sh"
+source "$ROOT_DIR/shell/zsh/util.sh"
 EOF
     )
 
@@ -33,8 +33,6 @@ EOF
 # Call the function to execute the logic
 add_scripts
 
-# sync & mount
-chmod +x $ROOT_DIR/scripts/sync/*.sh
-sudo ln -sf $ROOT_DIR/scripts/sync/auto_rsync.sh /usr/bin/Rsync
-sudo ln -sf $ROOT_DIR/scripts/sync/auto_mount.sh /usr/bin/Mount
-
+# local bin
+chmod +x $ROOT_DIR/.local/bin/*
+ln -sf $ROOT_DIR/.local/bin/* ~/.local/bin/

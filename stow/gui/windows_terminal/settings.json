@@ -3,6 +3,20 @@
   "$schema": "https://aka.ms/terminal-profiles-schema",
   "actions": [
     {
+      "command": {
+        "action": "sendInput",
+        "input": "\n"
+      },
+      "id": "User.sendInput.DFCDAF06"
+    },
+    {
+      "command": {
+        "action": "moveFocus",
+        "direction": "left"
+      },
+      "id": "User.moveFocus.2A0DA8E0"
+    },
+    {
       "command": "openCWD",
       "id": "User.openCWD"
     },
@@ -12,6 +26,12 @@
         "delta": 1
       },
       "id": "User.adjustFontSize.E04D5229"
+    },
+    {
+      "command": {
+        "action": "experimental.colorSelection"
+      },
+      "id": "User.experimental.colorSelection.D3F0B923"
     },
     {
       "command": {
@@ -28,17 +48,17 @@
     },
     {
       "command": {
-        "action": "splitPane",
-        "split": "right"
-      },
-      "id": "User.splitPane.864CD510"
-    },
-    {
-      "command": {
         "action": "moveFocus",
         "direction": "up"
       },
       "id": "User.moveFocus.6CD791B"
+    },
+    {
+      "command": {
+        "action": "splitPane",
+        "split": "right"
+      },
+      "id": "User.splitPane.864CD510"
     },
     {
       "command": "debugTerminalCwd",
@@ -58,16 +78,19 @@
     {
       "command": {
         "action": "moveFocus",
-        "direction": "left"
-      },
-      "id": "User.moveFocus.2A0DA8E0"
-    },
-    {
-      "command": {
-        "action": "moveFocus",
         "direction": "right"
       },
       "id": "User.moveFocus.87C324ED"
+    },
+    {
+      "command": {
+        "action": "setTabColor"
+      },
+      "id": "User.setTabColor.0"
+    },
+    {
+      "command": "openTabColorPicker",
+      "id": "User.openTabColorPicker"
     }
   ],
   "alwaysOnTop": false,
@@ -78,6 +101,18 @@
   "experimental.enableColorSelection": false,
   "focusFollowMouse": false,
   "keybindings": [
+    {
+      "id": "User.sendInput.DFCDAF06",
+      "keys": "shift+enter"
+    },
+    {
+      "id": "Terminal.PrevTab",
+      "keys": "alt+["
+    },
+    {
+      "id": "Terminal.OpenNewTab",
+      "keys": "alt+t"
+    },
     {
       "id": null,
       "keys": "alt+shift+down"
@@ -99,12 +134,12 @@
       "keys": "ctrl+shift+d"
     },
     {
-      "id": "Terminal.CloseWindow",
-      "keys": "alt+shift+w"
-    },
-    {
       "id": "Terminal.ResizePaneDown",
       "keys": "alt+shift+j"
+    },
+    {
+      "id": "Terminal.CloseWindow",
+      "keys": "alt+shift+w"
     },
     {
       "id": "Terminal.ScrollUpPage",
@@ -125,14 +160,6 @@
     {
       "id": null,
       "keys": "ctrl+plus"
-    },
-    {
-      "id": "Terminal.OpenNewTab",
-      "keys": "alt+t"
-    },
-    {
-      "id": "Terminal.PrevTab",
-      "keys": "alt+["
     },
     {
       "id": null,
@@ -267,10 +294,6 @@
       "keys": "alt+2"
     },
     {
-      "id": null,
-      "keys": "alt+left"
-    },
-    {
       "id": "Terminal.SwitchToTab2",
       "keys": "alt+3"
     },
@@ -328,10 +351,6 @@
     },
     {
       "id": null,
-      "keys": "ctrl+shift+t"
-    },
-    {
-      "id": null,
       "keys": "ctrl+shift+4"
     },
     {
@@ -340,6 +359,10 @@
     },
     {
       "id": null,
+      "keys": "ctrl+shift+t"
+    },
+    {
+      "id": "User.openTabColorPicker",
       "keys": "alt+down"
     },
     {
@@ -353,10 +376,6 @@
     {
       "id": null,
       "keys": "ctrl+numpad_plus"
-    },
-    {
-      "id": null,
-      "keys": "enter"
     },
     {
       "id": null,
@@ -477,6 +496,10 @@
     {
       "id": "Terminal.ResizePaneLeft",
       "keys": "alt+shift+h"
+    },
+    {
+      "id": null,
+      "keys": "enter"
     }
   ],
   "launchMode": "maximized",

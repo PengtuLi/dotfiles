@@ -32,3 +32,17 @@ apt install -y git
 wget -qO- https://astral.sh/uv/install.sh | sh
 echo 'eval "$(uv generate-shell-completion bash)"' >> ~/.bashrc
 echo 'alias uv-a="source ./.venv/bin/activate"' >> ~/.bashrc
+echo 'source /etc/profile' >> ~/.bashrc
+# fallback
+cat >> ~/.bashrc <<'EOF'
+[ -n "$DOCKER_ENV_EXPORTED" ] || {
+    export $(cat /proc/1/environ | tr '\0' '\n' | grep -vE '^(HOME|USER|PWD|TERM|SHLVL)=') 2>/dev/null
+    export DOCKER_ENV_EXPORTED=1 }
+EOF
+# 防止 Ctrl+D 退出 shell
+echo 'set -o ignoreeof' >> ~/.bashrc
+# locale
+echo 'export LANG=en_US.UTF-8' >> ~/.bashrc
+apt install -y locales
+locale-gen en_US.UTF-8
+locale-gen en_SG.UTF-8

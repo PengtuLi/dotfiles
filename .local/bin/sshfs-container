@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -53,7 +53,7 @@ MOUNT_POINT="${MOUNT_POINT%/}"  # 去除末尾斜杠
 if [[ ! -d "$MOUNT_POINT" ]]; then
     echo "挂载点 $MOUNT_POINT 不存在，尝试创建..."
     mkdir -p "$MOUNT_POINT"
-    chmod 755 "$MOUNT_POINT"
+    # chmod 755 "$MOUNT_POINT"
 fi
 
 # ======================
@@ -108,13 +108,7 @@ for pair in "${MOUNT_PAIRS[@]}"; do
 
     echo "挂载 $SSH_INFO:$REMOTE_SOURCE → $LOCAL_SUBDIR"
 
-    sshfs "$SSH_INFO:$REMOTE_SOURCE" "$LOCAL_SUBDIR" \
-        -o default_permissions \
-        -o uid=$(id -u) \
-        -o gid=$(id -g) \
-        -o reconnect \
-        -o ServerAliveInterval=15 \
-        -o ServerAliveCountMax=3
+    _Mount "$SSH_INFO:$REMOTE_SOURCE" "$LOCAL_SUBDIR"
 
     echo "✅ 挂载成功: $LOCAL_SUBDIR"
 done
