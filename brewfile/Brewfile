@@ -42,3 +42,6 @@ brew "uv"
 
 # benchmark
 brew "hyperfine"
+
+# code count
+brew "tokei"
