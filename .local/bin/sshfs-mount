@@ -2,8 +2,8 @@
 # sshfs mount wrapper with smart remount detection
 # Usage: sshfs-mount <local_dir> <remote_path>
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "$SCRIPT_DIR/lib/sshfs.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_sshfs_lib"
 
 show_help() {
     echo "Usage: sshfs-mount <local_dir> <remote_path>"

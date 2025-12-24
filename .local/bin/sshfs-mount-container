@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# Load sshfs shared library
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/lib/sshfs.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$SCRIPT_DIR/_sshfs_lib"
 
 set -e
 
