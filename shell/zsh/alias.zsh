@@ -22,7 +22,6 @@ alias E="$EDITOR --listen $NVIM_SOCK"
 alias v=$VISUAL
 alias c=clear
 alias pst=pstree
-# alias autol=autoliter
 # alias f="spf -c ~/.config/superfile/config.toml --hotkey-file ~/.config/superfile/hotkeys.toml"
 alias lg=lazygit
 
@@ -59,12 +58,12 @@ alias ff-pm='fzf --multi --preview="bat --color=always {}" \
     --height 80% --layout reverse --tmux'
 
 # macos window manage
-alias yb-s='yabai --start-service'
-alias yb-r='yabai --restart-service'
-alias yb-d='yabai --stop-service'
-alias sk-s='skhd --start-service'
-alias sk-r='skhd --restart-service'
-alias sk-d='skhd --stop-service'
+# alias yb-s='yabai --start-service'
+# alias yb-r='yabai --restart-service'
+# alias yb-d='yabai --stop-service'
+# alias sk-s='skhd --start-service'
+# alias sk-r='skhd --restart-service'
+# alias sk-d='skhd --stop-service'
 
 # fastfetch
 alias ft=fastfetch
@@ -75,9 +74,6 @@ alias bt=btop
 # sleep
 alias sleep="systemctl hybrid-sleep"
 
-# navi
-alias nv="navi"
-
 # cheatsheet
 alias cht=cheatsh
 alias cht-ls='cht :list | ff'
@@ -85,11 +81,11 @@ alias cht-ls='cht :list | ff'
 # ssh
 alias s="ssh"
 alias ss="TERM=xterm-256color ssh"
-alias sfp="ssh -L 9190:localhost:9090"
+alias s-mihomo-forward="ssh -L 9190:localhost:9090"
 alias s-kg="ssh-keygen -t rsa -b 4096"
 alias s-kc="ssh-copy-id"
-alias s-tc=ssh_copy_terminfo
-alias s-fk=fix_ssh_key
+alias s-tc=ssh-terminfo-copy
+alias s-kf=ssh-key-chmod-fix
 
 alias 316-m="s zh-316-pc-mesh"
 alias 316-f="s zh-316-pc-frp"

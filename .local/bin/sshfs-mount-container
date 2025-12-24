@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Load sshfs shared library
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/sshfs.sh"
+
 set -e
 
 # ======================
@@ -108,7 +112,7 @@ for pair in "${MOUNT_PAIRS[@]}"; do
 
     echo "挂载 $SSH_INFO:$REMOTE_SOURCE → $LOCAL_SUBDIR"
 
-    _Mount "$SSH_INFO:$REMOTE_SOURCE" "$LOCAL_SUBDIR"
+    sshfs_mount "$SSH_INFO:$REMOTE_SOURCE" "$LOCAL_SUBDIR"
 
     echo "✅ 挂载成功: $LOCAL_SUBDIR"
 done

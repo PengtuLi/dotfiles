@@ -23,7 +23,4 @@ if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ] || [ "$(uname)" = "Dar
     stow_packages "$GUI_DIR"
 fi
 
-info "stow shell/zsh"
-stow_packages "$ROOT_DIR/shell/zsh/"
-
 success "符号链接创建完成 (${PLATFORM})"
