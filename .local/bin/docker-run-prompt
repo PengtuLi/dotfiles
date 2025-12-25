@@ -2,13 +2,14 @@
 
 # 默认参数
 IMAGE="pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel"
-WORKSPACE_VOL="/home/lpt:/root/host"
+WORKSPACE_VOL="/home/lipt/workspace:/root/workspace"
 SHARE_VOL="/share:/share"
-DEFAULT_SHELL="/bin/zsh"
+DEFAULT_SHELL="/bin/bash"
 PRIVILEGE="--privileged"
 GPU="--gpus all"
 IPC="--ipc host"
-CONTAINER_NAME="lpt"
+NETWORK="--network host"
+CONTAINER_NAME="container-lpt"
 PORT_MAP="16660:22"
 
 # 解析命令行参数
@@ -49,9 +50,9 @@ while [[ $# -gt 0 ]]; do
         --help| -h)
             echo "用法: $0 [选项]"
             echo "选项:"
-            echo "  --name NAME          容器名称 (默认: lpt)"
+            echo "  --name NAME          容器名称 (默认: container-lpt)"
             echo "  --port HOST:CONTAINER  SSH 端口映射 (默认: 16660:22)"
-            echo "  --workspace HOST:CONT 宿主机工作目录挂载 (默认: /home/lpt:/root/host)"
+            echo "  --workspace HOST:CONT 宿主机工作目录挂载 (默认: /home/lipt/workspace:/root/workspace)"
             echo "  --share HOST:CONT    共享目录挂载 (默认: /share:/share)"
             echo "  --image IMAGE        镜像名称 (默认: pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel)"
             echo "  --no-privileged      不使用 --privileged"
@@ -67,17 +68,21 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# 构建命令（注意换行和空格处理）
-CMD="docker run -itd \\
-  --name $CONTAINER_NAME \\
-  -p $PORT_MAP \\
-  -v $WORKSPACE_VOL \\
-  -v $SHARE_VOL \\
-  $GPU \\
-  $IPC \\
-  $PRIVILEGE \\
-  $IMAGE \\
-  /bin/bash"
+# 构建命令数组（优雅处理空参数）
+DOCKER_ARGS=(
+    run -itd
+    --name "$CONTAINER_NAME"
+    -p "$PORT_MAP"
+    -v "$WORKSPACE_VOL"
+    -v "$SHARE_VOL"
+)
 
-# 输出命令字符串
-echo "$CMD"
+[[ -n "$GPU" ]] && DOCKER_ARGS+=("$GPU")
+[[ -n "$IPC" ]] && DOCKER_ARGS+=("$IPC")
+[[ -n "$NETWORK" ]] && DOCKER_ARGS+=("$NETWORK")
+[[ -n "$PRIVILEGE" ]] && DOCKER_ARGS+=("$PRIVILEGE")
+
+DOCKER_ARGS+=("$IMAGE" "$DEFAULT_SHELL")
+
+# 输出命令
+echo "docker ${DOCKER_ARGS[*]}"
