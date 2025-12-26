@@ -1,6 +1,9 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
+scan_timeout = 10
+command_timeout = 30
+
 # Move the directory to the second line
 format = """
 $os\
@@ -19,6 +22,7 @@ show_always = true
 [directory]
 truncation_length = 4
 truncation_symbol = "…/"
+truncate_to_repo = false  # 不截断到 git 根目录，避免扫描
 
 # Sets the custom symbols for directories.
 [directory.substitutions]
