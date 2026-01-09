@@ -47,18 +47,20 @@ return {
       zindex = 20, -- The Z-index of the context window
       on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
     },
-
-    -- 设置高亮
-    vim.api.nvim_set_hl(0, 'TreesitterContextBottom', {
-      underline = true,
-      sp = 'grey',
-    }),
-    -- toggle
-    vim.keymap.set('n', '<leader>tt', '<cmd>TSContext toggle<cr>', { desc = 'toggle [t]reesitter context' }),
-    -- context jump
-    vim.keymap.set('n', '[c', function()
-      require('treesitter-context').go_to_context(vim.v.count1)
-    end, { silent = true, desc = 'Jumping to previous treesitter [c]ontext' }),
+    config = function()
+      -- 设置高亮
+      vim.api.nvim_set_hl(0, 'TreesitterContextBottom', {
+        underline = true,
+        sp = 'grey',
+      })
+      -- toggle
+      vim.keymap.set('n', '<leader>tt', '<cmd>TSContext toggle<cr>', { desc = 'toggle [t]reesitter context' })
+      -- context jump
+      vim.keymap.set('n', '[[', function()
+        require('treesitter-context').go_to_context(vim.v.count1)
+      end, { silent = true, desc = 'Jumping to previous treesitter [context]' })
+      -- TODO: position back to previous like C-i
+    end,
   },
 
   {
@@ -108,20 +110,20 @@ return {
               set_jumps = true,
               goto_next_start = {
                 [']m'] = '@function.outer',
-                [']['] = { query = '@class.outer', desc = 'Next Class start' },
+                [']c'] = { query = '@class.outer', desc = 'Next Class start' },
                 -- [']o'] = '@loop.*', -- 支持正则匹配多个类型
               },
               goto_next_end = {
                 [']M'] = '@function.outer',
-                [']]'] = { query = '@class.outer', desc = 'Next Class end' },
+                [']C'] = { query = '@class.outer', desc = 'Next Class end' },
               },
               goto_previous_start = {
                 ['[m'] = '@function.outer',
-                ['[['] = { query = '@class.outer', desc = 'Previous Class end' },
+                ['[c'] = { query = '@class.outer', desc = 'Previous Class end' },
               },
               goto_previous_end = {
                 ['[M'] = '@function.outer',
-                ['[]'] = { query = '@class.outer', desc = 'Previous Class start' },
+                ['[C'] = { query = '@class.outer', desc = 'Previous Class start' },
               },
             },
             -- lsp_interop = {

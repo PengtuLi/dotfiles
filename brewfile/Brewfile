@@ -1,5 +1,6 @@
 # editor
 brew "nvim"                  # Neovim 编辑器
+brew "tree-sitter-cli"
 # brew "helix"
 brew "npm"                   # need to install mason plugin
 

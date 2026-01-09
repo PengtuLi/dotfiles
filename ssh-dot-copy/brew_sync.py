@@ -145,8 +145,10 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                     # Keep directory structure, e.g. ~/.config/nvim -> ~/.config/nvim
                     rel_path = f.relative_to(Path.home())
                     print(f"  Syncing {rel_path}...")
-                    remote_dest = f"{host}:~/{rel_path}"
-                    subprocess.run(f"scp {'-r ' if f.is_dir() else ''}{f} {remote_dest}", shell=True)
+                    # For directories, remove remote first to avoid nested copying
+                    if f.is_dir():
+                        remote_exec(ssh_cmd, f"rm -rf ~/{rel_path}")
+                    subprocess.run(f"scp {'-r ' if f.is_dir() else ''}{f} {host}:~/{rel_path}", shell=True)
 
         # Copy bashrc to remote
         print("[step 4] Copying config files...")

@@ -7,10 +7,6 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 export XDG_CONFIG_HOME="$HOME/.config"
 export TERMINFO_DIRS="/usr/share/terminfo"
 
-
-# ==================================================
-# 历史记录配置
-# ==================================================
 HISTSIZE=10000
 HISTFILESIZE=10000
 shopt -s histappend              # 追加而不是覆盖历史文件
@@ -25,6 +21,24 @@ PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 set -o ignoreeof
 
 
+# 补全增强
+shopt -s cdspell       # cd 拼写纠错
+shopt -s dirspell      # 目录名拼写纠错
+shopt -s checkwinsize  # 检查窗口大小变化
+shopt -s autocd        # 自动 cd（输入目录名直接进入）
+
+# bash_completion load
+[[ -r "/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh"
+
+# 设置文件类型颜色（用于 ls 和补全）
+eval "$(dircolors)"
+# 补全行为优化（必须在 bash_completion 之后设置）
+bind "set completion-ignore-case on"        # 忽略大小写
+bind "set completion-map-case on"           # 连字符和下划线等价
+bind "set show-all-if-ambiguous on"         # 直接显示所有选项
+bind "set colored-stats on"                 # 彩色显示
+bind "set visible-stats on"                 # 显示文件类型符
+bind "set colored-completion-prefix on"     # 高亮匹配前缀
 # ==================================================
 # 别名
 # ==================================================
@@ -53,6 +67,9 @@ alias pst=pstree
 alias path='echo $PATH | tr -s ":" "\n"'
 
 # 快速目录跳转
+if command -v zoxide >/dev/null 2>&1; then
+    alias cd="z"
+fi
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -195,28 +212,6 @@ port() {
     lsof -i :"$1" 2>/dev/null || netstat -tuln | grep "$1"
 }
 alias pt=port
-
-# ==================================================
-# 补全设置
-# ==================================================
-# 加载 bash-completion
-if ! shopt -oq posix; then
-    [ -f /usr/share/bash-completion/bash_completion ] && source /usr/share/bash-completion/bash_completion
-    [ -f /etc/bash_completion ] && source /etc/bash_completion
-fi
-
-# 补全增强
-shopt -s cdspell       # cd 拼写纠错
-shopt -s dirspell      # 目录名拼写纠错
-shopt -s checkwinsize  # 检查窗口大小变化
-shopt -s autocd        # 自动 cd（输入目录名直接进入）
-
-# 补全行为优化
-bind "set completion-ignore-case on"        # 忽略大小写
-bind "set completion-map-case on"           # 连字符和下划线等价
-bind "set show-all-if-ambiguous on"         # 直接显示所有选项
-bind "set colored-stats on"                 # 彩色显示
-bind "set visible-stats on"                 # 显示文件类型符
 
 # ==================================================
 # 提示符

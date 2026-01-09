@@ -37,5 +37,14 @@
   },
   "fzf": {
     "install": "True"
+  },
+  "zoxide": {
+    "install": "True"
+  },
+  "bash-completion@2": {
+    "install": "True"
+  },
+  "tree-sitter-cli": {
+    "install": "True"
   }
 }
