@@ -281,6 +281,10 @@ if command -v zoxide >/dev/null 2>&1; then
     eval "$(zoxide init bash)"
 fi
 
+if command -v uv >/dev/null 2>&1; then
+    eval "$(uv generate-shell-completion bash)"
+fi
+
 # Yazi with cd on exit
 function y() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

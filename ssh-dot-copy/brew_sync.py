@@ -99,8 +99,37 @@ def main():
     wait_for_port(SOCKS_PORT)
 
     try:
+        # Setup SSH server on remote
+        print("[step 2] Setting up SSH server...")
+        remote_exec(
+            ssh_cmd,
+            r"""# Install openssh-server if not present
+if ! command -v sshd &>/dev/null; then
+    apt-get update
+    apt-get install -y openssh-server
+fi
+# Ensure root password is set (change '1234' to your desired password)
+echo 'root:1234' | chpasswd
+# Enable root login with password
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+# Start SSH service
+service ssh start""",
+            proxy=True,
+        )
+
+        # Setup locales
+        print("[step 3] Setting up locales...")
+        remote_exec(
+            ssh_cmd,
+            r"""apt-get install -y locales
+locale-gen en_US.UTF-8
+locale-gen en_SG.UTF-8""",
+            proxy=True,
+        )
+
         # Install Homebrew through local network
-        print("[step 2] Installing Homebrew...")
+        print("[step 4] Installing Homebrew...")
         remote_exec(
             ssh_cmd,
             r"""if [ ! -f /home/linuxbrew/.linuxbrew/bin/brew ] &>/dev/null; then
@@ -111,6 +140,41 @@ grep -q 'linuxbrew/.linuxbrew/bin/brew shellenv' ~/.bashrc 2>/dev/null || \
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
             proxy=True,
         )
+
+        # Install UV if not present
+        print("[step 5] Checking UV installation...")
+        uv_check = remote_exec(
+            ssh_cmd,
+            "command -v uv &>/dev/null && echo 'installed' || echo 'not_found'",
+            proxy=True,
+        )
+        if "not_found" in uv_check:
+            response = input("UV is not installed. Install UV? [y/N] ").strip().lower()
+            if response == "y":
+                remote_exec(
+                    ssh_cmd,
+                    "wget -qO- https://astral.sh/uv/install.sh | sh",
+                    proxy=True,
+                )
+
+        # Setup Docker environment export if in container
+        print("[step 6] Checking Docker environment...")
+        docker_check = remote_exec(
+            ssh_cmd,
+            "test -f /.dockerenv && echo 'docker' || echo 'not_docker'",
+            proxy=True,
+        )
+        if "docker" in docker_check:
+            remote_exec(
+                ssh_cmd,
+                r"""grep -q 'DOCKER_ENV_EXPORTED' ~/.bashrc 2>/dev/null || cat >> ~/.bashrc <<'EOF'
+[ -n "$DOCKER_ENV_EXPORTED" ] || {
+    export $(cat /proc/1/environ | tr '\0' '\n' | grep -vE '^(HOME|USER|PWD|TERM|SHLVL)=') 2>/dev/null
+    export DOCKER_ENV_EXPORTED=1
+}
+EOF""",
+                proxy=True,
+            )
 
         # Install packages
         to_install = [
@@ -127,7 +191,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                 )
 
         # Copy configs via rsync
-        print("[step 3] Copying config files...")
+        print("[step 7] Copying config files...")
         for app, info in apps.items():
             configs = info.get("config", [])
             if not configs:
@@ -151,7 +215,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                     subprocess.run(f"scp {'-r ' if f.is_dir() else ''}{f} {host}:~/{rel_path}", shell=True)
 
         # Copy bashrc to remote
-        print("[step 4] Copying config files...")
+        print("[step 8] Copying .bashrc...")
         bashrc_local = THIS_DIR.parent / "shell/bash/.bashrc"
         if bashrc_local.exists():
             print("  Syncing .bashrc")
