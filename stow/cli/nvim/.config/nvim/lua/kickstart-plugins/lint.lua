@@ -7,16 +7,35 @@ return {
     config = function()
       local lint = require 'lint'
 
-      -- FIX: 动态设置 typos 的命令路径（仅在 macOS 上使用 Homebrew 路径）
-      if vim.fn.has 'mac' == 1 then
-        local typos_cmd = 'typos' -- 默认 fallback
-        -- 优先检查 Apple Silicon 的 Homebrew 路径
-        local brew_path = '/opt/homebrew/bin/typos'
-        if vim.fn.executable(brew_path) == 1 then
-          typos_cmd = brew_path
+      -- 动态查找 mason 或系统安装的 linter
+      local function find_mason_bin(executable)
+        -- 先检查 PATH
+        if vim.fn.executable(executable) == 1 then
+          return executable
         end
-        -- 注册 linter
-        lint.linters.typos.cmd = typos_cmd
+
+        -- 再检查 mason 默认安装路径
+        local mason_bin = vim.fn.stdpath 'data' .. '/mason/bin/' .. executable
+        if vim.fn.executable(mason_bin) == 1 then
+          return mason_bin
+        end
+
+        -- 最后检查 Homebrew 路径（macOS）
+        if vim.fn.has 'mac' == 1 then
+          local brew_path = '/opt/homebrew/bin/' .. executable
+          if vim.fn.executable(brew_path) == 1 then
+            return brew_path
+          end
+        end
+
+        return nil -- 未找到
+      end
+
+      local typos_path = find_mason_bin('typos')
+      if typos_path then
+        lint.linters.typos.cmd = typos_path
+      else
+        vim.notify('typos not found, install via Mason or brew', vim.log.levels.WARN)
       end
 
       lint.linters_by_ft = {
