@@ -93,8 +93,17 @@ def main():
     # -D: local SOCKS proxy | -R: forward local 1080 to remote 1080
     tunnel_cmd = f"{ssh_cmd} -D {SOCKS_PORT} -R {SOCKS_PORT}:127.0.0.1:{SOCKS_PORT} -N"
     print(f"[step 1] Starting SOCKS proxy tunnel: {tunnel_cmd}")
-    # Kill existing tunnel first
-    subprocess.run(f"lsof -ti :{SOCKS_PORT} | xargs -r kill -9", shell=True)
+
+    # Check if port is already in use
+    try:
+        socket.create_connection(("127.0.0.1", SOCKS_PORT), timeout=0.5)
+        print(f"Error: Port {SOCKS_PORT} is already in use.")
+        print("Please kill the existing SSH tunnel first:")
+        print(f"  lsof -ti :{SOCKS_PORT} | xargs -r kill -9")
+        sys.exit(1)
+    except OSError:
+        pass  # Port is available
+
     tunnel = subprocess.Popen(tunnel_cmd.split())
     wait_for_port(SOCKS_PORT)
 
