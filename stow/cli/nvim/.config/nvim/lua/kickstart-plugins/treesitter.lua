@@ -8,18 +8,36 @@ return {
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'latex', 'query', 'vim', 'vimdoc', 'python' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as
-        -- Ruby) for indent rules. If you are experiencing weird indenting
-        -- issues, add the language to the list of
-        -- additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
+      -- LazyVim config for treesitter
       indent = { enable = true },
+      highlight = { enable = true },
+      folds = { enable = true },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'javascript',
+        'jsdoc',
+        'json',
+        'jsonc',
+        'lua',
+        'luadoc',
+        'luap',
+        'markdown',
+        'markdown_inline',
+        'printf',
+        'python',
+        'query',
+        'regex',
+        'toml',
+        'tsx',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'xml',
+        'yaml',
+      },
     },
     config = function(_)
       -- Fold settings using Treesitter
@@ -28,9 +46,9 @@ return {
       vim.wo.foldlevel = 99
     end,
   },
-
   { --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     'nvim-treesitter/nvim-treesitter-context',
+    event = 'VeryLazy',
     dependencies = 'nvim-treesitter/nvim-treesitter',
     opts = {
       enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -56,18 +74,17 @@ return {
       -- toggle
       vim.keymap.set('n', '<leader>tt', '<cmd>TSContext toggle<cr>', { desc = 'toggle [t]reesitter context' })
       -- context jump
-      vim.keymap.set('n', '[[', function()
+      vim.keymap.set('n', '[<BS>', function()
         require('treesitter-context').go_to_context(vim.v.count1)
       end, { silent = true, desc = 'Jumping to previous treesitter [context]' })
-      -- TODO: position back to previous like C-i
     end,
   },
-
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    event = 'VeryLazy',
     dependencies = 'nvim-treesitter/nvim-treesitter',
     branch = 'main',
-    init = function()
+    config = function()
       -- Disable entire built-in ftplugin mappings to avoid conflicts.
       -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
       vim.g.no_plugin_maps = true
