@@ -43,14 +43,15 @@ return {
 
       -- TS fold cal
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'cpp', 'c', 'java', 'python' },
+        pattern = ensure_installed,
         callback = function()
           vim.wo.foldmethod = 'expr'
           vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-          vim.wo.foldlevel = 99
         end,
         group = ts_group,
       })
+      vim.wo.foldlevel = 99
+
 
       -- TS indent
       vim.api.nvim_create_autocmd('FileType', {
@@ -93,7 +94,6 @@ return {
   { --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     'nvim-treesitter/nvim-treesitter-context',
     event = 'VeryLazy',
-    branch = 'main',
     dependencies = 'nvim-treesitter/nvim-treesitter',
     opts = {
       enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
