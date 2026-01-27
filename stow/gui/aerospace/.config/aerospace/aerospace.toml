@@ -109,10 +109,10 @@ on-mode-changed = []
     cmd-shift-slash = 'exec-and-forget open -n -a Ghostty --args -e bash -c "/opt/homebrew/bin/aerospace config --get mode --json; echo; read -p \"Press Enter to exit...\""'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-    cmd-h = 'focus left'
-    cmd-j = 'focus down'
-    cmd-k = 'focus up'
-    cmd-l = 'focus right'
+    cmd-h = 'focus left --ignore-floating'
+    cmd-j = 'focus down --ignore-floating'
+    cmd-k = 'focus up --ignore-floating'
+    cmd-l = 'focus right --ignore-floating'
     cmd-shift-h = 'focus-monitor left'
     cmd-shift-j = 'focus-monitor down'
     cmd-shift-k = 'focus-monitor up'

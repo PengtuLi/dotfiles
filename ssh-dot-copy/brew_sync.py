@@ -316,20 +316,33 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                 "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\" && nvim --headless '+Lazy! sync' +qa",
                 proxy=use_proxy,
             )
-            # Install python treesitter parser
-            print(
-                f"  {Fore.CYAN}Installing python treesitter parser...{Style.RESET_ALL}"
-            )
-            remote_exec(
-                ssh_cmd,
-                "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\" && nvim --headless '+TSInstall! python' +qa",
-                proxy=use_proxy,
-            )
             # Install mason tools
             print(f"  {Fore.CYAN}Installing mason tools...{Style.RESET_ALL}")
             remote_exec(
                 ssh_cmd,
-                """eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && nvim --headless -c 'lua vim.cmd("MasonInstall pyright")' +qa""",
+                r"""eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && nvim --headless -c "lua
+local packages = {'bashls', 'ruff', 'pyright', 'beautysh'}
+local mr = require('mason-registry')
+local installed_count = 0
+local total_count = 0
+for _, pkg in ipairs(packages) do
+  if not mr.is_installed(pkg) then
+    total_count = total_count + 1
+    local p = mr.get_package(pkg)
+    p:once('install:success', function()
+      installed_count = installed_count + 1
+      print('Installed: ' .. pkg)
+    end)
+    p:install()
+  end
+end
+-- Wait for installations to complete (with timeout)
+local timeout = 300
+local start = os.time()
+while total_count > 0 and installed_count < total_count and os.time() - start < timeout do
+  vim.loop.sleep(100)
+end
+" +qa""",
                 proxy=use_proxy,
             )
 
