@@ -154,12 +154,16 @@ on-mode-changed = []
     cmd-ctrl-u = 'move-node-to-workspace prev'
 
     # window split / unify
-    cmd-leftSquareBracket = 'join-with left'
-    cmd-rightSquareBracket = 'join-with right'
+    # cmd-leftSquareBracket = 'join-with left'
+    # cmd-rightSquareBracket = 'join-with right'
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-    cmd-comma = 'layout h_tiles'
+    cmd-comma = 'layout v_accordion'
     cmd-period = 'layout h_accordion'
 
+# 让 Finder 的所有窗口都保持浮动（不参与平铺）
+[[on-window-detected]]
+    if.app-id = 'com.apple.finder'
+    run = 'layout floating'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
