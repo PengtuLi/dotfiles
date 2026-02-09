@@ -7,7 +7,7 @@ My personal development environment configuration.
 ```bash
 git clone https://github.com/tutu/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./install.sh
+just ***
 ```
 
 ## Stack
@@ -83,31 +83,6 @@ cd ~/.dotfiles
 | **Git Hooks** | Husky |
 | **Commits** | Commitlint (conventional commits) |
 | **Secrets** | SOPS + Age |
-
-## Keybindings
-
-### Ghostty
-
-```text
-Alt+Shift+,    reload config
-Alt+S/V        split down/right
-Alt+H/J/K/L    navigate splits
-Ctrl+Shift+C/V copy/paste
-Alt+1-9        goto tab
-Alt+N/T        new window/tab
-Alt+Enter      fullscreen
-```
-
-### Tmux (Prefix: Ctrl+b)
-
-```text
-Prefix+Space   which-key
-Prefix+R       reload config
-Prefix+S/V     split horizontal/vertical
-Ctrl+H/J/K/L   navigate panes
-Prefix+H/L     resize panes
-Prefix+C-S/R   save/restore session
-```
 
 ## License
 

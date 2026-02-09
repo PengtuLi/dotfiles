@@ -8,3 +8,9 @@ creation_rules:
   - path_regex: stow/cli/gh/.config/gh/hosts.yml$
     format: binary
     age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7
+  - path_regex: .env.secrets$
+    format: dotenv
+    age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7
+  - path_regex: shell/.env.secrets$
+    format: dotenv
+    age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7

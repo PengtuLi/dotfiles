@@ -6,18 +6,22 @@
         {
             "command":
             {
+                "action": "sendInput",
+                "input": "\n"
+            },
+            "id": "User.sendInput.DFCDAF06"
+        },
+        {
+            "command":
+            {
                 "action": "moveFocus",
                 "direction": "left"
             },
             "id": "User.moveFocus.2A0DA8E0"
         },
         {
-            "command":
-            {
-                "action": "sendInput",
-                "input": "\n"
-            },
-            "id": "User.sendInput.DFCDAF06"
+            "command": "openCWD",
+            "id": "User.openCWD"
         },
         {
             "command":
@@ -28,8 +32,11 @@
             "id": "User.adjustFontSize.E04D5229"
         },
         {
-            "command": "openCWD",
-            "id": "User.openCWD"
+            "command":
+            {
+                "action": "selectOutput"
+            },
+            "id": "User.selectOutput.D3F0B923"
         },
         {
             "command":
@@ -49,17 +56,14 @@
         {
             "command":
             {
-                "action": "selectOutput"
-            },
-            "id": "User.selectOutput.D3F0B923"
-        },
-        {
-            "command":
-            {
                 "action": "moveFocus",
                 "direction": "up"
             },
             "id": "User.moveFocus.6CD791B"
+        },
+        {
+            "command": "toggleShaderEffects",
+            "id": "User.toggleShaderEffects"
         },
         {
             "command":
@@ -68,10 +72,6 @@
                 "split": "right"
             },
             "id": "User.splitPane.864CD510"
-        },
-        {
-            "command": "toggleShaderEffects",
-            "id": "User.toggleShaderEffects"
         },
         {
             "command":
@@ -155,20 +155,16 @@
     "keybindings":
     [
         {
-            "id": "Terminal.OpenNewTab",
-            "keys": "alt+t"
-        },
-        {
             "id": "Terminal.PrevTab",
             "keys": "alt+["
         },
         {
-            "id": null,
-            "keys": "alt+shift+down"
+            "id": "Terminal.OpenNewTab",
+            "keys": "alt+t"
         },
         {
             "id": null,
-            "keys": "ctrl+tab"
+            "keys": "ctrl+shift+d"
         },
         {
             "id": null,
@@ -180,7 +176,11 @@
         },
         {
             "id": null,
-            "keys": "ctrl+shift+d"
+            "keys": "ctrl+tab"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+down"
         },
         {
             "id": "Terminal.ResizePaneDown",
@@ -191,12 +191,12 @@
             "keys": "alt+shift+w"
         },
         {
-            "id": "Terminal.ScrollUpPage",
-            "keys": "alt+b"
-        },
-        {
             "id": null,
             "keys": "ctrl+comma"
+        },
+        {
+            "id": "Terminal.ScrollUpPage",
+            "keys": "alt+b"
         },
         {
             "id": "Terminal.OpenNewWindow",
@@ -212,19 +212,7 @@
         },
         {
             "id": null,
-            "keys": "ctrl+0"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+comma"
-        },
-        {
-            "id": "User.moveFocus.2A0DA8E0",
-            "keys": "alt+h"
-        },
-        {
-            "id": "Terminal.NextTab",
-            "keys": "alt+]"
+            "keys": "ctrl+shift+5"
         },
         {
             "id": null,
@@ -232,7 +220,27 @@
         },
         {
             "id": null,
-            "keys": "ctrl+shift+5"
+            "keys": "ctrl+0"
+        },
+        {
+            "id": "User.moveFocus.2A0DA8E0",
+            "keys": "alt+h"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+comma"
+        },
+        {
+            "id": "Terminal.NextTab",
+            "keys": "alt+]"
+        },
+        {
+            "id": "User.scrollToTop",
+            "keys": "alt+g"
+        },
+        {
+            "id": "Terminal.ScrollDownPage",
+            "keys": "alt+f"
         },
         {
             "id": "Terminal.SwitchToTab0",
@@ -243,12 +251,8 @@
             "keys": "alt+f4"
         },
         {
-            "id": "User.scrollToTop",
-            "keys": "alt+g"
-        },
-        {
-            "id": "Terminal.ScrollDownPage",
-            "keys": "alt+f"
+            "id": null,
+            "keys": "ctrl+alt+8"
         },
         {
             "id": "Terminal.PasteFromClipboard",
@@ -260,19 +264,7 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+8"
-        },
-        {
-            "id": null,
             "keys": "ctrl+shift+w"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+alt+7"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+alt+4"
         },
         {
             "id": null,
@@ -284,27 +276,23 @@
         },
         {
             "id": null,
-            "keys": "ctrl+numpad_minus"
+            "keys": "ctrl+alt+7"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+4"
         },
         {
             "id": null,
             "keys": "alt+right"
         },
         {
+            "id": null,
+            "keys": "ctrl+numpad_minus"
+        },
+        {
             "id": "User.adjustFontSize.E04D5229",
             "keys": "alt+plus"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+period"
-        },
-        {
-            "id": null,
-            "keys": "f11"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+numpad0"
         },
         {
             "id": null,
@@ -320,7 +308,15 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+9"
+            "keys": "ctrl+shift+period"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+numpad0"
+        },
+        {
+            "id": null,
+            "keys": "f11"
         },
         {
             "id": null,
@@ -328,7 +324,7 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+1"
+            "keys": "ctrl+alt+9"
         },
         {
             "id": null,
@@ -339,6 +335,10 @@
             "keys": "alt+6"
         },
         {
+            "id": null,
+            "keys": "ctrl+alt+1"
+        },
+        {
             "id": "Terminal.SwitchToTab1",
             "keys": "alt+2"
         },
@@ -347,20 +347,16 @@
             "keys": "alt+3"
         },
         {
-            "id": null,
-            "keys": "ctrl+alt+3"
-        },
-        {
             "id": "Terminal.ScrollDown",
             "keys": "alt+d"
         },
         {
-            "id": "Terminal.SwitchToTab4",
-            "keys": "alt+5"
+            "id": null,
+            "keys": "ctrl+alt+3"
         },
         {
-            "id": null,
-            "keys": "ctrl+alt+5"
+            "id": "Terminal.SwitchToTab4",
+            "keys": "alt+5"
         },
         {
             "id": null,
@@ -369,6 +365,10 @@
         {
             "id": "Terminal.CopyToClipboard",
             "keys": "ctrl+shift+c"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+5"
         },
         {
             "id": null,
@@ -403,12 +403,12 @@
             "keys": "ctrl+shift+t"
         },
         {
-            "id": null,
-            "keys": "ctrl+shift+4"
-        },
-        {
             "id": "Terminal.ScrollUp",
             "keys": "alt+u"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+4"
         },
         {
             "id": "User.openTabColorPicker",
@@ -436,11 +436,11 @@
         },
         {
             "id": null,
-            "keys": "alt+space"
+            "keys": "alt+shift+plus"
         },
         {
             "id": null,
-            "keys": "alt+shift+plus"
+            "keys": "alt+space"
         },
         {
             "id": null,
@@ -455,12 +455,12 @@
             "keys": "ctrl+alt+comma"
         },
         {
-            "id": "User.toggleBroadcastInput",
-            "keys": "alt+p"
-        },
-        {
             "id": null,
             "keys": "ctrl+shift+1"
+        },
+        {
+            "id": "User.toggleBroadcastInput",
+            "keys": "alt+p"
         },
         {
             "id": null,
@@ -491,24 +491,24 @@
             "keys": "menu"
         },
         {
-            "id": "User.scrollToBottom",
-            "keys": "alt+shift+g"
-        },
-        {
             "id": null,
             "keys": "ctrl+shift+end"
+        },
+        {
+            "id": "User.scrollToBottom",
+            "keys": "alt+shift+g"
         },
         {
             "id": null,
             "keys": "ctrl+shift+home"
         },
         {
-            "id": "Terminal.ResetFontSize",
-            "keys": "alt+0"
-        },
-        {
             "id": null,
             "keys": "shift+insert"
+        },
+        {
+            "id": "Terminal.ResetFontSize",
+            "keys": "alt+0"
         },
         {
             "id": "Terminal.ResizePaneUp",
@@ -523,12 +523,12 @@
             "keys": "alt+shift+a"
         },
         {
-            "id": null,
-            "keys": "ctrl+shift+a"
-        },
-        {
             "id": "User.moveFocus.F747588A",
             "keys": "alt+j"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+a"
         },
         {
             "id": "User.splitPane.D5151347",
@@ -577,7 +577,6 @@
             "backgroundImage": null,
             "bellStyle": "none",
             "colorScheme": "GitHub Dark Default",
-            "cursorColor": null,
             "elevate": true,
             "font":
             {
@@ -587,9 +586,10 @@
                     "calt": 1,
                     "cv01": 1
                 },
-                "size": 12
+                "size": 10
             },
             "historySize": 10000,
+            "opacity": 100,
             "padding": "0",
             "pathTranslationStyle": "wsl",
             "rightClickContextMenu": true,

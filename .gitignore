@@ -37,3 +37,6 @@ stow/gui/karabiner/.config/karabiner/
 
 stow/cli/pudb/.config/pudb/
 !stow/cli/pudb/.config/pudb/pudb.cfg
+
+shell/.env.secrets
+!shell/.env.secrets.sops

@@ -26,7 +26,6 @@ return {
       { 'saghen/blink.cmp' },
     },
     config = function()
-      vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#1e1e1e' })
       vim.api.nvim_set_hl(0, 'LspInlayHint', { bg = 'NONE', fg = '#5c5c5c' })
 
       --  This function gets run when an LSP attaches to a particular buffer.
@@ -72,16 +71,21 @@ return {
           -- Jump to the Outgoing Calls under your cursor.
           map('grC', require('fzf-lua').lsp_outgoing_calls, 'goto outgoing [C]alls')
 
+          map('grs', require('fzf-lua').lsp_type_sub, 'goto [s]ub types')
+          map('grS', require('fzf-lua').lsp_type_super, 'goto [S]uper type')
+
           -- Fuzzy find all the symbols in your current document.
           map('<leader>ss', function()
             require('fzf-lua').lsp_document_symbols {
               regex_filter = function(entry)
-                if not entry.text then return true end
+                if not entry.text then
+                  return true
+                end
                 -- 计算开头的空格数量（每级缩进2个空格）
-                local _, end_pos = entry.text:find('^%s*')
+                local _, end_pos = entry.text:find '^%s*'
                 local spaces = end_pos or 0
                 -- 提取符号类型，如 [Function], [Variable], [Class]
-                local kind = entry.text:match('%[(%w+)%]')
+                local kind = entry.text:match '%[(%w+)%]'
                 -- 显示顶层所有符号，一级嵌套中排除 Variable
                 if spaces == 0 then
                   return true
@@ -188,7 +192,7 @@ return {
         bashls = {}, -- shell
         clangd = {}, -- c, c++
         ruff = {}, -- python
-        pyright = {},
+        pyright = {}, -- python
         eslint = {}, -- js, ts
         lua_ls = {
           -- cmd = { ... },
@@ -235,7 +239,6 @@ return {
         'prettierd', -- many
         'prettier', -- many
         'clang-format', -- c cpp
-        'ruff', -- python
         'codespell', -- spell check
         'beautysh', -- bash sh zsh
         'stylua', -- lua
@@ -244,7 +247,7 @@ return {
         -----------Linter
         -- 'cfn-lint', -- yaml, json
         -- 'vale', -- text, markdown
-        'actionlint', -- ghaction-yaml
+        -- 'actionlint', -- ghaction-yaml
 
         -----------DAP
         -- 'debugpy', -- py

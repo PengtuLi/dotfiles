@@ -13,9 +13,6 @@ register_keyboard_shortcuts() {
     info "Registering keyboard shortcuts..."
     mkdir -p "$HOME/Library/KeyBindings"
     cat >"$HOME/Library/KeyBindings/DefaultKeyBinding.dict" <<EOF
-{
- "^\U002F" = "noop";
-}
 EOF
 }
 

@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+# Copy SSH keys and config from WSL to Windows host
+#
+# Usage: ssh-copy-to-host [--dry-run]
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+DRY_RUN=false
+[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=true
+
+# Detect Windows user
+WIN_USER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
+if [[ -z "$WIN_USER" || "$WIN_USER" == "%USERNAME%" ]]; then
+    echo -e "${RED}Error: Could not detect Windows username${NC}"
+    exit 1
+fi
+
+WIN_SSH_DIR="/mnt/c/Users/$WIN_USER/.ssh"
+WSL_SSH_DIR="$HOME/.ssh"
+
+echo -e "${GREEN}WSL SSH dir: $WSL_SSH_DIR${NC}"
+echo -e "${GREEN}Windows SSH dir: $WIN_SSH_DIR${NC}"
+echo
+
+# Check WSL SSH directory
+if [[ ! -d "$WSL_SSH_DIR" ]]; then
+    echo -e "${RED}Error: WSL .ssh directory not found at $WSL_SSH_DIR${NC}"
+    exit 1
+fi
+
+# Create Windows .ssh directory if needed
+if [[ ! -d "$WIN_SSH_DIR" ]]; then
+    if $DRY_RUN; then
+        echo -e "${YELLOW}[DRY-RUN] Would create: $WIN_SSH_DIR${NC}"
+    else
+        mkdir -p "$WIN_SSH_DIR"
+        echo -e "${GREEN}Created: $WIN_SSH_DIR${NC}"
+    fi
+fi
+
+# Files to copy
+FILES_TO_COPY=("id_rsa" "id_rsa.pub" "id_ed25519" "id_ed25519.pub")
+CONFIG_FILE="config"
+KNOWN_HOSTS="known_hosts"
+AUTHORIZED_KEYS="authorized_keys"
+
+copy_file() {
+    local src="$1"
+    local dest="$2"
+    local desc="$3"
+
+    if [[ ! -f "$src" ]]; then
+        echo -e "${YELLOW}Skip: $desc not found at $src${NC}"
+        return 0
+    fi
+
+    if $DRY_RUN; then
+        echo -e "${YELLOW}[DRY-RUN] Would copy: $src -> $dest${NC}"
+        return 0
+    fi
+
+    cp "$src" "$dest"
+    echo -e "${GREEN}Copied: $desc${NC}"
+}
+
+# Copy SSH keys
+echo -e "${GREEN}=== Copying SSH Keys ===${NC}"
+for key_file in "${FILES_TO_COPY[@]}"; do
+    src="$WSL_SSH_DIR/$key_file"
+    dest="$WIN_SSH_DIR/$key_file"
+    copy_file "$src" "$dest" "$key_file"
+done
+
+# Copy config (with Windows-specific modifications)
+echo
+echo -e "${GREEN}=== Copying SSH Config ===${NC}"
+if [[ -f "$WSL_SSH_DIR/$CONFIG_FILE" ]]; then
+    dest="$WIN_SSH_DIR/$CONFIG_FILE"
+
+    if [[ -f "$dest" ]]; then
+        # Backup existing config
+        if ! $DRY_RUN; then
+            cp "$dest" "$dest.bak.$(date +%Y%m%d%H%M%S)"
+            echo -e "${YELLOW}Backed up existing config${NC}"
+        fi
+    fi
+
+    if $DRY_RUN; then
+        echo -e "${YELLOW}[DRY-RUN] Would copy config with Windows modifications${NC}"
+    else
+        # Convert config for Windows compatibility
+        # - Remove ControlPath line (Windows doesn't support Unix sockets well)
+        # - Remove ControlMaster line (depends on ControlPath)
+        sed -e '/ControlPath/d' -e '/ControlMaster/d' \
+            "$WSL_SSH_DIR/$CONFIG_FILE" > "$dest"
+
+        echo -e "${GREEN}Copied: config (Windows-adapted)${NC}"
+    fi
+else
+    echo -e "${YELLOW}Skip: config not found${NC}"
+fi
+
+# Merge known_hosts
+echo
+echo -e "${GREEN}=== Merging Known Hosts ===${NC}"
+if [[ -f "$WSL_SSH_DIR/$KNOWN_HOSTS" ]]; then
+    dest="$WIN_SSH_DIR/$KNOWN_HOSTS"
+
+    if [[ -f "$dest" ]]; then
+        # Merge known_hosts (combine and deduplicate)
+        if $DRY_RUN; then
+            echo -e "${YELLOW}[DRY-RUN] Would merge: known_hosts${NC}"
+        else
+            # Create temp file with combined content
+            tmp_file=$(mktemp)
+            cat "$WSL_SSH_DIR/$KNOWN_HOSTS" "$dest" | sort -u > "$tmp_file"
+            mv "$tmp_file" "$dest"
+            echo -e "${GREEN}Merged: known_hosts${NC}"
+        fi
+    else
+        copy_file "$WSL_SSH_DIR/$KNOWN_HOSTS" "$dest" "known_hosts"
+    fi
+else
+    echo -e "${YELLOW}Skip: known_hosts not found${NC}"
+fi
+
+# Copy authorized_keys
+echo
+echo -e "${GREEN}=== Copying Authorized Keys ===${NC}"
+if [[ -f "$WSL_SSH_DIR/$AUTHORIZED_KEYS" ]]; then
+    dest="$WIN_SSH_DIR/$AUTHORIZED_KEYS"
+
+    if [[ -f "$dest" ]]; then
+        # Merge authorized_keys (combine and deduplicate)
+        if $DRY_RUN; then
+            echo -e "${YELLOW}[DRY-RUN] Would merge: authorized_keys${NC}"
+        else
+            tmp_file=$(mktemp)
+            cat "$WSL_SSH_DIR/$AUTHORIZED_KEYS" "$dest" | sort -u > "$tmp_file"
+            mv "$tmp_file" "$dest"
+            echo -e "${GREEN}Merged: authorized_keys${NC}"
+        fi
+    else
+        copy_file "$WSL_SSH_DIR/$AUTHORIZED_KEYS" "$dest" "authorized_keys"
+    fi
+else
+    echo -e "${YELLOW}Skip: authorized_keys not found${NC}"
+fi
+
+# Set permissions on Windows side (using icacls for proper Windows permissions)
+if ! $DRY_RUN; then
+    echo
+    echo -e "${GREEN}=== Setting Windows Permissions ===${NC}"
+    # Windows uses different permission model
+    # We'll use attrib to hide the .ssh folder and set proper access
+    powershell.exe -Command "icacls '$WIN_SSH_DIR' /inheritance:r /grant:r '$WIN_USER:(OI)(CI)F'" 2>/dev/null || true
+    echo -e "${GREEN}Permissions restricted to $WIN_USER${NC}"
+fi
+
+echo
+if $DRY_RUN; then
+    echo -e "${YELLOW}=== DRY RUN COMPLETE ===${NC}"
+    echo "Run without --dry-run to perform actual copy"
+else
+    echo -e "${GREEN}=== DONE ===${NC}"
+    echo "SSH files copied from WSL to Windows host"
+fi

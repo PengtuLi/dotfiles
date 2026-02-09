@@ -282,7 +282,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
 
         # Copy bashrc to remote
         print(f"{Fore.GREEN}{Fore.WHITE}Copying .bashrc...{Style.RESET_ALL}")
-        bashrc_local = THIS_DIR.parent / "shell/bash/.bashrc"
+        bashrc_local = THIS_DIR.parent.parent / "shell/bash/.bashrc"
         if bashrc_local.exists():
             if (
                 input(f"{Fore.YELLOW}Copy .bashrc? [y/N] {Style.RESET_ALL}")

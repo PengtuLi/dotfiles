@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(read)",
+      "Read(read)",
+      "Glob(read)",
+      "Grep(read)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '文件已创建: {{file_path}}'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '文件已修改: {{file_path}}'"
+          }
+        ]
+      }
+    ]
+  },
+  "context": {
+    "show_notifications": true,
+    "auto_update_context": true
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  }
+}

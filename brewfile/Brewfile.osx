@@ -7,7 +7,7 @@ cask "mos"
 cask "caffeine"
 cask "stats"
 # cask "battery-toolkit"
-brew "batt"                              # cli battery-toolkit
+# brew "batt"                              # cli battery-toolkit, not need anymore
 cask "the-unarchiver"
 # cask "lunar" # unlock XDR display
 cask "jordanbaird-ice"
