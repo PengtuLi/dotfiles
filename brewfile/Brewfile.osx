@@ -7,14 +7,14 @@ cask "mos"
 cask "caffeine"
 cask "stats"
 # cask "battery-toolkit"
-brew "batt"                              # cli battery-toolkit
+# brew "batt"                              # cli battery-toolkit, not need anymore
 cask "the-unarchiver"
 # cask "lunar" # unlock XDR display
 cask "jordanbaird-ice"
 cask "google-drive"
 cask "vlc"                               # media player
 cask "google-chrome"
-# cask "wpsoffice-cn"
+cask "wpsoffice-cn"
 cask "tencent-meeting"
 cask "ghostty"                           # GPU 加速终端
 cask "spotify"

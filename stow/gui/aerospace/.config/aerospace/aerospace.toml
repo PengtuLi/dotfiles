@@ -42,8 +42,7 @@ automatically-unhide-macos-hidden-apps = false
 
 # List of workspaces that should stay alive even when they contain no windows,
 # even when they are invisible.
-persistent-workspaces = ["1", "2", "3", "4",
-                         "9", "0"]
+persistent-workspaces = ["1", "2", "3", "4"]
 
 # A callback that runs every time binding mode changes
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -132,8 +131,6 @@ on-mode-changed = []
     cmd-2 = 'workspace 2'
     cmd-3 = 'workspace 3'
     cmd-4 = 'workspace 4'
-    cmd-9 = 'workspace 9'
-    cmd-0 = 'workspace 0'
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     cmd-backslash = 'workspace-back-and-forth'
 
@@ -147,11 +144,8 @@ on-mode-changed = []
     cmd-ctrl-2 = 'move-node-to-workspace 2'
     cmd-ctrl-3 = 'move-node-to-workspace 3'
     cmd-ctrl-4 = 'move-node-to-workspace 4'
-    cmd-ctrl-9 = 'move-node-to-workspace 9'
-    cmd-ctrl-0 = 'move-node-to-workspace 0'
-
-    cmd-ctrl-d = 'move-node-to-workspace next'
-    cmd-ctrl-u = 'move-node-to-workspace prev'
+    # cmd-ctrl-d = 'move-node-to-workspace next'
+    # cmd-ctrl-u = 'move-node-to-workspace prev'
 
     # window split / unify
     # cmd-leftSquareBracket = 'join-with left'

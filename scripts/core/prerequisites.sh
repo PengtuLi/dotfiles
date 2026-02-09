@@ -40,6 +40,16 @@ install_homebrew() {
     fi
 }
 
+install_zerobrew() {
+    info "Installing Zerobrew..."
+    if command -v zb &>/dev/null; then
+        warning "Zerobrew already installed"
+    else
+        curl -fsSL https://zerobrew.rs/install | bash
+        warning "Please run the export command printed above or restart your terminal"
+    fi
+}
+
 if [[ "$1" == "osx" ]]; then
     install_xcode
     install_homebrew

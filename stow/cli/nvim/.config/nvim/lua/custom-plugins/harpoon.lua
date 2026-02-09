@@ -70,10 +70,10 @@ return {
     end, { desc = 'Open harpoon window with fzf-lua' })
 
     -- Toggle previous & next buffers stored within Harpoon list
-    vim.keymap.set('n', '<BS>', function()
+    vim.keymap.set('n', '<leader>[', function()
       harpoon:list():prev()
     end, { desc = 'prev harpoon' })
-    vim.keymap.set('n', '<CR>', function()
+    vim.keymap.set('n', '<leader>]', function()
       harpoon:list():next()
     end, { desc = 'next harpoon' })
 

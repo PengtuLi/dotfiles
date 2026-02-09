@@ -24,20 +24,23 @@ theme = GitHub Dark Default
 # theme = Sonokai
 # theme = TokyoNight Moon
 # custom-shader = shaders/bettercrt.glsl
-custom-shader = shaders/cursor_blaze.glsl
+# custom-shader = shaders/cursor_blaze.glsl
 # font
 font-family = ""
 font-family = "Maple Mono NF CN"
 # font-family = "JetBrainsMono Nerd Font"
 # font-family = Source Code Pro
 # font-family = WenQuanYi Micro Hei
-font-size = 16
+font-size = 14
 font-synthetic-style = false
 font-thicken = false
 font-feature = "+calt, +cv01"
 
 link-url = true
 clipboard-paste-protection = false
+clipboard-read = allow
+clipboard-write = allow
+copy-on-select = clipboard
 shell-integration-features = cursor, sudo, title
 
 # padding
@@ -110,3 +113,9 @@ keybind = alt+shift+0=equalize_splits
 keybind = alt+equal=increase_font_size:1
 keybind = alt+minus=decrease_font_size:1
 keybind = alt+0=reset_font_size
+
+# search
+keybind = alt+shift+f=start_search
+keybind = performable:escape=end_search
+keybind = performable:enter=navigate_search:next
+keybind = performable:shift+enter=navigate_search:previous

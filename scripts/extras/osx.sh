@@ -13,13 +13,26 @@ register_keyboard_shortcuts() {
     info "Registering keyboard shortcuts..."
     mkdir -p "$HOME/Library/KeyBindings"
     cat >"$HOME/Library/KeyBindings/DefaultKeyBinding.dict" <<EOF
-{
- "^\U002F" = "noop";
-}
 EOF
 }
 
 sudo DevToolsSecurity --enable
+
+enable_touch_id_for_sudo() {
+    info "Enabling Touch ID for sudo..."
+    local pam_file="/etc/pam.d/sudo"
+    local touch_id_line="auth sufficient pam_tid.so"
+
+    if grep -q "$touch_id_line" "$pam_file" 2>/dev/null; then
+        info "Touch ID already enabled for sudo"
+        return
+    fi
+
+    # Backup and modify PAM config
+    sudo cp "$pam_file" "${pam_file}.bak"
+    sudo sed -i '' "1s/^/$touch_id_line\n/" "$pam_file"
+    info "Touch ID enabled for sudo"
+}
 
 apply_osx_system_defaults() {
     info "Applying OSX system defaults..."
@@ -46,6 +59,7 @@ apply_osx_system_defaults() {
 
 if [ "$(basename "$0")" = "$(basename "${BASH_SOURCE[0]}")" ]; then
     register_keyboard_shortcuts
+    enable_touch_id_for_sudo
     apply_osx_system_defaults
 fi
 

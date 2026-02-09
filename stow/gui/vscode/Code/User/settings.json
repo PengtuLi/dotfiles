@@ -1,7 +1,5 @@
 {
     "debug.onTaskErrors": "showErrors",
-
-    "cmake.outputLogEncoding": "UTF-8",
     "files.autoGuessEncoding": true,
     "git.confirmSync": false,
     "explorer.confirmDelete": false,
@@ -10,14 +8,6 @@
     "workbench.editor.enablePreview": false,
     "python.createEnvironment.trigger": "off",
     "git.enableSmartCommit": true,
-    "remote.SSH.remotePlatform": {
-        "lpt": "linux",
-        "DEJAVU": "linux",
-        "vllm": "linux",
-        "wuhui": "linux",
-        "sparkinfer": "linux",
-        "torch": "linux"
-    },
     "git.autofetch": true,
     "git.ignoreRebaseWarning": true,
     "terminal.integrated.inheritEnv": false,
@@ -28,9 +18,8 @@
     "extensions.ignoreRecommendations": false,
     "git.ignoreMissingGitWarning": true,
     "explorer.confirmPasteNative": false,
-    "terminal.integrated.defaultProfile.osx": "zsh",
 
-    "editor.fontFamily": "Maple Mono NF CN, JetBrainsMono Nerd Font",
+    "editor.fontFamily": "Maple Mono NF CN",
     // Enable ligatures
     "editor.fontLigatures": "'calt'",
     "window.newWindowProfile": "Default",
@@ -38,29 +27,17 @@
     // Python settings
     "python.analysis.autoImportCompletions": true,
     "python.analysis.fixAll": ["source.unusedImports"],
-
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.formatOnType": true,
-        "diffEditor.ignoreTrimWhitespace": true
-    },
-    "[cpp]": {
-
-        "editor.wordBasedSuggestions": "off",
-        "editor.semanticHighlighting.enabled": true,
-        "editor.stickyScroll.defaultModel": "foldingProviderModel",
-        "editor.suggest.insertMode": "replace"
-    },
-    "cmake.showConfigureWithDebuggerNotification": false,
-    "terminal.integrated.env.osx": {
-        "Q_NEW_SESSION": "1"
-    },
     "git.openRepositoryInParentFolders": "never",
-    "cmake.showNotAllDocumentsSavedQuestion": false,
     "github.copilot.nextEditSuggestions.enabled": true,
     "workbench.colorTheme": "Tokyo Night Storm",
     "notebook.lineNumbers": "on",
     "workbench.settings.applyToAllProfiles": [
         "python.analysis.typeCheckingMode"
     ],
+    "workbench.colorCustomizations": {
+      "editorCursor.foreground": "#2F81F7",
+      "editor.lineHighlightBackground": "#2d3a4d"
+    },
+    "workbench.iconTheme": "vscode-icons",
+    "editor.accessibilitySupport": "on"
 }

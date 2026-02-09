@@ -14,10 +14,12 @@ default:
     @echo "  osx              - macOS 完整配置"
     @echo "  linux-gui        - Linux GUI 配置"
     @echo "  linux-headless   - Linux 无头配置"
+    @echo "  ssh              - Linux ssh配置"
     @echo ""
     @echo "可用组件 (单独安装):"
     @echo "  proxy            - 代理配置"
     @echo "  conda            - Conda 环境设置"
+    @echo "  vscode           - vscode 插件安装"
     @echo "  prerequisites-osx - 前置依赖 (macOS)"
     @echo "  prerequisites-linux - 前置依赖 (Linux)"
     @echo "  stow-osx         - dotfiles 链接 (macOS)"
@@ -44,14 +46,15 @@ list: default
 # ============================================================================
 
 # macOS 完整配置
-osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx
+osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx vscode
 
 # Linux GUI 配置
-linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-gui
+linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-gui vscode
 
 # Linux 无头配置
 linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless
 
+ssh: _ssh_linux
 # ============================================================================
 # 组件 (单独安装)
 # ============================================================================
@@ -65,6 +68,12 @@ proxy:
 conda:
     @echo "🐍 设置 Conda..."
     @bash "{{SCRIPTS_DIR}}/core/conda.sh"
+
+# vscode setting
+vscode:
+    @echo "📦 设置 vscode..."
+    @bash "{{SCRIPTS_DIR}}/extras/vscode-extensions.sh"
+
 
 # 前置依赖 (macOS)
 prerequisites-osx:
@@ -89,7 +98,7 @@ stow-linux:
 # Shell 脚本设置
 shell_scripts:
     @echo "📜 设置 Shell 脚本..."
-    @bash "{{SCRIPTS_DIR}}/core/shell_scripts.sh"
+    @bash "{{SCRIPTS_DIR}}/core/shell-scripts.sh"
 
 # 额外配置 (macOS)
 extras-osx:
@@ -107,6 +116,15 @@ extras-linux:
 mesh:
     @echo "🌐 设置 Mesh..."
     @bash "{{SCRIPTS_DIR}}/core/mesh.sh"
+
+# ============================================================================
+# _ssh_linux
+# ============================================================================
+
+_ssh_linux:
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/brew_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/brew_sync 不存在"; exit 1; fi
+    @echo "📦 ssh setup..."
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/brew_sync.py"
 
 # ============================================================================
 # Brew 包组 (公开命令)

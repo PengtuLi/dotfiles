@@ -5,68 +5,6 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 . $ROOT_DIR/scripts/lib/common.sh
 
-# bash manager
-# https://github.com/juewuy/ShellCrash
-# systemd
-# https://wiki.metacubex.one/startup/service/
-#
-# cp mihomo /usr/local/bin
-# cp config.yaml /etc/mihomo
-#
-# start
-# /usr/local/bin/mihomo -d /etc/mihomo
-#
-# /Users/tutu/Library/LaunchAgents
-# launchctl start com.example.app
-# launchctl stop com.example.app
-#
-# <?xml version="1.0" encoding="UTF-8"?>
-# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-# <plist version="1.0">
-#   <dict>
-#   <key>Label</key>
-#   <string>Clash</string>
-#   <key>ProgramArguments</key>
-#   <array><string>mihomo -d /etc/mihomo</string></array>
-#   <key>RunAtLoad</key>
-#   <true/>
-#   </dict>
-# </plist>
-
-# config_web(){
-#
-#     local cmd_touch="mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled"
-#     local cmd_touch2="touch /etc/nginx/sites-available/clash-ui"
-#     local cmd_write='echo "
-#     server {
-#         listen 9090;
-#
-#         server_name localhost;
-#
-#         location / {
-#             root /etc/mihomo/ui/;
-#             index index.html;
-#             try_files $uri $uri/ =404;
-#         }
-#     }" > /etc/nginx/sites-available/clash-ui'
-#     cmd_ln="ln -s /etc/nginx/sites-available/clash-ui /etc/nginx/sites-enabled"
-#     if which sudo &>/dev/null; then
-#         cmd_touch="sudo ${cmd_touch}"
-#         cmd_touch2="sudo ${cmd_touch2}"
-#         cmd_write="sudo ${cmd_write}"
-#         cmd_ln="sudo ${cmd_ln}"
-#     fi
-#
-#     eval $cmd_touch
-#     eval $cmd_touch2
-#     eval $cmd_write
-#     eval $cmd_ln
-#
-#
-#
-#
-
-
 install_proxy(){
     cd $ROOT_DIR/
 
@@ -98,15 +36,23 @@ install_proxy(){
         sh -c "$cmd2"
     fi
 
+    # download ui
+    # Clone the gh-pages branch
+    if [[ ! -d /etc/mihomo/ui ]]; then
+        git clone https://github.com/metacubex/metacubexd.git -b gh-pages /etc/mihomo/ui
+    else
+        info "mihomo ui already installed."
+    fi
+    read -p "---- update mihomo ui? [y/n] " update_ui
+    if [[ "$update_ui" == "y" ]]; then
+        # Update to latest version
+        git -C /etc/mihomo/ui pull -r
+    fi
+
     echo ${cmd}
     echo ${cmd2}
 
-
     echo "proxy use: alias sPP='sudo mihomo -d /etc/mihomo'"
-    # read -p "---- config server kernel? [y/n] " config_web_ui
-    # if [[ "$config_web_ui" == "y" ]]; then
-    #     config_web
-    # fi
 
 }
 

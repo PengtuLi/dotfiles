@@ -191,6 +191,10 @@
             "keys": "alt+shift+w"
         },
         {
+            "id": null,
+            "keys": "ctrl+shift+f"
+        },
+        {
             "id": "Terminal.ScrollUpPage",
             "keys": "alt+b"
         },
@@ -577,7 +581,6 @@
             "backgroundImage": null,
             "bellStyle": "none",
             "colorScheme": "GitHub Dark Default",
-            "cursorColor": null,
             "elevate": true,
             "font":
             {
@@ -587,9 +590,10 @@
                     "calt": 1,
                     "cv01": 1
                 },
-                "size": 12
+                "size": 10
             },
             "historySize": 10000,
+            "opacity": 100,
             "padding": "0",
             "pathTranslationStyle": "wsl",
             "rightClickContextMenu": true,

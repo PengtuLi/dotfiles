@@ -6,8 +6,7 @@ test.sh
 node_modules/
 **/*.DS_Store
 
-mihomo-clash/config/
-!mihomo-clash/config/ui/
+mihomo-clash/config/*
 !mihomo-clash/config/config.yaml.sops
 
 stow/gui/fcitx5/.config/fcitx5/conf/*
@@ -19,7 +18,7 @@ stow/cli/tmux/.config/tmux/plugins/
 
 stow/cli/rclone/.config/rclone/rclone.conf
 
-stow/gui/vscode/Code/
+stow/gui/vscode/Code/*
 !stow/gui/vscode/Code/User/snippets/
 !stow/gui/vscode/Code/User/*.json
 
@@ -37,3 +36,6 @@ stow/gui/karabiner/.config/karabiner/
 
 stow/cli/pudb/.config/pudb/
 !stow/cli/pudb/.config/pudb/pudb.cfg
+
+shell/.env.secrets
+!shell/.env.secrets.sops
