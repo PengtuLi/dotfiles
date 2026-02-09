@@ -14,7 +14,7 @@ require('lazy').setup({
   require 'kickstart-plugins.mini',
   require 'kickstart-plugins.treesitter',
   require 'kickstart-plugins.autopairs',
-  require 'kickstart-plugins.indent_line',
+  require 'kickstart-plugins.indent-line',
   require 'kickstart-plugins.neo-tree',
   require 'kickstart-plugins.lint',
   require 'kickstart-plugins.lualine',
@@ -28,7 +28,7 @@ require('lazy').setup({
   -- require 'custom-plugins.bufferline',
   require 'custom-plugins.vim-tmux-navigator',
   -- require 'custom-plugins.duck',
-  -- require 'custom-plugins.animation',
+  require 'custom-plugins.animation',
   -- require 'custom-plugins.markview',
   -- require 'custom-plugins.peek',
   -- require 'custom-plugins.notify',
@@ -37,6 +37,7 @@ require('lazy').setup({
   -- require 'custom-plugins.lazygit',
   require 'custom-plugins.harpoon',
   -- require 'custom-plugins.yazi',
+  require 'custom-plugins.aerial',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!

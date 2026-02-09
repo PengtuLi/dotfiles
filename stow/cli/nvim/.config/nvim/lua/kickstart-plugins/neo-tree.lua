@@ -13,8 +13,8 @@ return {
     lazy = false, -- neo-tree will lazily load itself
     cmd = 'Neotree',
     keys = {
-      { '\\', ':Neotree toggle reveal float<CR>', desc = 'NeoTree reveal', silent = true },
-      { '|', ':Neotree toggle float source=buffers<CR>', desc = 'NeoTree reveal buffers', silent = true },
+      { '\\', ':Neotree reveal show toggle<CR>', desc = 'NeoTree reveal', silent = true },
+      -- { '|', ':Neotree toggle float source=buffers<CR>', desc = 'NeoTree reveal buffers', silent = true },
     },
     config = function()
       vim.api.nvim_set_hl(0, 'NeoTreeIndent', { fg = '#F8F8F8' })

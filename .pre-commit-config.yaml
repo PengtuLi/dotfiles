@@ -34,7 +34,6 @@ repos:
     hooks:
       - id: markdownlint-cli2
         exclude: ^(stow/cli/yazi/|stow/gui/azote/|stow/gui/ghostty/)
-        args: ["--disable", "MD013", "MD033", "MD045"]
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.0

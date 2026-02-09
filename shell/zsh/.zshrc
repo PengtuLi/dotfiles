@@ -1,5 +1,6 @@
 # Get the dotfiles root directory
 ZSH_DIR=${0:A:h}
+DOTFILES_ROOT="$(git -C "$ZSH_DIR/../.." rev-parse --show-toplevel 2>/dev/null || echo "$ZSH_DIR/../..")"
 
 # ~/.local/bin
 export PATH="$HOME/.local/bin:$PATH"
@@ -7,17 +8,24 @@ export PATH="$HOME/.local/bin:$PATH"
 # 禁用 ctrl+d 解释的 eof
 setopt IGNORE_EOF
 
+# Load encrypted secrets if available
+if [ -f "$DOTFILES_ROOT/shell/.env.secrets" ]; then
+    set -a
+    source "$DOTFILES_ROOT/shell/.env.secrets"
+    set +a
+fi
+
 # ENV
 # export TERM=xterm-256color
 export EDITOR=nvim
 export VISUAL=nvim
 export NVIM_SOCK="/tmp/lpt-nvim.sock"
 # export TMUX_THEME=nord
-export HOMEBREW_NO_AUTO_UPDATE=true
 export XDG_CONFIG_HOME="$HOME/.config" # useful for macos
 export TERMINFO_DIRS="/usr/share/terminfo"
-export SOPS_AGE_KEY=$_SOPS_AGE_KEY
+export SOPS_AGE_KEY="${_SOPS_AGE_KEY:-}"
 export SOPS_AGE_SSH_PRIVATE_KEY_FILE=""
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 # zsh history save
 HISTFILE=~/.zsh_history #记录历史命令的文件
@@ -88,7 +96,7 @@ for lib in "$ZSH_DIR/lib"/*.zsh; do
     [ -r "$lib" ] && source "$lib"
 done
 [ -r "$ZSH_DIR/alias.zsh" ] && source "$ZSH_DIR/alias.zsh"
-[ -r "$ZSH_DIR/zsh_unplugged.zsh" ] && source "$ZSH_DIR/zsh_unplugged.zsh"
+[ -r "$ZSH_DIR/zsh-unplugged.zsh" ] && source "$ZSH_DIR/zsh-unplugged.zsh"
 
 # clone-only plugins
 # plugin-clone 'romkatv/zsh-bench@d7f9f821688bdff9365e630a8aaeba1fd90499b1'

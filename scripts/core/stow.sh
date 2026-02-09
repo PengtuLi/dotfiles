@@ -6,7 +6,7 @@ PLATFORM="$1"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "$ROOT_DIR/scripts/lib/common.sh"
-source "$ROOT_DIR/scripts/lib/stow_helpers.sh"
+source "$ROOT_DIR/scripts/lib/stow-helpers.sh"
 
 if ! command -v stow &>/dev/null; then
     error "GNU Stow 未安装（请确保 Brewfile 中包含 stow ）"

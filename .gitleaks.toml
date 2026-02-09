@@ -1,0 +1,9 @@
+title = "gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+paths = ['''windows_terminal''']

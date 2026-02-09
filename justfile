@@ -14,6 +14,7 @@ default:
     @echo "  osx              - macOS 完整配置"
     @echo "  linux-gui        - Linux GUI 配置"
     @echo "  linux-headless   - Linux 无头配置"
+    @echo "  ssh              - Linux ssh配置"
     @echo ""
     @echo "可用组件 (单独安装):"
     @echo "  proxy            - 代理配置"
@@ -52,6 +53,7 @@ linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-
 # Linux 无头配置
 linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless
 
+ssh: _ssh_linux
 # ============================================================================
 # 组件 (单独安装)
 # ============================================================================
@@ -89,7 +91,7 @@ stow-linux:
 # Shell 脚本设置
 shell_scripts:
     @echo "📜 设置 Shell 脚本..."
-    @bash "{{SCRIPTS_DIR}}/core/shell_scripts.sh"
+    @bash "{{SCRIPTS_DIR}}/core/shell-scripts.sh"
 
 # 额外配置 (macOS)
 extras-osx:
@@ -107,6 +109,15 @@ extras-linux:
 mesh:
     @echo "🌐 设置 Mesh..."
     @bash "{{SCRIPTS_DIR}}/core/mesh.sh"
+
+# ============================================================================
+# _ssh_linux
+# ============================================================================
+
+_ssh_linux:
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/brew_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/brew_sync 不存在"; exit 1; fi
+    @echo "📦 ssh setup..."
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/brew_sync.py"
 
 # ============================================================================
 # Brew 包组 (公开命令)

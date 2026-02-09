@@ -6,6 +6,7 @@ export NVIM_SOCK="/tmp/lpt-nvim.sock"
 export HOMEBREW_NO_AUTO_UPDATE=true
 export XDG_CONFIG_HOME="$HOME/.config"
 export TERMINFO_DIRS="/usr/share/terminfo"
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 HISTSIZE=10000
 HISTFILESIZE=10000
