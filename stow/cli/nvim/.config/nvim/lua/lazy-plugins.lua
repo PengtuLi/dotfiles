@@ -28,7 +28,7 @@ require('lazy').setup({
   -- require 'custom-plugins.bufferline',
   require 'custom-plugins.vim-tmux-navigator',
   -- require 'custom-plugins.duck',
-  -- require 'custom-plugins.animation',
+  require 'custom-plugins.animation',
   -- require 'custom-plugins.markview',
   -- require 'custom-plugins.peek',
   -- require 'custom-plugins.notify',

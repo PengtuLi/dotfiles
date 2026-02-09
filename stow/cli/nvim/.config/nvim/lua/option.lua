@@ -77,3 +77,11 @@ vim.keymap.set({ 'n' }, 'x', [["_x]]) -- v + x means clip
 vim.keymap.set({ 'n', 'v' }, 'X', [["_X]])
 vim.keymap.set({ 'n', 'v' }, 'c', [["_c]])
 vim.keymap.set({ 'n', 'v' }, 'C', [["_C]])
+
+-- cursor for theme
+vim.api.nvim_create_autocmd('ColorScheme', {
+  callback = function()
+    vim.api.nvim_set_hl(0, 'Cursor', { bg = '#2F81F7' })
+    vim.api.nvim_set_hl(0, 'lCursor', { bg = '#2F81F7' })
+  end,
+})
