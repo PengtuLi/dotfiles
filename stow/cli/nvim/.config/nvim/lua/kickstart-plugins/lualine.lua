@@ -77,6 +77,7 @@ return {
           green_hl_filename,
         },
         lualine_x = {
+          -- 'aerial',
           'searchcount',
           'selectioncount',
           -- 'encoding',

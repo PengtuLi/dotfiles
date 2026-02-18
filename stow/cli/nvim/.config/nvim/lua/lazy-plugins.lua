@@ -37,6 +37,7 @@ require('lazy').setup({
   -- require 'custom-plugins.lazygit',
   require 'custom-plugins.harpoon',
   -- require 'custom-plugins.yazi',
+  require 'custom-plugins.aerial',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
