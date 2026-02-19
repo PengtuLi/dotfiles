@@ -186,7 +186,20 @@ EOF""",
             remote_exec(
                 ssh_cmd,
                 r"""if ! command -v zb &>/dev/null; then
-curl -sSL https://raw.githubusercontent.com/lucasgelfond/zerobrew/main/install.sh | bash
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "x86_64" ]; then
+        BINARY="zb-linux-x64"
+    elif [ "$ARCH" = "aarch64" ]; then
+        BINARY="zb-linux-arm64"
+    else
+        echo "Unsupported architecture: $ARCH"
+        exit 1
+    fi
+    URL="https://github.com/lucasgelfond/zerobrew/releases/latest/download/$BINARY"
+    mkdir -p /usr/local/bin
+    curl -fsSL "$URL" -o /usr/local/bin/zb || wget -q "$URL" -O /usr/local/bin/zb
+    chmod +x /usr/local/bin/zb
+    echo "zb installed to /usr/local/bin/zb"
 fi""",
                 proxy=use_proxy,
             )
