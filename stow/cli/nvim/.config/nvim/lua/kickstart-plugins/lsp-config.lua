@@ -26,7 +26,6 @@ return {
       { 'saghen/blink.cmp' },
     },
     config = function()
-      vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#1e1e1e' })
       vim.api.nvim_set_hl(0, 'LspInlayHint', { bg = 'NONE', fg = '#5c5c5c' })
 
       --  This function gets run when an LSP attaches to a particular buffer.
