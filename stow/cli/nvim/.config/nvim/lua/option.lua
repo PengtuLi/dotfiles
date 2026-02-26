@@ -38,6 +38,7 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- }
 -- vim.opt.foldtext = ""
 vim.wo.foldlevel = 99
+vim.wo.foldmethod = 'expr'
 vim.opt.scrolloff = 4
 vim.opt.smoothscroll = true
 vim.opt.sidescrolloff = 8

@@ -42,14 +42,14 @@ return {
       })
 
       -- TS fold cal
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = ensure_installed,
-        callback = function()
-          vim.wo.foldmethod = 'expr'
-          vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-        end,
-        group = ts_group,
-      })
+      -- vim.api.nvim_create_autocmd('FileType', {
+      --   pattern = ensure_installed,
+      --   callback = function()
+      --     vim.wo.foldmethod = 'expr'
+      --     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      --   end,
+      --   group = ts_group,
+      -- })
 
       -- TS indent
       vim.api.nvim_create_autocmd('FileType', {

@@ -16,6 +16,10 @@ return {
         vim.keymap.set('n', '<leader>n', '<cmd>AerialNext<CR>', { buffer = bufnr, desc = 'AerialNext' })
       end,
       attach_mode = 'global',
+      show_guides = true,
+      manage_folds = true,
+      link_folds_to_tree = true,
+      link_tree_to_folds = true,
       layout = {
         default_direction = 'right',
         -- Determines where the aerial window will be opened
@@ -27,5 +31,8 @@ return {
     -- You probably also want to set a keymap to toggle aerial
     vim.keymap.set('n', '|', '<cmd>AerialToggle!<CR>')
     vim.keymap.set('n', '<leader>sO', require('aerial').fzf_lua_picker, { desc = 'LSP Document Symbols (aerial)' })
+
+    -- Highlight current line (tokyonight moon orange)
+    vim.api.nvim_set_hl(0, 'AerialLine', { fg = '#ff966c', bold = true })
   end,
 }

@@ -18,6 +18,8 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   callback = function()
     vim.api.nvim_set_hl(0, 'Cursor', { bg = '#2F81F7' })
     vim.api.nvim_set_hl(0, 'lCursor', { bg = '#2F81F7' })
-    vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#000000' })
+    vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2d3a4d' })
+    -- window separator
+    vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#6b7394', bold = true })
   end,
 })
