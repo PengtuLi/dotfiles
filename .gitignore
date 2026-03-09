@@ -7,7 +7,6 @@ node_modules/
 **/*.DS_Store
 
 mihomo-clash/config/*
-!mihomo-clash/config/ui/
 !mihomo-clash/config/config.yaml.sops
 
 stow/gui/fcitx5/.config/fcitx5/conf/*
