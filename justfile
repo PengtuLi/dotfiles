@@ -19,6 +19,7 @@ default:
     @echo "可用组件 (单独安装):"
     @echo "  proxy            - 代理配置"
     @echo "  conda            - Conda 环境设置"
+    @echo "  vscode           - vscode 插件安装"
     @echo "  prerequisites-osx - 前置依赖 (macOS)"
     @echo "  prerequisites-linux - 前置依赖 (Linux)"
     @echo "  stow-osx         - dotfiles 链接 (macOS)"
@@ -45,10 +46,10 @@ list: default
 # ============================================================================
 
 # macOS 完整配置
-osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx
+osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx vscode
 
 # Linux GUI 配置
-linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-gui
+linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-gui vscode
 
 # Linux 无头配置
 linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless
@@ -67,6 +68,12 @@ proxy:
 conda:
     @echo "🐍 设置 Conda..."
     @bash "{{SCRIPTS_DIR}}/core/conda.sh"
+
+# vscode setting
+vscode:
+    @echo "📦 设置 vscode..."
+    @bash "{{SCRIPTS_DIR}}/extras/vscode-extensions.sh"
+
 
 # 前置依赖 (macOS)
 prerequisites-osx:

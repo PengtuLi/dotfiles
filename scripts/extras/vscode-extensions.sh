@@ -1,30 +1,17 @@
 #!/bin/bash
 
-# Get the absolute path of the directory where the script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-. $SCRIPT_DIR/utils.sh
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "$ROOT_DIR/scripts/lib/common.sh"
 
 install_vscode_extensions() {
-    info "Installing VSCode extensions..."
-
     # List of Extensions
     extensions=(
-        zhuangtongfa.Material-theme
-        vscodevim.vim
         ms-python.python
-        ms-toolsai.jupyter
-        ms-python.isort
-        ms-python.black-formatter
-        ms-python.flake8
         vscode-icons-team.vscode-icons
         ms-azuretools.vscode-docker
-        mtxr.sqltools
-        ZainChen.json
-        redhat.vscode-yaml
-        eamodio.gitlens
-        mechatroner.rainbow-csv
-        esbenp.prettier-vscode
+        enkia.tokyo-night
+        ms-toolsai.jupyter
+        ms-vscode-remote.remote-ssh
     )
 
     for e in "${extensions[@]}"; do
@@ -34,6 +21,6 @@ install_vscode_extensions() {
     success "VSCode extensions installed successfully"
 }
 
-if [ "$(basename "$0")" = "$(basename "${BASH_SOURCE[0]}")" ]; then
+if command -v code &> /dev/null; then
     install_vscode_extensions
 fi

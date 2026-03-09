@@ -38,10 +38,16 @@ install_proxy(){
 
     # download ui
     # Clone the gh-pages branch
-    git clone https://github.com/metacubex/metacubexd.git -b gh-pages /etc/mihomo/ui
-
-    # Update to latest version
-    git -C /etc/mihomo/ui pull -r
+    if [[ ! -d /etc/mihomo/ui ]]; then
+        git clone https://github.com/metacubex/metacubexd.git -b gh-pages /etc/mihomo/ui
+    else
+        info "mihomo ui already installed."
+    fi
+    read -p "---- update mihomo ui? [y/n] " update_ui
+    if [[ "$update_ui" == "y" ]]; then
+        # Update to latest version
+        git -C /etc/mihomo/ui pull -r
+    fi
 
     echo ${cmd}
     echo ${cmd2}

@@ -30,7 +30,7 @@
     "explorer.confirmPasteNative": false,
     "terminal.integrated.defaultProfile.osx": "zsh",
 
-    "editor.fontFamily": "Maple Mono NF CN, JetBrainsMono Nerd Font",
+    "editor.fontFamily": "Maple Mono NF CN",
     // Enable ligatures
     "editor.fontLigatures": "'calt'",
     "window.newWindowProfile": "Default",
@@ -63,4 +63,11 @@
     "workbench.settings.applyToAllProfiles": [
         "python.analysis.typeCheckingMode"
     ],
+    "workbench.colorCustomizations": {
+      "editorCursor.foreground": "#2F81F7",
+      "editor.lineHighlightBackground": "#2d3a4d"
+    },
+    "workbench.iconTheme": "vscode-icons",
+    "terminal.external.osxExec": "Ghostty.app",
+    "terminal.explorerKind": "external"
 }
