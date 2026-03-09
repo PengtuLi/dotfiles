@@ -6,7 +6,7 @@ test.sh
 node_modules/
 **/*.DS_Store
 
-mihomo-clash/config/
+mihomo-clash/config/*
 !mihomo-clash/config/ui/
 !mihomo-clash/config/config.yaml.sops
 
@@ -19,7 +19,7 @@ stow/cli/tmux/.config/tmux/plugins/
 
 stow/cli/rclone/.config/rclone/rclone.conf
 
-stow/gui/vscode/Code/
+stow/gui/vscode/Code/*
 !stow/gui/vscode/Code/User/snippets/
 !stow/gui/vscode/Code/User/*.json
 
