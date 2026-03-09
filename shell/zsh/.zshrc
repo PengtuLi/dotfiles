@@ -90,6 +90,9 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:*' fzf-bindings 'ctrl-space:toggle+down'
 zstyle ':fzf-tab:*' continuous-trigger ''
 
+# zsh vi util
+export ZVM_VI_SURROUND_BINDKEY=s-prefix
+
 autoload -Uz compinit && compinit
 
 # Load shell modules
@@ -123,5 +126,6 @@ plugins=(
     # util
     zsh-users/zsh-syntax-highlighting
     MichaelAquilina/zsh-you-should-use
+    jeffreytse/zsh-vi-mode
 )
 plugin-load $plugins
