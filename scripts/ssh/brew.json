@@ -18,6 +18,11 @@
     "install": "True",
     "config": ["~/.config/gh"]
   },
+  "rg": {
+    "install": "True",
+    "config": ["~/.ripgreprc"]
+  },
+
   "lazygit": {
     "install": "True",
     "config": ["~/.config/lazygit/*.yml"]

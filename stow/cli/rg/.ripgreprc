@@ -1,0 +1,3 @@
+# 排除 node_modules 目录
+--glob=!node_modules/*
+--glob=!.git/*

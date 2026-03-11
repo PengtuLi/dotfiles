@@ -41,6 +41,9 @@ setopt extended_history     # 记录时间戳（格式：:start_time:elapsed;com
 eval $(thefuck --alias)
 eval $(thefuck --alias fk)
 
+# rg
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
 # fzf
 if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
     export FZF_DEFAULT_OPTS="
