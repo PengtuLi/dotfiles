@@ -192,7 +192,7 @@ return {
         bashls = {}, -- shell
         clangd = {}, -- c, c++
         ruff = {}, -- python
-        pyright = {}, -- python
+        ty = {}, --python
         eslint = {}, -- js, ts
         lua_ls = {
           -- cmd = { ... },
@@ -242,7 +242,6 @@ return {
         'codespell', -- spell check
         'beautysh', -- bash sh zsh
         'stylua', -- lua
-        'typos-lsp', -- spell check
 
         -----------Linter
         -- 'cfn-lint', -- yaml, json
