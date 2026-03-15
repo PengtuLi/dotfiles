@@ -25,6 +25,12 @@ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}__bash_history_sync"
 # 禁用 ctrl+d 退出
 set -o ignoreeof
 
+# 启用 vim 快捷键模式
+set -o vi
+# 根据模式切换光标形状 (插入:竖线 | 普通:块状)
+bind 'set show-mode-in-prompt on'
+bind 'set vi-ins-mode-string \1\e[6 q\2'
+bind 'set vi-cmd-mode-string \1\e[2 q\2'
 
 # 补全增强
 shopt -s cdspell       # cd 拼写纠错
