@@ -113,3 +113,9 @@ keybind = alt+shift+0=equalize_splits
 keybind = alt+equal=increase_font_size:1
 keybind = alt+minus=decrease_font_size:1
 keybind = alt+0=reset_font_size
+
+# search
+keybind = alt+shift+f=start_search
+keybind = performable:escape=end_search
+keybind = performable:enter=navigate_search:next
+keybind = performable:shift+enter=navigate_search:previous

@@ -14,7 +14,7 @@ cask "jordanbaird-ice"
 cask "google-drive"
 cask "vlc"                               # media player
 cask "google-chrome"
-# cask "wpsoffice-cn"
+cask "wpsoffice-cn"
 cask "tencent-meeting"
 cask "ghostty"                           # GPU 加速终端
 cask "spotify"
