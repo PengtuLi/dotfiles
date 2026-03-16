@@ -146,19 +146,35 @@ def setup_socks_proxy(
 
             # Kill any existing processes using tunnel port on remote
             print(
-                f"{Fore.CYAN}[tunnel] Setting up reverse SSH tunnel...{Style.RESET_ALL}"
+                f"{Fore.CYAN}[tunnel] Cleaning up old tunnel processes...{Style.RESET_ALL}"
             )
-            subprocess.run(
+            # First, kill any ssh processes that might be using the port
+            cleanup_result = subprocess.run(
                 f'''ssh -S none -A {host} "
-                    pkill -9 -f 'ssh.*{tunnel_port}' 2>/dev/null || true
-                    lsof -ti :{tunnel_port} | xargs kill -9 2>/dev/null || true
+                    # Kill ssh processes connected to tunnel port
+                    pkill -9 -f 'ssh.*-R.*{tunnel_port}' 2>/dev/null || true
+                    # Kill any process listening on the tunnel port
+                    ss -tlpn 2>/dev/null | grep ':{tunnel_port}' | awk '{{print \\$6}}' | xargs -r kill -9 2>/dev/null || true
+                    # Also try with lsof
+                    lsof -ti :{tunnel_port} | xargs -r kill -9 2>/dev/null || true
+                    # Force release the port
                     fuser -k -9 {tunnel_port}/tcp 2>/dev/null || true
+                    # Wait a moment for port to be released
+                    sleep 1
                 "''',
                 shell=True,
                 capture_output=True,
                 text=True,
             )
+            if cleanup_result.stderr:
+                print(
+                    f"{Fore.YELLOW}[cleanup] {cleanup_result.stderr.strip()}{Style.RESET_ALL}"
+                )
             time.sleep(1)
+
+            print(
+                f"{Fore.CYAN}[tunnel] Setting up reverse SSH tunnel...{Style.RESET_ALL}"
+            )
 
             # Create reverse tunnel
             tunnel_proc = subprocess.Popen(
