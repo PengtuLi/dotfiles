@@ -30,6 +30,7 @@ brew "thefuck"               # 历史命令纠错
 brew "tldr"                  # tldr 文档查看
 brew "fastfetch"             # maintained neofetch
 brew "btop"                  # better top
+brew "bottom"                # rust based simple and efficient top
 brew "pstree"                # 以树状图显示进程
 brew "hyperfine"             # benchmark program
 # brew "lazydocker"            # 交互式 docker TUI

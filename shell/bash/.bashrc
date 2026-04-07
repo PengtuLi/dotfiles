@@ -267,7 +267,7 @@ if command -v thefuck >/dev/null 2>&1; then
 fi
 
 # fzf
-if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
+if command -v fzf >/dev/null 2>&1; then
     export FZF_DEFAULT_OPTS="
       -m
       --info default
@@ -283,7 +283,6 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
       --bind 'ctrl-\\:toggle-preview'
       --bind 'alt-a:toggle-all'
       "
-    PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
     eval "$(fzf --bash)"
 fi
 
@@ -329,3 +328,12 @@ uv-activate() {
     echo "No .venv found in any parent directory." >&2
     return 1
 }
+
+# Tmux auto-start
+if command -v tmux >/dev/null 2>&1; then
+    if [ -z "$TMUX" ] && [ -e ~/.tmux-auto-start ]; then
+        tmux attach -t default || tmux new -s default
+    fi
+fi
+alias t-auto-on="touch ~/.tmux-auto-start"
+alias t-auto-off="rm -f ~/.tmux-auto-start"

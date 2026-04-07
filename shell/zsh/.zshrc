@@ -62,14 +62,16 @@ if [[ ! "$PATH" == *${HOME}/.fzf/bin* ]]; then
 --bind 'alt-a:toggle-all'
 "
     PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
-    FZF_ALT_C_COMMAND= source <(fzf --zsh)
+    FZF_ALT_C_COMMAND= FZF_CTRL_R_COMMAND= source <(fzf --zsh)
 fi
+
+# atuin - must be loaded after all plugins
+zvm_after_init_commands+=(
+    eval "$(atuin init zsh --disable-up-arrow)"
+)
 
 # zoxide
 eval "$(zoxide init zsh)"
-
-# atuin
-eval "$(atuin init zsh --disable-up-arrow)"
 
 # fzf-tab
 # 全局启用：即使未输入 - 或 --，也显示所有选项

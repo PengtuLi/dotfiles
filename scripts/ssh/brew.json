@@ -60,5 +60,12 @@
   },
   "claude-code": {
     "install": "True"
+  },
+  "dooit": {
+    "install": "False",
+    "config": ["~/.config/dooit/config.py"]
+  },
+  "opencode":{
+    "config":["~/.config/opencode/opencode.json"]
   }
 }
