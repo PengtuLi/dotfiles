@@ -5,12 +5,12 @@
             "npm": "@ai-sdk/anthropic",
             "name": "Model Studio Coding Plan",
             "options": {
-                "baseURL": "https://coding.dashscope.aliyuncs.com/apps/anthropic/v1",
+                "baseURL": "{env:ANTHROPIC_BASE_URL}",
                 "apiKey": "{env:ANTHROPIC_AUTH_TOKEN}"
             },
             "models": {
-                "qwen3.5-plus": {
-                    "name": "Qwen3.5 Plus",
+                "qwen3.6-plus": {
+                    "name": "Qwen3.6 Plus",
                     "modalities": {
                         "input": ["text", "image"],
                         "output": ["text"]

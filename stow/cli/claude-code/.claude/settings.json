@@ -29,11 +29,12 @@
       }
     ]
   },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  },
   "context": {
     "show_notifications": true,
     "auto_update_context": true
   },
-  "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
-  }
+  "effortLevel": "high"
 }
