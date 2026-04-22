@@ -1,0 +1,94 @@
+nvim:
+  install: true
+  config:
+    - ~/.config/nvim
+
+tree-sitter-cli:
+  install: true
+
+yazi:
+  install: true
+  config:
+    - ~/.config/yazi
+
+fd:
+  install: true
+
+file:
+  install: true
+
+gh:
+  install: true
+  config:
+    - ~/.config/gh
+
+rg:
+  install: true
+  config:
+    - ~/.ripgreprc
+
+lazygit:
+  install: true
+  config:
+    - ~/.config/lazygit/*.yml
+
+tmux:
+  install: true
+  config:
+    - ~/.config/tmux/*.conf
+
+git:
+  install: true
+  config:
+    - ~/.gitconfig
+    - ~/.gitignore_global
+
+delta:
+  install: true
+  config:
+    - ~/.delta.themes.gitconfig
+
+gdb:
+  config:
+    - ~/.gdbinit
+
+pudb:
+  config:
+    - ~/.config/pudb
+
+fzf:
+  install: true
+
+zoxide:
+  install: true
+
+bash-completion@2:
+  install: true
+
+claude-code:
+  install: true
+  config: ~/.claude/settings.json
+
+dooit:
+  config:
+    - ~/.config/dooit/config.py
+
+opencode:
+  config:
+    - ~/.config/opencode/opencode.json
+
+duf:
+  install: true
+
+dust:
+  install: true
+
+sd:
+  install: true
+
+procs:
+  install: true
+
+btop:
+  install: true
+  config: ~/.config/btop

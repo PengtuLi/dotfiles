@@ -36,7 +36,7 @@ just ***
 | **Viewers** | jq | JSON processor |
 | **System** | btop | System monitor |
 | **System** | fastfetch | System info |
-| **System** | pstree | Process tree |
+| **System** | procs | Process tree |
 | **Utils** | fzf | Fuzzy finder |
 | **Utils** | zoxide | Smart directory jump |
 | **Utils** | atuin | Shell history sync |

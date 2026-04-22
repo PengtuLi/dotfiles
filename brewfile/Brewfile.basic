@@ -21,6 +21,7 @@ brew "ripgrep"               # file content searching
 brew "file"                  # file type detection
 brew "jq"                    # json preview
 brew "yq"                    # command-line YAML, JSON, XML, CSV, TOML, HCL and properties processor
+# brew "fq"                  # jq for binary formats
 brew "7-Zip"                 # archive extraction and preview
 brew "fzf"                   # fuzzy finder
 brew "zoxide"                # jump cd
@@ -30,13 +31,15 @@ brew "thefuck"               # 历史命令纠错
 brew "tldr"                  # tldr 文档查看
 brew "fastfetch"             # maintained neofetch
 brew "btop"                  # better top
-brew "bottom"                # rust based simple and efficient top
-brew "pstree"                # 以树状图显示进程
+# brew "bottom"                # rust based simple and efficient top
 brew "hyperfine"             # benchmark program
 # brew "lazydocker"            # 交互式 docker TUI
+brew "procs"                 # modern ps
 brew "gping"                 # graph ping
-brew "bandwhich"             # network usage
 brew "duf"                   # disk info
+brew "dust"                  # fold level disk info
+brew "sd"                    # alternative for sed&awk
+brew "grex"                  # grex generator
 
 # terminal multiplier
 brew "tmux"                  # 终端复用器

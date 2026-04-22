@@ -11,3 +11,9 @@ creation_rules:
   - path_regex: shell/.env.secrets$
     format: dotenv
     age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7
+  - path_regex: stow/cli/claude-code/.claude/settings.json$
+    format: binary
+    age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7
+  - path_regex: stow/cli/opencode/.config/opencode/opencode.json$
+    format: binary
+    age: age1hqkfjmqmxnmc67agg354le49se0wm8d02ythexf8z3hzas2269vs9nt7v7

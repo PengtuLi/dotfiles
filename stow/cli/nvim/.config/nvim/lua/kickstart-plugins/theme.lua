@@ -17,9 +17,7 @@ return {
           sidebars = 'dark', -- style for sidebars, see below
           floats = 'dark', -- style for floating windows
         },
-        lualine_bold = false, -- When `true`, section headers in the lualine theme will be bold
       }
-
       vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },

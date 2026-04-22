@@ -1,3 +1,7 @@
+# api manage
+
+npm install -g 9router
+
 # Vibe Coding
 
 需要装什么：

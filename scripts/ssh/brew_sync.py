@@ -9,6 +9,7 @@ from pathlib import Path
 from threading import Thread
 from queue import Queue, Empty
 
+import yaml
 from colorama import Fore, Style, init
 
 init(autoreset=True)
@@ -272,13 +273,13 @@ def setup_socks_proxy(
 
 
 def main():
-    # Load brew.json
-    brew_file = THIS_DIR / "brew.json"
+    # Load brew.yaml
+    brew_file = THIS_DIR / "brew.yaml"
     if not brew_file.exists():
         print(f"{Fore.RED}Error: {brew_file} not found{Style.RESET_ALL}")
         sys.exit(1)
 
-    apps = json.loads(brew_file.read_text())
+    apps = yaml.safe_load(brew_file.read_text())
 
     # Select host via fzf
     hosts = get_ssh_hosts()
@@ -453,7 +454,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
 
         # Install packages
         to_install = [
-            k for k, v in apps.items() if v.get("install", "False").lower() == "true"
+            k for k, v in apps.items() if str(v.get("install", False)).lower() == "true"
         ]
         if to_install:
             print(
@@ -544,9 +545,11 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                 finally:
                     tmp_path.unlink(missing_ok=True)
 
-        # Copy bashrc to remote
-        print(f"{Fore.WHITE}Copying .bashrc...{Style.RESET_ALL}")
-        bashrc_local = THIS_DIR.parent.parent / "shell/bash/.bashrc"
+        # Copy bashrc and common shell scripts to remote
+        print(f"{Fore.WHITE}Copying .bashrc and shell scripts...{Style.RESET_ALL}")
+        shell_dir = THIS_DIR.parent.parent / "shell"
+        bashrc_local = shell_dir / "bash/.bashrc"
+        common_dir = shell_dir / "common"
         if bashrc_local.exists():
             if (
                 input(f"{Fore.YELLOW}Copy .bashrc? [y/N] {Style.RESET_ALL}")
@@ -556,6 +559,24 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
             ):
                 print(f"  {Fore.CYAN}Syncing {Fore.WHITE}.bashrc{Style.RESET_ALL}")
                 subprocess.run(f"scp {bashrc_local} {host}:~/._bashrc", shell=True)
+                # Copy common shell scripts
+                if common_dir.exists():
+                    print(
+                        f"  {Fore.CYAN}Syncing {Fore.WHITE}common shell scripts{Style.RESET_ALL}"
+                    )
+                    subprocess.run(
+                        f"ssh {host} 'mkdir -p ~/._shell/common'", shell=True
+                    )
+                    subprocess.run(
+                        f"scp {common_dir}/*.sh {host}:~/._shell/common/", shell=True
+                    )
+                    # Fix SHELL_DIR in remote ._bashrc to use absolute path
+                    # remote_exec escapes $ to \$, so $HOME becomes \$HOME
+                    # on remote: \$HOME in double quotes → literal $HOME
+                    remote_exec(
+                        ssh_cmd,
+                        """sed -i 's|^SHELL_DIR=.*|SHELL_DIR="$HOME/._shell"|' ~/._bashrc""",
+                    )
                 # Source it in remote .bashrc (if not already exists)
                 remote_exec(
                     ssh_cmd,

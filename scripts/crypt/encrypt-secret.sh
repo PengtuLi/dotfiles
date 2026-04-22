@@ -11,12 +11,24 @@ if ! command -v sops &> /dev/null; then
     exit 1
 fi
 
-# Encrypt function with checksum comparison
+# Compute file checksum using best available tool
+compute_checksum() {
+    local file="$1"
+    if command -v sha256sum &>/dev/null; then
+        sha256sum "$file" | cut -d' ' -f1
+    elif command -v shasum &>/dev/null; then
+        shasum -a 256 "$file" | cut -d' ' -f1
+    else
+        md5sum "$file" | cut -d' ' -f1
+    fi
+}
+
+# Encrypt a file if its content has changed
 encrypt_if_changed() {
     local source_file="$1"
     local encrypted_file="$2"
     local description="$3"
-    local add_force="${4:-normal}"  # "force" 表示使用 git add -f
+    local add_force="${4:-normal}"
 
     if [ ! -f "$source_file" ]; then
         echo "   -> Source $description not found."
@@ -25,15 +37,8 @@ encrypt_if_changed() {
 
     echo "   -> Processing $description..."
 
-    # Get source file checksum
     local current_checksum
-    if command -v sha256sum &>/dev/null; then
-        current_checksum=$(sha256sum "$source_file" | cut -d' ' -f1)
-    elif command -v shasum &>/dev/null; then
-        current_checksum=$(shasum -a 256 "$source_file" | cut -d' ' -f1)
-    else
-        current_checksum=$(md5sum "$source_file" | cut -d' ' -f1)
-    fi
+    current_checksum=$(compute_checksum "$source_file")
 
     local checksum_file="${encrypted_file}.checksum"
 
@@ -72,5 +77,7 @@ encrypt_if_changed "$ROOT_DIR/stow/cli/ssh/.ssh/config" "$ROOT_DIR/stow/cli/ssh/
 encrypt_if_changed "$ROOT_DIR/mihomo-clash/config/config.yaml" "$ROOT_DIR/mihomo-clash/config/config.yaml.sops" "Clash config" "force"
 encrypt_if_changed "$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml" "$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml.sops" "gh auth" "normal"
 encrypt_if_changed "$ROOT_DIR/shell/.env.secrets" "$ROOT_DIR/shell/.env.secrets.sops" "env secrets" "normal"
+encrypt_if_changed "$ROOT_DIR/stow/cli/claude-code/.claude/settings.json" "$ROOT_DIR/stow/cli/claude-code/.claude/settings.json.sops" "Claude Code settings" "normal"
+encrypt_if_changed "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json" "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json.sops" "OpenCode config" "normal"
 
 echo "Pre-commit encryption hook finished."

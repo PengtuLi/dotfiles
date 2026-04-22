@@ -16,11 +16,9 @@ decrypt_if_needed() {
     local target_file="$2"
     local chmod_perms="${3:-}"
 
-    local input_type="binary"
-
     # Skip if source file doesn't exist
     if [ ! -f "$source_file" ]; then
-        echo "⚠️  Source file not found: $source_file"
+        echo "  Source file not found: $source_file"
         return 1
     fi
 
@@ -28,8 +26,8 @@ decrypt_if_needed() {
         local temp_decrypted
         temp_decrypted=$(mktemp)
 
-        if ! sops decrypt --input-type="$input_type" --output-type="$input_type" "$source_file" > "$temp_decrypted" 2>/dev/null; then
-            echo "❌ Failed to decrypt: $source_file" >&2
+        if ! sops decrypt --input-type=binary --output-type=binary "$source_file" > "$temp_decrypted" 2>/dev/null; then
+            echo "  Failed to decrypt: $source_file" >&2
             rm -f "$temp_decrypted"
             return 1
         fi
@@ -38,14 +36,14 @@ decrypt_if_needed() {
             echo "'$target_file' exists and content is identical. Skipping."
             rm -f "$temp_decrypted"
         else
-            echo "⚠️  '$target_file' exists and differs from decrypted content."
+            echo "  '$target_file' exists and differs from decrypted content."
             echo "Skipping decryption to prevent overwriting your changes."
             rm -f "$temp_decrypted"
         fi
     else
         echo "Decrypting '$source_file' to '$target_file'"
-        if ! sops decrypt --input-type="$input_type" --output-type="$input_type" "$source_file" > "$target_file" 2>/dev/null; then
-            echo "❌ Failed to decrypt: $source_file" >&2
+        if ! sops decrypt --input-type=binary --output-type=binary "$source_file" > "$target_file" 2>/dev/null; then
+            echo "  Failed to decrypt: $source_file" >&2
             return 1
         fi
     fi
@@ -56,21 +54,12 @@ decrypt_if_needed() {
     fi
 }
 
-SSH_KEY="$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa"
-SSH_KEY_SOPS=$SSH_KEY.sops
-SSH_CONFIG="$ROOT_DIR/stow/cli/ssh/.ssh/config"
-SSH_CONFIG_SOPS=$SSH_CONFIG.sops
-CLASH_CONFIG="$ROOT_DIR/mihomo-clash/config/config.yaml"
-CLASH_CONFIG_SOPS=$CLASH_CONFIG.sops
-GH_HOST="$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml"
-GH_HOST_SOPS=$GH_HOST.sops
-ENV_SECRETS="$ROOT_DIR/shell/.env.secrets"
-ENV_SECRETS_SOPS=$ENV_SECRETS.sops
+decrypt_if_needed "$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa.sops" "$ROOT_DIR/stow/cli/ssh/.ssh/id_rsa" "600"
+decrypt_if_needed "$ROOT_DIR/stow/cli/ssh/.ssh/config.sops" "$ROOT_DIR/stow/cli/ssh/.ssh/config" ""
+decrypt_if_needed "$ROOT_DIR/mihomo-clash/config/config.yaml.sops" "$ROOT_DIR/mihomo-clash/config/config.yaml" ""
+decrypt_if_needed "$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml.sops" "$ROOT_DIR/stow/cli/gh/.config/gh/hosts.yml" "600"
+decrypt_if_needed "$ROOT_DIR/shell/.env.secrets.sops" "$ROOT_DIR/shell/.env.secrets" "600"
+decrypt_if_needed "$ROOT_DIR/stow/cli/claude-code/.claude/settings.json.sops" "$ROOT_DIR/stow/cli/claude-code/.claude/settings.json" ""
+decrypt_if_needed "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json.sops" "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json" ""
 
-decrypt_if_needed "$SSH_KEY_SOPS" "$SSH_KEY" "600"
-decrypt_if_needed "$SSH_CONFIG_SOPS" "$SSH_CONFIG" ""
-decrypt_if_needed "$CLASH_CONFIG_SOPS" "$CLASH_CONFIG" ""
-decrypt_if_needed "$GH_HOST_SOPS" "$GH_HOST" "600"
-decrypt_if_needed "$ENV_SECRETS_SOPS" "$ENV_SECRETS" "600"
-
-echo "🔐 Secrets decryption process finished."
+echo "Secrets decryption process finished."
