@@ -281,6 +281,16 @@ def main():
 
     apps = yaml.safe_load(brew_file.read_text())
 
+    # Load bin.yaml
+    bin_file = THIS_DIR / "bin.yaml"
+    bin_scripts = {}
+    if bin_file.exists():
+        bin_scripts = {
+            k
+            for k, v in (yaml.safe_load(bin_file.read_text()) or {}).items()
+            if str(v).lower() == "true"
+        }
+
     # Select host via fzf
     hosts = get_ssh_hosts()
     if not hosts:
@@ -545,42 +555,94 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                 finally:
                     tmp_path.unlink(missing_ok=True)
 
-        # Copy bashrc and common shell scripts to remote
-        print(f"{Fore.WHITE}Copying .bashrc and shell scripts...{Style.RESET_ALL}")
-        shell_dir = THIS_DIR.parent.parent / "shell"
-        bashrc_local = shell_dir / "bash/.bashrc"
-        common_dir = shell_dir / "common"
-        if bashrc_local.exists():
-            if (
-                input(f"{Fore.YELLOW}Copy .bashrc? [y/N] {Style.RESET_ALL}")
-                .strip()
-                .lower()
-                == "y"
-            ):
-                print(f"  {Fore.CYAN}Syncing {Fore.WHITE}.bashrc{Style.RESET_ALL}")
-                subprocess.run(f"scp {bashrc_local} {host}:~/._bashrc", shell=True)
-                # Copy common shell scripts
+        # Copy .local/bin scripts and bashrc (single archive transfer)
+        print(f"{Fore.WHITE}Copying scripts and shell config...{Style.RESET_ALL}")
+        if (
+            input(f"{Fore.YELLOW}Copy bin scripts and .bashrc? [y/N] {Style.RESET_ALL}")
+            .strip()
+            .lower()
+            == "y"
+        ):
+            import tempfile
+
+            archive_paths = []  # (src_abs, rel_from_home)
+
+            # Collect .local/bin scripts (from dotfiles repo, not ~)
+            local_bin = THIS_DIR.parent.parent / ".local" / "bin"
+            for name in sorted(bin_scripts):
+                src = local_bin / name
+                if src.exists():
+                    rel = Path(".local/bin") / name
+                    archive_paths.append((src, rel))
+                    print(f"  {Fore.CYAN}Adding {Fore.WHITE}{rel}{Style.RESET_ALL}")
+                else:
+                    print(f"  {Fore.YELLOW}Skip {name} (not found){Style.RESET_ALL}")
+
+            # Collect bashrc and common shell scripts
+            shell_dir = THIS_DIR.parent.parent / "shell"
+            bashrc_local = shell_dir / "bash/.bashrc"
+            common_dir = shell_dir / "common"
+            if bashrc_local.exists():
+                # Stage to temp dir as ._bashrc
+                archive_paths.append((bashrc_local, Path("._bashrc")))
+                print(f"  {Fore.CYAN}Adding {Fore.WHITE}._bashrc{Style.RESET_ALL}")
                 if common_dir.exists():
+                    for sh in sorted(common_dir.glob("*.sh")):
+                        rel = Path("._shell/common") / sh.name
+                        archive_paths.append((sh, rel))
+                        print(f"  {Fore.CYAN}Adding {Fore.WHITE}{rel}{Style.RESET_ALL}")
+
+            if archive_paths:
+                # Prepare remote dirs (tar will overwrite existing files)
+                remote_exec(ssh_cmd, "mkdir -p ~/.local/bin ~/._shell/common")
+
+                # Build tar from a staging dir to preserve relative paths
+                with tempfile.TemporaryDirectory() as staging:
+                    staging = Path(staging)
+                    for src, rel in archive_paths:
+                        dest = staging / rel
+                        dest.parent.mkdir(parents=True, exist_ok=True)
+                        # copy preserves executable bit
+                        import shutil
+
+                        shutil.copy2(str(src), str(dest))
+
+                    # Create tar from staging dir
+                    tmp_tar = staging / "_archive.tar.gz"
+                    tar_cmd = ["tar", "-czhf", str(tmp_tar), "-C", str(staging)]
+                    for _, rel in archive_paths:
+                        tar_cmd.append(str(rel))
+                    subprocess.run(tar_cmd, check=True)
+
+                    archive_size = tmp_tar.stat().st_size / 1024 / 1024
                     print(
-                        f"  {Fore.CYAN}Syncing {Fore.WHITE}common shell scripts{Style.RESET_ALL}"
+                        f"  {Fore.GREEN}Transferring ({archive_size:.2f} MB)...{Style.RESET_ALL}"
                     )
                     subprocess.run(
-                        f"ssh {host} 'mkdir -p ~/._shell/common'", shell=True
+                        f"scp {tmp_tar} {host}:/tmp/scripts_sync.tar.gz",
+                        shell=True,
+                        check=True,
                     )
-                    subprocess.run(
-                        f"scp {common_dir}/*.sh {host}:~/._shell/common/", shell=True
-                    )
-                    # Fix SHELL_DIR in remote ._bashrc to use absolute path
-                    # remote_exec escapes $ to \$, so $HOME becomes \$HOME
-                    # on remote: \$HOME in double quotes → literal $HOME
+
+                remote_exec(
+                    ssh_cmd,
+                    "tar -xzf /tmp/scripts_sync.tar.gz -C ~ && rm /tmp/scripts_sync.tar.gz",
+                )
+                remote_exec(ssh_cmd, "chmod +x ~/.local/bin/* 2>/dev/null || true")
+
+                # Fix SHELL_DIR in remote ._bashrc
+                if bashrc_local.exists() and common_dir.exists():
                     remote_exec(
                         ssh_cmd,
                         """sed -i 's|^SHELL_DIR=.*|SHELL_DIR="$HOME/._shell"|' ~/._bashrc""",
                     )
-                # Source it in remote .bashrc (if not already exists)
+                # Source it in remote .bashrc
                 remote_exec(
                     ssh_cmd,
                     r"""grep -q 'source.*\._bashrc' ~/.bashrc 2>/dev/null || echo 'source $HOME/._bashrc' >> ~/.bashrc""",
+                )
+                print(
+                    f"  {Fore.GREEN}Copied {len(archive_paths)} items{Style.RESET_ALL}"
                 )
 
         # Copy secret environment variables

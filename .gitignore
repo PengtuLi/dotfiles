@@ -2,9 +2,9 @@ tags
 test.sh
 .luarc.json
 .venv/
-
 node_modules/
 **/*.DS_Store
+**/__pycache__/
 
 mihomo-clash/config/*
 !mihomo-clash/config/config.yaml.sops
