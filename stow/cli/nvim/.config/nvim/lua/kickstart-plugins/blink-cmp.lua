@@ -54,7 +54,7 @@ return {
         menu = {
           min_width = 30,
           max_height = 20,
-          border = nil, -- Defaults to `vim.o.winborder` on nvim 0.11+
+          border = nil,
           -- AVAILABLE COMPONENTS
           -- `kind_icon`: Shows the icon for the kind of the item
           -- `kind`: Shows the kind of the item as text (e.g. `Function`)

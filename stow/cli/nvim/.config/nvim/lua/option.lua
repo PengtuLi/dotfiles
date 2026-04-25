@@ -10,7 +10,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.o.confirm = true
 vim.opt.termguicolors = true
--- vim.opt.conceallevel = 2
+vim.opt.conceallevel = 0
 -- Save view (fold, scroll, cursor) on jump
 vim.opt.jumpoptions = 'view'
 vim.opt.number = true
@@ -42,6 +42,7 @@ vim.wo.foldmethod = 'expr'
 vim.opt.scrolloff = 4
 vim.opt.smoothscroll = true
 vim.opt.sidescrolloff = 8
+vim.opt.synmaxcol = 300
 -- 设置会话保存内容（增强 auto-session 体验）
 vim.o.sessionoptions = 'buffers,curdir,folds,help,winsize,localoptions'
 -- 拼写检查

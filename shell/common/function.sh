@@ -28,31 +28,50 @@ extract() {
     if [ -z "$1" ]; then
         echo "Usage: extract <archive>" && return 1
     fi
-    if [ -f "$1" ]; then
-        case "$1" in
-            *.tar.bz2)   tar xjf "$1"     ;;
-            *.tar.gz)    tar xzf "$1"     ;;
-            *.bz2)       bunzip2 "$1"     ;;
-            *.rar)       unrar x "$1"     ;;
-            *.gz)        gunzip "$1"      ;;
-            *.tar)       tar xf "$1"      ;;
-            *.tbz2)      tar xjf "$1"     ;;
-            *.tgz)       tar xzf "$1"     ;;
-            *.zip)       unzip "$1"       ;;
-            *.Z)         uncompress "$1"  ;;
-            *.7z)        7z x "$1"        ;;
-            *)
-                if command -v 7z >/dev/null 2>&1; then
-                    7z x "$1"
-                else
-                    echo "'$1' cannot be extracted via extract()"
-                fi
-                ;;
-        esac
-    else
-        echo "Error: '$1' is not a valid file"
-        return 1
+    if [ ! -f "$1" ]; then
+        echo "Error: '$1' is not a valid file" && return 1
     fi
+    # prefer ouch if available
+    if command -v ouch >/dev/null 2>&1; then
+        ouch d "$1"
+        return
+    fi
+    # fallback to system tools
+    case "$1" in
+        *.tar.bz2)   tar xjf "$1"     ;;
+        *.tar.gz)    tar xzf "$1"     ;;
+        *.bz2)       bunzip2 "$1"     ;;
+        *.gz)        gunzip "$1"      ;;
+        *.tar)       tar xf "$1"      ;;
+        *.tbz2)      tar xjf "$1"     ;;
+        *.tgz)       tar xzf "$1"     ;;
+        *.zip)       unzip "$1"       ;;
+        *.Z)         uncompress "$1"  ;;
+        *)           echo "'$1' cannot be extracted via extract()" && return 1 ;;
+    esac
+}
+
+# Compress files into archive
+compress() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: compress <output.tar.gz> <file1> [file2 ...]" && return 1
+    fi
+    # prefer ouch if available
+    if command -v ouch >/dev/null 2>&1; then
+        local output="$1"; shift
+        ouch c "$@" "$output"
+        return
+    fi
+    # fallback to system tools
+    local output="$1"; shift
+    case "$output" in
+        *.tar.gz|*.tgz)    tar czf "$output" "$@" ;;
+        *.tar.bz2|*.tbz2)  tar cjf "$output" "$@" ;;
+        *.tar)              tar cf "$output" "$@"  ;;
+        *.zip)              zip -r "$output" "$@"  ;;
+        *.gz)               gzip -c "$@" > "$output" ;;
+        *)                  echo "Unsupported format: $output" && return 1 ;;
+    esac
 }
 
 # Port usage check

@@ -148,6 +148,11 @@ return {
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, 'toggle inlay [h]ints')
           end
+
+          -- Auto enable linked editing if supported
+          if client and client:supports_method('textDocument/linkedEditingRange', event.buf) then
+            vim.lsp.linked_editing.enable(true, { bufnr = event.buf })
+          end
         end,
       })
 
@@ -251,19 +256,43 @@ return {
         -----------DAP
         -- 'debugpy', -- py
       })
+
       require('mason-tool-installer').setup {
+        auto_update = true,
         ensure_installed = ensure_installed,
         run_on_start = true,
         start_delay = 3000,
       }
 
-      -- Configure global capabilities for file rename operations
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'MasonToolsStartingInstall',
+        callback = function()
+          vim.schedule(function()
+            print 'mason-tool-installer is starting'
+          end)
+        end,
+      })
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'MasonToolsUpdateCompleted',
+        callback = function(e)
+          vim.schedule(function()
+            print(vim.inspect(e.data)) -- print the table that lists the programs that were installed
+          end)
+        end,
+      })
+
+      -- Configure global capabilities for file operations
       vim.lsp.config('*', {
         capabilities = {
           workspace = {
             fileOperations = {
               didRename = true,
               willRename = true,
+              didCreate = true,
+              willCreate = true,
+              didDelete = true,
+              willDelete = true,
             },
           },
         },

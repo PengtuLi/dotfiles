@@ -111,3 +111,7 @@ vim.keymap.set('n', '<leader>i', function()
 end, { desc = '[i]nspect treesitter tree' })
 
 vim.keymap.set("n", "<leader>I", vim.show_pos, { desc = "[I]nspect Pos" })
+
+vim.keymap.set("n", "<leader>td", function()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "[t]oggle [d]iagnostics" })

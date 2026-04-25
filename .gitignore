@@ -5,6 +5,7 @@ test.sh
 node_modules/
 **/*.DS_Store
 **/__pycache__/
+**/.claude/settings.local.json
 
 mihomo-clash/config/*
 !mihomo-clash/config/config.yaml.sops
