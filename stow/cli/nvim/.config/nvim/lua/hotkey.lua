@@ -115,3 +115,7 @@ vim.keymap.set("n", "<leader>I", vim.show_pos, { desc = "[I]nspect Pos" })
 vim.keymap.set("n", "<leader>td", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "[t]oggle [d]iagnostics" })
+
+vim.keymap.set("n", "<leader>tw", function()
+  vim.wo.wrap = not vim.wo.wrap
+end, { desc = "[t]oggle [w]rap" })
