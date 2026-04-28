@@ -15,8 +15,9 @@ from colorama import Fore, Style, init
 init(autoreset=True)
 
 THIS_DIR = Path(__file__).parent
-SOCKS_PORT = 1080
+CLASH_PORT = 7890  # Local clash HTTP proxy port
 TUNNEL_PORT = 22222  # Use different port to avoid conflicts
+SOCKS_PORT = 1080  # Legacy: SOCKS port on remote
 
 
 def get_ssh_cmd(host: str) -> str:
@@ -24,10 +25,15 @@ def get_ssh_cmd(host: str) -> str:
     return f"ssh {host}"
 
 
-def remote_exec(ssh_cmd: str, cmd: str, proxy: bool = False) -> str:
+def remote_exec(
+    ssh_cmd: str, cmd: str, proxy: bool = False, proxy_mode: str = "http"
+) -> str:
     """Execute command on remote server with streaming output."""
     if proxy:
-        cmd = f"export ALL_PROXY=socks5h://127.0.0.1:{SOCKS_PORT} && {cmd}"
+        if proxy_mode == "socks":
+            cmd = f"export ALL_PROXY=socks5h://127.0.0.1:{SOCKS_PORT} && {cmd}"
+        else:
+            cmd = f"export http_proxy=http://127.0.0.1:{CLASH_PORT} https_proxy=http://127.0.0.1:{CLASH_PORT} && {cmd}"
     # Use double quotes to avoid # being interpreted as comment
     # Escape $ and " inside the command
     cmd_escaped = cmd.replace("$", "\\$").replace('"', '\\"')
@@ -71,7 +77,39 @@ def fzf_select(hosts: list[str]) -> str:
     return result.stdout.strip()
 
 
-def setup_socks_proxy(
+def setup_simple_proxy(host: str) -> subprocess.Popen:
+    """Set up reverse SSH tunnel forwarding local clash proxy to remote."""
+    print(
+        f"{Fore.CYAN}[proxy] Setting up SSH -R tunnel (local:{CLASH_PORT} → remote:{CLASH_PORT})...{Style.RESET_ALL}"
+    )
+    proc = subprocess.Popen(
+        f"ssh -S none -N -R {CLASH_PORT}:127.0.0.1:{CLASH_PORT} {host}",
+        shell=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    time.sleep(2)
+    if proc.poll() is not None:
+        stderr = proc.stderr.read()
+        raise RuntimeError(f"Tunnel failed: {stderr}")
+    # Verify port is listening on remote
+    verify = subprocess.run(
+        f'ssh {host} "nc -z 127.0.0.1 {CLASH_PORT} && echo OK"',
+        shell=True,
+        capture_output=True,
+        text=True,
+    )
+    if "OK" not in verify.stdout:
+        proc.terminate()
+        raise RuntimeError("Proxy port not available on remote")
+    print(
+        f"{Fore.GREEN}[proxy] HTTP proxy ready on remote:127.0.0.1:{CLASH_PORT}{Style.RESET_ALL}"
+    )
+    return proc
+
+
+def setup_socks_proxy_legacy(
     host: str, local_user: str, tunnel_port: int = TUNNEL_PORT
 ) -> Queue:
     """Set up SOCKS5 proxy via reverse SSH tunnel using agent forwarding."""
@@ -309,10 +347,23 @@ def main():
 
     # Initialize cleanup variables before try block
     tunnel_proc = None
-    remote_ssh_cmd = None
+    proxy_mode = "http"  # "http" for simple, "socks" for legacy
 
     try:
-        print(f"""{Fore.YELLOW}set socks5{Style.RESET_ALL}
+        if use_proxy:
+            print(f"{Fore.YELLOW}Proxy setup method:{Style.RESET_ALL}")
+            print(
+                f"  {Fore.CYAN}1.{Style.RESET_ALL} Simple (SSH -R, forwards local clash)"
+            )
+            print(
+                f"  {Fore.CYAN}2.{Style.RESET_ALL} Legacy (double SSH tunnel, no local proxy needed)"
+            )
+            choice = input(f"{Fore.YELLOW}Select [1/2]: {Style.RESET_ALL}").strip()
+
+            if choice == "2":
+                # Legacy method
+                proxy_mode = "socks"
+                print(f"""{Fore.YELLOW}Legacy SOCKS proxy setup{Style.RESET_ALL}
 {Style.DIM}# 本地机器（A）执行：
 ssh -R 2222:127.0.0.1:22 user@remote_server
 # 保持这个连接不断开
@@ -321,15 +372,6 @@ ssh -R 2222:127.0.0.1:22 user@remote_server
 ssh -D 1080 -p 2222 -N localuser@localhost
 # -N 表示不执行远程命令，只做端口转发{Style.RESET_ALL}
 """)
-
-        if use_proxy:
-            auto_setup = (
-                input(f"{Fore.YELLOW}Auto setup SOCKS proxy? [y/N] {Style.RESET_ALL}")
-                .strip()
-                .lower()
-                == "y"
-            )
-            if auto_setup:
                 local_user = input(
                     f"{Fore.YELLOW}Enter local username for SOCKS tunnel: {Style.RESET_ALL}"
                 ).strip() or os.environ.get("USER", "")
@@ -337,17 +379,16 @@ ssh -D 1080 -p 2222 -N localuser@localhost
                     print(f"{Fore.RED}Error: Local username required{Style.RESET_ALL}")
                     use_proxy = False
                 else:
-                    print(f"{Fore.GREEN}Setting up SOCKS5 proxy...{Style.RESET_ALL}")
-                    result_queue = setup_socks_proxy(host, local_user)
-
+                    print(
+                        f"{Fore.GREEN}Setting up SOCKS5 proxy (legacy)...{Style.RESET_ALL}"
+                    )
+                    result_queue = setup_socks_proxy_legacy(host, local_user)
                     try:
                         while True:
                             result = result_queue.get(timeout=30)
                             if isinstance(result, tuple):
                                 if result[0] == "tunnel_proc":
                                     tunnel_proc = result[1]
-                                elif result[0] == "host":
-                                    remote_ssh_cmd = f"ssh -A {result[1]}"
                                 elif result[0] is True:
                                     print(f"{Fore.GREEN}{result[1]}{Style.RESET_ALL}")
                                     break
@@ -362,10 +403,19 @@ ssh -D 1080 -p 2222 -N localuser@localhost
                             f"{Fore.RED}Timeout waiting for SOCKS proxy{Style.RESET_ALL}"
                         )
                         use_proxy = False
+            else:
+                # Simple method
+                proxy_mode = "http"
+                try:
+                    tunnel_proc = setup_simple_proxy(host)
+                except RuntimeError as e:
+                    print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
+                    use_proxy = False
 
-        # Setup SSH server on remote
-        print(f"{Fore.WHITE}Setting up SSH server...{Style.RESET_ALL}")
-        print(f"""{Style.DIM}# 在 remote_server（B）上执行：
+        # Setup SSH server on remote (needed for legacy SOCKS proxy)
+        if proxy_mode == "socks":
+            print(f"{Fore.WHITE}Setting up SSH server...{Style.RESET_ALL}")
+            print(f"""{Style.DIM}# 在 remote_server（B）上执行：
 # Install openssh-server if not present
 if ! command -v sshd &>/dev/null; then
     apt-get update
@@ -394,6 +444,7 @@ service ssh start{Style.RESET_ALL}
 locale-gen en_US.UTF-8
 locale-gen en_SG.UTF-8""",
                 proxy=use_proxy,
+                proxy_mode=proxy_mode,
             )
 
         # Setup Docker environment export if in container
@@ -408,6 +459,7 @@ locale-gen en_SG.UTF-8""",
                 ssh_cmd,
                 "test -f /.dockerenv && echo 'docker' || echo 'not_docker'",
                 proxy=use_proxy,
+                proxy_mode=proxy_mode,
             )
             if "docker" in docker_check:
                 remote_exec(
@@ -419,6 +471,7 @@ locale-gen en_SG.UTF-8""",
 }
 EOF""",
                     proxy=use_proxy,
+                    proxy_mode=proxy_mode,
                 )
 
         # Install Homebrew through local network
@@ -438,6 +491,7 @@ fi
 grep -q 'linuxbrew/.linuxbrew/bin/brew shellenv' ~/.bashrc 2>/dev/null || \
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                 proxy=use_proxy,
+                proxy_mode=proxy_mode,
             )
 
         # Install UV if not present
@@ -446,6 +500,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
             ssh_cmd,
             "command -v uv &>/dev/null && echo 'installed' || echo 'not_found'",
             proxy=use_proxy,
+            proxy_mode=proxy_mode,
         )
         if "not_found" in uv_check:
             response = (
@@ -460,6 +515,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                     ssh_cmd,
                     "wget -qO- https://astral.sh/uv/install.sh | sh",
                     proxy=use_proxy,
+                    proxy_mode=proxy_mode,
                 )
 
         # Install packages
@@ -481,6 +537,7 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
                     ssh_cmd,
                     f"/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
                     proxy=use_proxy,
+                    proxy_mode=proxy_mode,
                 )
 
         # Copy configs via archive (compress, transfer, extract)
@@ -680,16 +737,9 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
             print(f"{Fore.YELLOW}Cleaning up tunnel...{Style.RESET_ALL}")
             tunnel_proc.terminate()
             tunnel_proc.wait()
-        # Always clean up remote SOCKS processes
-        print(f"{Fore.YELLOW}Cleaning up remote SOCKS process...{Style.RESET_ALL}")
-        if remote_ssh_cmd:
-            subprocess.run(
-                f'{remote_ssh_cmd} "pkill -f \\"ssh.*-D {SOCKS_PORT}\\""',
-                shell=True,
-                capture_output=True,
-            )
-        else:
-            # If remote_ssh_cmd wasn't set, use direct ssh
+        # Clean up remote SOCKS processes (legacy mode only)
+        if proxy_mode == "socks" and use_proxy:
+            print(f"{Fore.YELLOW}Cleaning up remote SOCKS process...{Style.RESET_ALL}")
             subprocess.run(
                 f'ssh {host} "pkill -f \\"ssh.*-D {SOCKS_PORT}\\""',
                 shell=True,

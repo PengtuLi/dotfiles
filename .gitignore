@@ -42,4 +42,6 @@ shell/.env.secrets
 !shell/.env.secrets.sops
 
 stow/cli/claude-code/.claude/settings.json
-stow/cli/opencode/.config/opencode/opencode.json
+stow/cli/opencode/.config/opencode/
+stow/cli/opencode/.config/opencode/opencode.json.sops
+stow/cli/opencode/.config/opencode/opencode.json.sops.checksum

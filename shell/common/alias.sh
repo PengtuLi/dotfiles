@@ -169,6 +169,9 @@ alias uv-a=uv-activate
 alias cht=cheatsh
 alias cht-ls="cht :list | ff"              # list all cheatsheets, pipe to fzf
 
+# vibe-coding
+alias Claude="IS_SANDBOX=1 claude --dangerously-skip-permissions"
+
 # function aliases (registered so they show up in `ali`)
 alias backup=backup
 alias extract=extract

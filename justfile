@@ -29,6 +29,9 @@ default:
     @echo "  extras-linux     - 额外配置 (Linux)"
     @echo "  mesh             - Mesh 设置"
     @echo ""
+    @echo "远程部署:"
+    @echo "  ssh-proxy <host> - 推送 mihomo 到远程服务器"
+    @echo ""
     @echo "Brew 包组:"
     @echo "  brew-osx              - macOS 包组 (basic + doc + font + remote + osx)"
     @echo "  brew-linux-gui        - Linux GUI 包组 (basic + doc + font + remote)"
@@ -116,6 +119,33 @@ extras-linux:
 mesh:
     @echo "🌐 设置 Mesh..."
     @bash "{{SCRIPTS_DIR}}/core/mesh.sh"
+
+# ============================================================================
+# SSH Proxy
+# ============================================================================
+
+# 推送 mihomo 代理文件到远程服务器
+ssh-proxy host='':
+    @echo "📦 推送 mihomo 代理文件到 {{host}}..."
+    @ssh {{host}} "mkdir -p ~/mihomo-setup/mihomo-clash ~/mihomo-setup/scripts/core ~/mihomo-setup/scripts/lib"
+    @# 获取远程架构并推送对应二进制
+    @arch=$(ssh {{host}} "uname -m") && \
+    case "$arch" in \
+      x86_64)  binary="mihomo-linux-amd64" ;; \
+      aarch64) binary="mihomo-linux-arm64" ;; \
+      *)       echo "❌ 不支持的架构: $arch"; exit 1 ;; \
+    esac && \
+    echo "  📤 检测远程架构: $arch，推送 $binary..." && \
+    rsync -azP {{ROOT_DIR}}/mihomo-clash/"$binary" {{host}}:~/mihomo-setup/mihomo-clash/
+    @echo "  📤 推送配置文件..."
+    @rsync -azP {{ROOT_DIR}}/mihomo-clash/config/ {{host}}:~/mihomo-setup/mihomo-clash/config/
+    @echo "  📤 推送安装脚本..."
+    @rsync -azP {{ROOT_DIR}}/scripts/core/proxy.sh {{host}}:~/mihomo-setup/scripts/core/
+    @rsync -azP {{ROOT_DIR}}/scripts/lib/common.sh {{host}}:~/mihomo-setup/scripts/lib/
+    @echo ""
+    @echo "✅ 推送完成，请执行以下命令安装:"
+    @echo "   ssh {{host}}"
+    @echo "   bash ~/mihomo-setup/scripts/core/proxy.sh"
 
 # ============================================================================
 # _ssh_linux

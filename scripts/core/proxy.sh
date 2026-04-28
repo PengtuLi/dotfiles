@@ -5,6 +5,21 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 . $ROOT_DIR/scripts/lib/common.sh
 
+# 获取当前平台的 mihomo 二进制文件名
+get_mihomo_binary() {
+    local arch="$(uname -m)"
+    if is_macos; then
+        echo "mihomo-darwin-arm64"
+    elif is_linux; then
+        case "$arch" in
+            x86_64)  echo "mihomo-linux-amd64" ;;
+            aarch64) echo "mihomo-linux-arm64" ;;
+            armv7l)  echo "mihomo-linux-armv7" ;;
+            *)       echo "mihomo-linux-${arch}" ;;
+        esac
+    fi
+}
+
 install_proxy(){
     cd $ROOT_DIR/
 
@@ -15,18 +30,14 @@ install_proxy(){
         cd $ROOT_DIR
     fi
 
-    local cmd
-    if is_macos; then
-        cmd="rm -f /usr/local/bin/mihomo && ln -s $ROOT_DIR/mihomo-clash/mihomo-darwin-arm64 /usr/local/bin/mihomo"
-    elif is_linux; then
-        cmd="rm -f /usr/local/bin/mihomo && ln -s $ROOT_DIR/mihomo-clash/mihomo-linux-amd64 /usr/local/bin/mihomo"
-    fi
+    local binary=$(get_mihomo_binary)
+
+    local cmd="rm -f /usr/local/bin/mihomo && ln -s $ROOT_DIR/mihomo-clash/${binary} /usr/local/bin/mihomo"
 
     cmd2="rm -rf /etc/mihomo && ln -s $ROOT_DIR/mihomo-clash/config /etc/mihomo"
     rm -rf ~/.config/mihomo && ln -sf $ROOT_DIR/mihomo-clash/config ~/.config/mihomo
 
-    chmod +x mihomo-clash/mihomo-linux-amd64
-    chmod +x mihomo-clash/mihomo-darwin-arm64
+    [[ -f mihomo-clash/${binary} ]] && chmod +x mihomo-clash/${binary}
 
     if which sudo &>/dev/null; then
         sudo sh -c "$cmd"
@@ -39,7 +50,8 @@ install_proxy(){
     # download ui
     # Clone the gh-pages branch
     if [[ ! -d /etc/mihomo/ui ]]; then
-        git clone https://github.com/metacubex/metacubexd.git -b gh-pages /etc/mihomo/ui
+        git clone --depth 1 https://github.com/metacubex/metacubexd.git -b gh-pages /etc/mihomo/ui
+        rm -rf /etc/mihomo/ui/.git
     else
         info "mihomo ui already installed."
     fi
@@ -48,6 +60,7 @@ install_proxy(){
         # Update to latest version
         git -C /etc/mihomo/ui pull -r
     fi
+    rm -rf /etc/mihomo/ui/.git
 
     echo ${cmd}
     echo ${cmd2}
@@ -77,10 +90,11 @@ update_kernel(){
     # 构建下载链接前缀
     BASE_URL="https://github.com/${OWNER}/${REPO}/releases/download/${LATEST_VERSION}"
 
-    # 需要下载的文件列表
+    # 需要下载的文件列表（本地下好所有常见架构，方便后续分发到各平台）
     FILES=(
         "mihomo-darwin-arm64-${LATEST_VERSION}.gz"
         "mihomo-linux-amd64-${LATEST_VERSION}.gz"
+        "mihomo-linux-arm64-${LATEST_VERSION}.gz"
     )
     # 下载并处理每个文件
     for FILE in "${FILES[@]}"; do
@@ -231,8 +245,8 @@ EOF
 install_proxy
 if [[ "$(get_platform)" == "osx" ]]; then
     install_macos_mihomo_service
-elif [[ "$(get_platform)" == "linux" ]] && is_arch_linux; then
-    echo "archlinux 安装mihomo systemd服务"
+elif [[ "$(get_platform)" == "linux" ]] && command -v systemctl &>/dev/null; then
+    echo "检测到 systemd，安装 mihomo 服务..."
     install_linux_mihomo_service
 else
     echo "未安装mihomo系统服务，请手动启动"
