@@ -172,6 +172,12 @@ alias cht-ls="cht :list | ff"              # list all cheatsheets, pipe to fzf
 # vibe-coding
 alias Claude="IS_SANDBOX=1 claude --dangerously-skip-permissions"
 
+# proxy
+alias px=set_local_proxy
+alias px-u=unset_local_proxy
+alias px-s=set_system_proxy
+alias px-us=unset_system_proxy
+
 # function aliases (registered so they show up in `ali`)
 alias backup=backup
 alias extract=extract

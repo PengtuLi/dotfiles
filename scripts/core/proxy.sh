@@ -65,7 +65,7 @@ install_proxy(){
     echo ${cmd}
     echo ${cmd2}
 
-    echo "proxy use: alias sPP='sudo mihomo -d /etc/mihomo'"
+    echo "proxy use: alias pxd='sudo mihomo -d /etc/mihomo'"
 
 }
 
