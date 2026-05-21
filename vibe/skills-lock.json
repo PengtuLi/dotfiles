@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "python-performance-optimization": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/python-development/skills/python-performance-optimization/SKILL.md",
+      "computedHash": "1a7009e7e16fd08c201f4a527a44d4f0d9d1d892b15b92ab3492624b23be22b8"
+    },
+    "secure-linux-web-hosting": {
+      "source": "xixu-me/skills",
+      "sourceType": "github",
+      "skillPath": "skills/secure-linux-web-hosting/SKILL.md",
+      "computedHash": "49e4837b94e43d1c9e50f7e73063a3c5ffa0fc6d1a0708145f50c432cafac2d4"
+    }
+  }
+}

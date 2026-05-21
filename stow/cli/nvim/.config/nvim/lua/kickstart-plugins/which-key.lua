@@ -44,6 +44,7 @@ return {
         { '<leader>g', group = '[g]it hunk', mode = { 'n', 'v' } },
         { '<leader>u', group = 'd[u]ck', mode = { 'n' } },
         { '<leader>b', group = '[b]uffer', mode = { 'n' } },
+        { '<leader>m', group = '[m]arkdown glow' },
 
         -- other built-in useful
         { 'gd', desc = 'Go to Declaration of local variable under cursor', mode = { 'n' } },

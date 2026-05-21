@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+# SSH port forwarding wrapper
+# Usage: ssh-forward <host> <remote_port> [local_port]
+# 将远程主机的端口映射到本地
+
+SSH_FWD_DIR="$HOME/.ssh/forward-sockets"
+mkdir -p "$SSH_FWD_DIR"
+
+show_help() {
+    cat <<EOF
+Usage: ssh-forward <host> <remote_port> [local_port]
+
+Commands:
+    list            列出当前活跃的 SSH 转发
+    kill <local_port>  终止指定本地端口的转发
+    (none)          建立端口转发
+
+Options:
+    -h, --help      显示帮助
+
+Examples:
+    ssh-forward my-host 8080          # 远程 8080 -> 本地 8080
+    ssh-forward my-host 8080 9090     # 远程 8080 -> 本地 9090
+    ssh-forward my-host 8080 0        # 远程 8080 -> 本地随机端口
+    ssh-forward list                  # 列出活跃转发
+    ssh-forward kill 9090             # 终止本地端口 9090 的转发
+EOF
+    exit 0
+}
+
+# 列出当前活跃的 SSH 转发
+list_forwards() {
+    local found=0
+
+    # 1. 列出有专用 socket 的转发
+    for socket in "$SSH_FWD_DIR"/*.sock; do
+        [[ -S "$socket" ]] || continue
+        local name=$(basename "$socket" .sock)
+        local local_port="${name%%_*}"
+        local rest="${name#*_}"
+        local remote_port="${rest%%_*}"
+        local host="${rest#*_}"
+
+        if /usr/bin/ss -tlnp 2>/dev/null | grep -q ":${local_port}\b"; then
+            echo "  localhost:${local_port} -> ${host}:${remote_port}"
+            found=1
+        else
+            rm -f "$socket"
+        fi
+    done
+
+    # 2. 检测没有专用 socket 但实际在监听的 ssh -L 转发
+    while IFS= read -r line; do
+        local port=$(echo "$line" | grep -oP '127\.0\.0\.1:\K\d+')
+        [[ -n "$port" ]] || continue
+        # 排除已被 socket 追踪的端口
+        local tracked=0
+        for sock in "$SSH_FWD_DIR"/*.sock; do
+            [[ -S "$sock" ]] || continue
+            local sname=$(basename "$sock" .sock)
+            local sp="${sname%%_*}"
+            [[ "$sp" == "$port" ]] && tracked=1 && break
+        done
+        if [[ "$tracked" -eq 0 ]]; then
+            local pid=$(echo "$line" | grep -oP 'pid=\K\d+')
+            echo "  localhost:${port} -> (unknown remote)  pid=${pid}  [无追踪信息]"
+            found=1
+        fi
+    done < <(/usr/bin/ss -tlnp 2>/dev/null | grep 'users:(("ssh"')
+
+    if [[ "$found" -eq 0 ]]; then
+        echo "没有活跃的 SSH 端口转发"
+    fi
+}
+
+# 建立端口转发
+do_forward() {
+    local host="$1"
+    local remote_port="$2"
+    local local_port="${3:-$remote_port}"
+
+    if [[ -z "$host" || -z "$remote_port" ]]; then
+        echo "错误: 缺少必要参数"
+        echo "用法: ssh-forward <host> <remote_port> [local_port]"
+        exit 1
+    fi
+
+    # 验证端口号
+    if ! [[ "$remote_port" =~ ^[0-9]+$ ]] || [[ "$remote_port" -lt 1 || "$remote_port" -gt 65535 ]]; then
+        echo "错误: 远程端口无效 ($remote_port)"
+        exit 1
+    fi
+
+    # local_port=0 表示让系统分配随机端口
+    if [[ "$local_port" != "0" ]]; then
+        if ! [[ "$local_port" =~ ^[0-9]+$ ]] || [[ "$local_port" -lt 1 || "$local_port" -gt 65535 ]]; then
+            echo "错误: 本地端口无效 ($local_port)"
+            exit 1
+        fi
+    fi
+
+    local forward_spec="${local_port}:localhost:${remote_port}"
+
+    # 用专用 ControlPath 避免复用全局连接，确保独立进程可追踪
+    local socket_name="${local_port}_${remote_port}_${host}"
+    local control_path="$SSH_FWD_DIR/${socket_name}.sock"
+
+    # 如果已有同配置的转发，先关闭
+    if [[ -S "$control_path" ]]; then
+        echo "检测到已有转发，先关闭..."
+        ssh -S "$control_path" -O exit "$host" 2>/dev/null
+        rm -f "$control_path"
+        sleep 0.5
+    fi
+
+    echo "建立端口转发: localhost:${local_port} -> ${host}:${remote_port}"
+
+    # -S: 指定 control socket（覆盖全局 ControlPath，确保独立进程）
+    # -N: 不执行远程命令
+    # -f: 后台运行
+    if ssh -S "$control_path" -o ControlMaster=yes -L "$forward_spec" -N -f -o ExitOnForwardFailure=yes "$host"; then
+        # 如果是随机端口，从 ss 获取实际端口
+        if [[ "$local_port" == "0" ]]; then
+            local actual_port=$(/usr/bin/ss -tlnp 2>/dev/null | grep "pid=$(cat "$control_path" 2>/dev/null | head -1)" | grep -oP ':\K\d+' | head -1)
+            if [[ -n "$actual_port" ]]; then
+                echo "转发已建立: localhost:${actual_port} -> ${host}:${remote_port}"
+            else
+                echo "转发已建立（随机端口）"
+            fi
+        else
+            echo "转发已建立: localhost:${local_port} -> ${host}:${remote_port}"
+        fi
+        echo "使用 'ssh-forward list' 查看，'ssh-forward kill ${local_port}' 关闭"
+    else
+        echo "错误: 端口转发建立失败"
+        rm -f "$control_path"
+        exit 1
+    fi
+}
+
+# 关闭指定端口的转发
+kill_forward() {
+    local local_port="$1"
+    if [[ -z "$local_port" ]]; then
+        echo "用法: ssh-forward kill <local_port>"
+        exit 1
+    fi
+
+    local found=0
+    for socket in "$SSH_FWD_DIR"/${local_port}_*.sock; do
+        [[ -S "$socket" ]] || continue
+        local name=$(basename "$socket" .sock)
+        local host="${name#*_*_}"
+        ssh -S "$socket" -O exit "$host" 2>/dev/null
+        rm -f "$socket"
+        echo "已关闭: localhost:${local_port} -> ${host} 的转发"
+        found=1
+    done
+
+    if [[ "$found" -eq 0 ]]; then
+        # 尝试通过 ss 找到占用该端口的 ssh 进程
+        local pid=$(/usr/bin/ss -tlnp 2>/dev/null | grep ":${local_port}\b" | grep 'users:(("ssh"' | grep -oP 'pid=\K\d+' | head -1)
+        if [[ -n "$pid" ]]; then
+            kill "$pid" && echo "已终止进程 $pid (localhost:${local_port})" || echo "终止进程 $pid 失败"
+            found=1
+        fi
+    fi
+
+    if [[ "$found" -eq 0 ]]; then
+        echo "未找到本地端口 ${local_port} 的转发"
+        exit 1
+    fi
+}
+
+# 主入口
+main() {
+    [[ "$1" == "-h" || "$1" == "--help" ]] && show_help
+
+    case "$1" in
+        list)
+            list_forwards
+            ;;
+        kill)
+            kill_forward "$2"
+            ;;
+        *)
+            do_forward "$1" "$2" "$3"
+            ;;
+    esac
+}
+
+main "$@"

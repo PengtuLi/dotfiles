@@ -2,12 +2,12 @@ tags
 test.sh
 .luarc.json
 .venv/
-
 node_modules/
 **/*.DS_Store
+**/__pycache__/
+**/.claude/settings.local.json
 
-mihomo-clash/config/*
-!mihomo-clash/config/config.yaml.sops
+mihomo-clash/config/
 
 stow/gui/fcitx5/.config/fcitx5/conf/*
 stow/gui/fcitx5/.config/fcitx5/config
@@ -39,3 +39,14 @@ stow/cli/pudb/.config/pudb/
 
 shell/.env.secrets
 !shell/.env.secrets.sops
+
+easytier/easytier-*/*
+!easytier/easytier-*/easytier-cli
+!easytier/easytier-*/easytier-core
+easytier/config/*.conf
+!easytier/config/*.conf.sops
+
+stow/cli/claude-code/.claude/settings.json
+stow/cli/opencode/.config/opencode/
+stow/cli/opencode/.config/opencode/opencode.json.sops
+stow/cli/opencode/.config/opencode/opencode.json.sops.checksum

@@ -112,7 +112,7 @@ return {
       -- 设置高亮
       vim.api.nvim_set_hl(0, 'TreesitterContextBottom', {
         underline = true,
-        sp = 'grey',
+        sp = 'orange',
       })
       -- toggle
       vim.keymap.set('n', '<leader>ttc', '<cmd>TSContext toggle<cr>', { desc = 'toggle treesitter [c]ontext' })

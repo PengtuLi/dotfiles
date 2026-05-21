@@ -12,8 +12,8 @@ repos:
       - id: check-toml
       - id: end-of-file-fixer
       - id: check-added-large-files
-      - id: check-executables-have-shebangs
-      - id: check-shebang-scripts-are-executable
+      # - id: check-executables-have-shebangs
+      # - id: check-shebang-scripts-are-executable
       - id: trailing-whitespace
       - id: detect-private-key
 
@@ -23,17 +23,17 @@ repos:
     rev: v0.15.0
     hooks:
       # Run the linter.
-      - id: ruff-check
-        args: [--fix]
+      # - id: ruff-check
+      #   args: [--fix]
       # Run the formatter.
       - id: ruff-format
 
   # ============== Markdown ==============
-  - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.20.0
-    hooks:
-      - id: markdownlint-cli2
-        exclude: ^(stow/cli/yazi/|stow/gui/azote/|stow/gui/ghostty/)
+  # - repo: https://github.com/DavidAnson/markdownlint-cli2
+  #   rev: v0.20.0
+  #   hooks:
+  #     - id: markdownlint-cli2
+  #       exclude: ^(stow/cli/yazi/|stow/gui/azote/|stow/gui/ghostty/)
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.0

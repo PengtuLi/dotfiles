@@ -9,7 +9,8 @@
 	helper =
 	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
 	helper = !/opt/homebrew/bin/gh auth git-credential
-
+[credential]
+	helper = store
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

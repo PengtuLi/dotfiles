@@ -32,6 +32,7 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- 映射 <Leader> + Enter 为 :wq（保存并退出）
 vim.keymap.set('n', '<Leader><CR>', '<Cmd>qa<CR>', { desc = 'Save and quit' })
+vim.keymap.set('n', '<C-S-s>', '<Cmd>:w<CR>', { desc = 'Save' })
 
 vim.keymap.set('n', '<leader>bd', ':bd<CR>', { desc = '[d]elete current buffer' })
 
@@ -111,3 +112,11 @@ vim.keymap.set('n', '<leader>i', function()
 end, { desc = '[i]nspect treesitter tree' })
 
 vim.keymap.set("n", "<leader>I", vim.show_pos, { desc = "[I]nspect Pos" })
+
+vim.keymap.set("n", "<leader>td", function()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "[t]oggle [d]iagnostics" })
+
+vim.keymap.set("n", "<leader>tw", function()
+  vim.wo.wrap = not vim.wo.wrap
+end, { desc = "[t]oggle [w]rap" })

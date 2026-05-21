@@ -1,41 +1,33 @@
 {
   "reload_style_on_change": true,
   "position": "top",
-  "height": 12, // Waybar height (to be removed for auto height)
   "margin-bottom": -8,
   "spacing": 0,
-
-
   "modules-left": [
     "niri/workspaces",
     "cpu",
-    "memory"
+    "memory",
+    "custom/temperature"
   ],
   "modules-center": [
     "clock"
   ],
   "modules-right": [
-    "sway/language",
     "bluetooth",
     "network",
     "wireplumber",
-    "backlight",
     "user",
-    "custom/lock",
+    "custom/idle-inhibit",
+    "custom/notification",
+    "custom/lock"
   ],
-
   "niri/workspaces": {
     "format": "{value}:{icon}",
     "format-icons": {
-      "active": "",
-      "default": ""
+      "active": "",
+      "default": ""
     }
   },
-
-  "sway/language": {
-    "format": "{short} {variant}",
-  },
-
   "bluetooth": {
     "format": "{icon}",
     "format-on": "{icon}",
@@ -49,14 +41,12 @@
     "on-click": "blueman-manager",
     "tooltip-format-connected": "{device_enumerate}"
   },
-
   "clock": {
     "timezone": "Asia/Shanghai",
     "tooltip": false,
     "format": "{:%H:%M:%S - %A, %d}",
     "interval": 1
   },
-
   "network": {
     "format-wifi": "󰤢",
     "format-ethernet": "󰈀",
@@ -65,45 +55,69 @@
     "tooltip-format": "{essid} ({signalStrength}%)",
     "on-click": "ghostty -e nmtui"
   },
-
   "cpu": {
     "interval": 1,
     "format": "  {icon0}{icon1}{icon2}{icon3} {usage:>2}%",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
-    "on-click": "ghostty -e htop"
+    "on-click": "ghostty -e btop"
   },
-
   "memory": {
     "interval": 30,
     "format": "  {used:0.1f}G/{total:0.1f}G",
     "tooltip-format": "Memory"
   },
-
   "wireplumber": {
     "format": "{icon} {volume}%",
-    "format-muted": "",
+    "format-muted": "",
     "format-icons": {
       "default": ["", "", ""]
     },
     "on-click": "pavucontrol"
   },
-
-  "backlight": {
-    "device": "DP-1",
-    "format": "{percent}% {icon}",
-    "format-icons": ["", ""]
+  "custom/notification": {
+    "tooltip": true,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂜",
+      "dnd-notification": "󰂠",
+      "dnd-none": "󰪓",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰪑",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw"
   },
-
+  "user": {
+    "format": "{user}(up {work_d} d)",
+    "interval": 60,
+    "icon": true
+  },
   "custom/lock": {
     "tooltip": false,
     "on-click": "hyprlock",
     "format": ""
   },
-
-  "user": {
-        "format": "{user}(up {work_d} d)",
-        "interval": 60,
-        "icon": true,
+  "custom/idle-inhibit": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "󰅶",
+      "deactivated": "󰒲"
+    },
+    "exec": "~/.config/waybar/scripts/idle-inhibit.py",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/idle-inhibit.py --toggle",
+    "exec-on-event": true,
+    "interval": 2,
+    "tooltip": false
+  },
+  "custom/temperature": {
+    "exec": "~/.config/waybar/scripts/temperature.sh",
+    "interval": 5
   }
-
 }

@@ -22,6 +22,7 @@ require('lazy').setup({
 
   -- plugins import
   -- require 'kickstart-plugins.debug',
+  require 'kickstart-plugins.debug-modern',
   -- require neogit
   require 'custom-plugins.auto-session',
   require 'custom-plugins.todo-comments',
@@ -38,6 +39,7 @@ require('lazy').setup({
   require 'custom-plugins.harpoon',
   -- require 'custom-plugins.yazi',
   require 'custom-plugins.aerial',
+  require 'custom-plugins.glow',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
