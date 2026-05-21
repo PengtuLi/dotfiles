@@ -1,0 +1,17 @@
+[keys]
+prefix = "f13"
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+[ui]
+right_click_passthrough_modifier = "ctrl"
+
+agent_panel_sort = "spaces"
+[ui.toast]
+delivery = "terminal"
+
+[experimental]
+pane_history = true
+scrollback_limit_bytes = 52428800

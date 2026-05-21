@@ -28,9 +28,13 @@ rg:
     - ~/.ripgreprc
 
 lazygit:
-  install: true
   config:
     - ~/.config/lazygit/*.yml
+
+gitui:
+  install: true
+  config:
+    - ~/.config/gitui
 
 tmux:
   install: true
@@ -89,9 +93,16 @@ sd:
 procs:
   install: true
 
+witr:
+  install: true
+
 btop:
   install: true
   config: ~/.config/btop
+
+herdr:
+  config:
+    - ~/.config/herdr/config.toml
 
 ssh:
   config: ~/.ssh/id_rsa

@@ -1,5 +1,8 @@
 # Shared functions (POSIX compatible)
 
+# 记录当前文件路径，供函数使用
+__FUNCTIONS_DIR__="$(cd "$(dirname "$0")" && pwd)"
+
 # Cheat.sh lookup
 cheatsh() {
     if [ -z "$1" ]; then
@@ -208,3 +211,51 @@ if command -v tmux >/dev/null 2>&1; then
         tmux attach -t default || tmux new -s default
     fi
 fi
+
+# Password lookup
+pw() {
+    local pass_file="$(dirname "$__FUNCTIONS_DIR__")/.passwords"
+    if [ ! -f "$pass_file" ]; then
+        echo "Error: .passwords file not found at $pass_file"
+        return 1
+    fi
+
+    # 无参数：输出所有密码
+    if [ -z "$1" ]; then
+        source "$pass_file"
+        local var val name
+        grep '^PASS_' "$pass_file" 2>/dev/null | \
+            sed 's/^PASS_//;s/=.*//' | \
+            sort | \
+            while IFS= read -r var; do
+                val=$(eval echo "\$PASS_$var")
+                name=$(echo "$var" | tr '_' '/' | tr '[:upper:]' '[:lower:]')
+                printf "\033[36m%-30s\033[0m %s\n" "$name:" "$val"
+            done
+        return 0
+    fi
+
+    # Load passwords
+    source "$pass_file"
+
+    # Build variable name: server_prod_root -> PASS_SERVER_PROD_ROOT
+    local varname="PASS_$(echo "$1" | tr '[:lower:]' '[:upper:]')"
+
+    # Get password (zsh compatible)
+    local password
+    password=$(eval echo "\$$varname")
+
+    if [ -z "$password" ]; then
+        echo "Password '$1' not found"
+        echo "Available passwords:"
+        grep '^PASS_' "$pass_file" 2>/dev/null | \
+            sed 's/^PASS_//;s/=.*//' | \
+            tr '_' '/' | \
+            tr '[:upper:]' '[:lower:]' | \
+            sort | \
+            sed 's/^/  - /'
+        return 1
+    fi
+
+    echo "$password"
+}

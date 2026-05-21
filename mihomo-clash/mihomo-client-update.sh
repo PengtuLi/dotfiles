@@ -15,6 +15,7 @@ set -euo pipefail
 MIHOMO_CONFIG="${MIHOMO_CONFIG:-/etc/mihomo/config.yaml}"
 AUTH_FILE="$HOME/.mihomo-auth"
 CRON_NAME="mihomo-update"
+CRON_MARKER="# ${CRON_NAME}"
 
 # ── 配置加载 ──
 
@@ -81,7 +82,7 @@ install_cron() {
         cron_expr="*/${interval} * * * *"
     fi
 
-    local cron_line="${cron_expr} ${script_path} >> ${HOME}/.mihomo-cron.log 2>&1 ${CRON_NAME}"
+    local cron_line="${cron_expr} ${script_path} >> ${HOME}/.mihomo-cron.log 2>&1 ${CRON_MARKER}"
 
     # 移除旧的
     uninstall_cron silent

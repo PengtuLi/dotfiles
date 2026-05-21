@@ -7,12 +7,15 @@ HISTFILESIZE=10000
 shopt -s histappend              # 追加而不是覆盖历史文件
 shopt -s cmdhist                 # 多行命令保存为一行
 export HISTCONTROL=ignoredups    # 忽略重复命令
-export HISTIGNORE="[ ]*"         # 忽略以空格开头的命令
+# export HISTIGNORE="[ ]*"         # 忽略以空格开头的命令
+# 忽略完全由空格组成的命令
+HISTIGNORE="${HISTIGNORE:+${HISTIGNORE}:}  *"
 export HISTTIMEFORMAT=": %F %T: "
 # 实时写入历史 + 多终端共享
 __bash_history_sync() {
     history -a
-    history -n
+    history -c
+    history -r
 }
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}__bash_history_sync"
 
@@ -36,7 +39,11 @@ shopt -s autocd        # 自动 cd（输入目录名直接进入）
 [[ -r "/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh"
 
 # 设置文件类型颜色（用于 ls 和补全）
-eval "$(dircolors)"
+if command -v dircolors &>/dev/null; then
+    eval "$(dircolors)"
+elif command -v gdircolors &>/dev/null; then
+    eval "$(gdircolors)"
+fi
 # 补全行为优化（必须在 bash_completion 之后设置）
 bind "set completion-ignore-case on"        # 忽略大小写
 bind "set completion-map-case on"           # 连字符和下划线等价
@@ -55,6 +62,117 @@ bind "set colored-completion-prefix on"     # 高亮匹配前缀
 # ==================================================
 # bash-only
 # ==================================================
+
+# Simple history search (fzf fallback)
+# Only active when fzf is not installed
+__fh_search() {
+    local query=""
+    local tmpfile
+    tmpfile=$(mktemp)
+
+    # Build full candidate list once
+    history | awk '
+        {
+            sub(/^[ ]*[0-9]+[ ]+/, "");
+            sub(/^: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}: /, "");
+            print
+        }
+    ' | awk '!seen[$0]++' | awk '{a[NR]=$0} END {for(i=NR;i>=1;i--) print a[i]}' > "$tmpfile"
+
+    local old_stty
+    old_stty=$(stty -g)
+    stty -echo -icanon min 1 time 0
+
+    local selected=""
+    while true; do
+        # Filter candidates by current query
+        local candidates
+        if [ -n "$query" ]; then
+            candidates=$(grep -F "$query" "$tmpfile" 2>/dev/null)
+        else
+            candidates=$(cat "$tmpfile")
+        fi
+
+        # Draw without clearing screen
+        echo "history search: $query" >&2
+        echo "---" >&2
+        echo "" >&2
+
+        if [ -z "$candidates" ]; then
+            echo "  (no matches)" >&2
+        else
+            echo "$candidates" | head -n 10 | awk '{ printf "  \033[36m%2d\033[0m  %s\n", NR, $0 }' >&2
+        fi
+        echo "" >&2
+        echo "  type to filter, 1-9=select, enter=1st, q/esc/ctrl-c=quit" >&2
+
+        local key
+        key=$(dd bs=1 count=1 2>/dev/null)
+
+        # Debug
+        printf "key_hex=" > /tmp/fh_debug.log
+        printf '%s' "$key" | xxd -p >> /tmp/fh_debug.log
+        printf " key_len=%d\n" "${#key}" >> /tmp/fh_debug.log
+
+        case "$key" in
+            $'\x7f'|$'\b')
+                echo "backspace" >> /tmp/fh_debug.log
+                query="${query%?}"
+                ;;
+            $'\e')
+                echo "esc" >> /tmp/fh_debug.log
+                stty "$old_stty"
+                rm -f "$tmpfile"
+                echo "" >&2
+                return 1
+                ;;
+            q|Q|$'\x03')
+                echo "quit" >> /tmp/fh_debug.log
+                stty "$old_stty"
+                rm -f "$tmpfile"
+                echo "" >&2
+                return 1
+                ;;
+            $'\r'|$'\n')
+                echo "enter" >> /tmp/fh_debug.log
+                if [ -n "$candidates" ]; then
+                    selected=$(echo "$candidates" | head -n 1)
+                    echo "selected=$selected" >> /tmp/fh_debug.log
+                    break
+                fi
+                ;;
+            [1-9])
+                echo "num=$key" >> /tmp/fh_debug.log
+                local count
+                count=$(echo "$candidates" | head -n 10 | wc -l | tr -d ' ')
+                if [ "$key" -le "$count" ] 2>/dev/null; then
+                    selected=$(echo "$candidates" | sed -n "${key}p")
+                    echo "selected=$selected" >> /tmp/fh_debug.log
+                    break
+                fi
+                ;;
+            *)
+                echo "other='$key'" >> /tmp/fh_debug.log
+                query="${query}${key}"
+                ;;
+        esac
+    done
+
+    stty "$old_stty"
+    rm -f "$tmpfile"
+
+    echo "final selected='$selected'" >> /tmp/fh_debug.log
+    if [ -n "$selected" ]; then
+        READLINE_LINE="$selected"
+        READLINE_POINT=${#selected}
+        echo "set READLINE_LINE" >> /tmp/fh_debug.log
+    fi
+}
+
+# Bind Ctrl+R only if fzf is not available (fzf's key-bindings will override otherwise)
+if ! command -v fzf &>/dev/null; then
+    bind -x '"\C-r": __fh_search'
+fi
 
 # ==================================================
 # 提示符

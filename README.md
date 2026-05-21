@@ -21,15 +21,6 @@ just ***
 | **Editor** | NeoVim (Lua + lazy.nvim) |
 | **Multiplexer** | Tmux + tmuxinator (tmux-resurrect, tmux-continuum, which-key) |
 
-### Window Managers
-
-| Platform | Tools |
-| --- | --- |
-| **macOS** | Yabai + Skhd (tiling), Aerospace (tiling), Rectangle (floating) |
-| **Linux (Wayland)** | Sway + Waybar + Swaync, Niri, Hyprlock |
-| **Linux (Input)** | Fcitx5, Fuzzel (launcher) |
-| **Windows** | PowerToys, AutoHotKey |
-
 ### Quality & Security
 
 | Category | Tool |

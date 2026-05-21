@@ -80,5 +80,6 @@ encrypt_if_changed "$ROOT_DIR/stow/cli/claude-code/.claude/settings.json" "$ROOT
 encrypt_if_changed "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json" "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json.sops" "OpenCode config" "normal"
 encrypt_if_changed "$ROOT_DIR/easytier/config/aliyun-tutu.conf" "$ROOT_DIR/easytier/config/aliyun-tutu.conf.sops" "EasyTier server config" "force"
 encrypt_if_changed "$ROOT_DIR/easytier/config/tutu-zhuhai.conf" "$ROOT_DIR/easytier/config/tutu-zhuhai.conf.sops" "EasyTier client config" "force"
+encrypt_if_changed "$ROOT_DIR/shell/.passwords" "$ROOT_DIR/shell/.passwords.sops" "passwords" "normal"
 
 echo "Pre-commit encryption hook finished."

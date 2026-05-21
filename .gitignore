@@ -50,3 +50,10 @@ stow/cli/claude-code/.claude/settings.json
 stow/cli/opencode/.config/opencode/
 stow/cli/opencode/.config/opencode/opencode.json.sops
 stow/cli/opencode/.config/opencode/opencode.json.sops.checksum
+
+shell/.passwords
+!shell/.passwords.sops
+!shell/.passwords.sops.checksum
+
+stow/cli/herdr/.config/herdr/*
+!stow/cli/herdr/.config/herdr/config.toml

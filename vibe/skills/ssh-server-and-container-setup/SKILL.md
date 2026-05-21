@@ -27,7 +27,7 @@ ssh <sudo_host> "sudo -n true 2>/dev/null && echo 'SUDO_NOPASSWD' || echo 'SUDO_
 ```
 
 - **SUDO_NOPASSWD**：后续步骤可直接通过 SSH 远程执行 sudo 命令
-- **SUDO_NEEDS_PASSWORD**：sudo 命令无法通过非交互式 SSH 执行，需要让用户在终端手动执行（提示用户 `! ssh <sudo_host>` 进入交互式会话）
+- **SUDO_NEEDS_PASSWORD**：sudo 命令无法通过非交互式 SSH 执行，需要让用户在终端手动执行
 
 ### 第 1 步：创建用户
 
@@ -44,20 +44,15 @@ ssh <sudo_host> "id <username> 2>/dev/null && echo 'USER_EXISTS' || echo 'USER_O
 ssh <sudo_host> "sudo useradd -m -G <groups> -s <shell> <username> && echo '<username>:1234' | sudo chpasswd"
 ```
 
-如果 sudo 需要密码，给出命令让用户在终端手动执行：
-```bash
-sudo useradd -m -G <groups> -s <shell> <username> && echo '<username>:1234' | sudo chpasswd
-```
-
 ### 第 2 步：部署公钥 + 本地配置
 
 用户已创建且密码为 `1234`，**优先用 `ssh-copy-id`**：
 
 ```bash
-ssh-copy-id <username>@<host>
+ssh-copy-id <host>
 ```
 
-如果 `ssh-copy-id` 提示输入密码，输入 `1234`。注意：`ssh-copy-id` 需要交互式输入密码，如果本机没有 `sshpass`，请让用户在终端手动执行（`! ssh-copy-id <username>@<host>`）。
+如果 `ssh-copy-id` 提示输入密码，输入 `1234`。注意：`ssh-copy-id` 需要交互式输入密码
 
 仅在 `ssh-copy-id` 不可用时，才通过 sudo 用户操作：
 
@@ -66,24 +61,24 @@ ssh <sudo_host> "sudo mkdir -p /home/<username>/.ssh && sudo tee /home/<username
 ssh <sudo_host> "sudo chown -R <username>:<username> /home/<username>/.ssh && sudo chmod 700 /home/<username>/.ssh && sudo chmod 600 /home/<username>/.ssh/authorized_keys"
 ```
 
-追加到 `~/.ssh/config`：
+追加到 `~/.ssh/config`（找到同服务器/同 HostName 的现有条目，插入在其附近，不要追加到文件末尾）：
 ```
-Host <hostname>
+Host <host>
   HostName <ip>
   User <username>
   Port 22
   [ProxyJump <jump_host>]
 ```
 
-验证：`ssh <hostname> "whoami"` 应返回 `<username>`。
+验证：`ssh <host> "whoami"` 应返回 `<username>`。
 
 ### 第 3 步：选择 Docker 镜像
 
 SSH 到目标服务器，先检查 GPU 状态，再列出已有镜像：
 
 ```bash
-ssh <hostname> "nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader"
-ssh <hostname> "docker images --format '{{.Repository}}:{{.Tag}}\t{{.Size}}'"
+ssh <host> "nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader"
+ssh <host> "docker images"
 ```
 
 展示 GPU 状态和镜像列表让用户选择。
@@ -93,11 +88,15 @@ ssh <hostname> "docker images --format '{{.Repository}}:{{.Tag}}\t{{.Size}}'"
 先检查容器名和端口是否已被占用：
 
 ```bash
-ssh <hostname> "docker ps -a --filter name=<container_name> --format '{{.Names}}'"
-ssh <hostname> "ss -tlnp | grep ':<port>'"
+ssh <host> "docker ps -a --filter name=<container_name>"
+ssh <host> "ss -tlnp | grep ':<port>'"
 ```
 
-选择可用端口（建议范围 2000-2999，按顺序检查）。
+选择可用端口（建议范围 10000+，自动扫描第一个可用端口）：
+
+```bash
+ssh <host> "for port in $(seq 10000 10999); do ss -tlnp | grep -q ':${port} ' || { echo \$port; break; }; done"
+```
 
 使用 [references/docker-templates.md](references/docker-templates.md) 中的模板，根据服务器适配挂载路径。展示最终 `docker run` 命令让用户确认后执行。
 
@@ -109,5 +108,5 @@ ssh <hostname> "ss -tlnp | grep ':<port>'"
 
 ## 注意事项
 
-- **每步执行前必须确认**
+- **以下命令执行前必须展示完整命令并让用户确认**：useradd、docker run、ssh-copy-id、修改 ~/.ssh/config
 - 默认密码均为 `1234`，提醒用户生产环境需修改

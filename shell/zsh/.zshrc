@@ -26,10 +26,6 @@ if [ -f "$SHELL_DIR/../.env.secrets" ]; then
     set +a
 fi
 
-# zsh-only env
-export SOPS_AGE_KEY="${_SOPS_AGE_KEY:-}"
-export SOPS_AGE_SSH_PRIVATE_KEY_FILE=""
-
 # zsh history save
 HISTFILE=~/.zsh_history #记录历史命令的文件
 HISTSIZE=10000 #记录历史命令条数
@@ -38,6 +34,7 @@ SAVEHIST=10000
 setopt inc_append_history   # 每条命令立即写入文件
 setopt share_history        # 所有 zsh 会话共享历史（可选，超实用！）
 setopt hist_ignore_dups     # 忽略重复命令
+setopt hist_ignore_space    # 忽略完全由空格组成的命令
 setopt extended_history     # 记录时间戳（格式：:start_time:elapsed;command）
 
 # atuin - must be loaded after all plugins

@@ -70,5 +70,6 @@ decrypt_if_needed "$ROOT_DIR/stow/cli/claude-code/.claude/settings.json.sops" "$
 decrypt_if_needed "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json.sops" "$ROOT_DIR/stow/cli/opencode/.config/opencode/opencode.json" ""
 decrypt_if_needed "$ROOT_DIR/easytier/config/aliyun-tutu.conf.sops" "$ROOT_DIR/easytier/config/aliyun-tutu.conf" ""
 decrypt_if_needed "$ROOT_DIR/easytier/config/tutu-zhuhai.conf.sops" "$ROOT_DIR/easytier/config/tutu-zhuhai.conf" ""
+decrypt_if_needed "$ROOT_DIR/shell/.passwords.sops" "$ROOT_DIR/shell/.passwords" "600"
 
 echo "Secrets decryption process finished."

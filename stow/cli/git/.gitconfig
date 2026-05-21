@@ -24,6 +24,8 @@
 	rebase = true
 [diff]
   colorMoved = default
+[merge]
+  conflictStyle = zdiff3
 [interactive]
 	diffFilter = delta --color-only --features=interactive
 
@@ -35,10 +37,9 @@
 	navigate = true
   line-numbers = true
   side-by-side = true
+  true-color = always
   ; features = catppuccin-frappe
   ; features = github
   ; features = "Monokai Extended"
   ; syntax-theme = "Visual Studio Dark+"
   ; features = "Darcula"
-[delta "interactive"]
-  keep-plus-minus-markers = true

@@ -28,10 +28,10 @@ EOF
 使用 `ssh-copy-id` 从本地直接部署：
 
 ```bash
-ssh-copy-id -p <port> root@<host>
+ssh-copy-id -p <host>
 ```
 
-如果 `ssh-copy-id` 不可用或端口映射需要通过跳板，退回到手动方式：
+或者手动方式：
 
 ```bash
 ssh <host> "docker exec -i <container> bash -c 'mkdir -p /root/.ssh && chmod 700 /root/.ssh && cat > /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys'" < ~/.ssh/id_rsa.pub
@@ -41,7 +41,7 @@ ssh <host> "docker exec -i <container> bash -c 'mkdir -p /root/.ssh && chmod 700
 
 ```bash
 apt install -y locales
-locale-gen en_US.UTF-8
+locale-gen en_US.UTF-8 zh_SG.UTF-8
 echo "export LANG=en_US.UTF-8" >> /root/.bashrc
 echo "export LC_ALL=en_US.UTF-8" >> /root/.bashrc
 ```
@@ -49,17 +49,20 @@ echo "export LC_ALL=en_US.UTF-8" >> /root/.bashrc
 ## 4. 测试连接
 
 ```bash
-ssh -p <port> root@<host> "whoami"
+ssh <host> "whoami"
 # 预期输出：root
 ```
 
 ## 5. 添加本地 SSH 配置
 
+插入到 `~/.ssh/config` 中同服务器现有条目附近（不要追加到文件末尾）：
+
 ```
-Host <alias>
+Host <host>
   HostName <ip>
   User root
   Port <port>
+  [ProxyJump <jump_host>]
 ```
 
 ## 备注

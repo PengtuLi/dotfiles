@@ -108,6 +108,13 @@ if command -v procs >/dev/null 2>&1; then
     alias psu="procs $(whoami)"        # show my processes only
 fi
 
+# witr (process ancestry tracer)
+if command -v witr >/dev/null 2>&1; then
+    alias wt="witr"                    # inspect process with full details
+    alias wtt="witr --tree"            # show process ancestry tree only
+    alias wtp="witr --port"            # find process by port (usage: wtp 8080)
+fi
+
 # doggo (modern dig)
 if command -v doggo >/dev/null 2>&1; then
     alias dns="doggo"
@@ -156,6 +163,7 @@ alias ng="nginx"
 alias wget="wget -c"                        # -c: resume interrupted downloads
 
 # git
+alias Lg="gitui"
 alias lg="lazygit"
 alias g="git"
 alias gs="git status"
@@ -169,6 +177,37 @@ alias gbc="git switch"                    # switch branch (replaces checkout for
 alias gsw="git switch"                    # alias for gbc
 alias grs="git restore"                   # restore file (replaces checkout for files)
 alias glog="git log --oneline --graph --decorate -20"
+
+# herdr
+# h() {
+#     if ! command -v tmux >/dev/null 2>&1; then
+#         herdr
+#         return
+#     fi
+#
+#     # Check if there's already a herdr window in the default session
+#     local herdr_window
+#     herdr_window=$(tmux list-windows -t default -F '#{window_index}:#{window_name}' 2>/dev/null | awk -F: '$2 == "herdr" {print $1; exit}')
+#
+#     if [ -n "$herdr_window" ]; then
+#         # Herdr window exists — switch to it
+#         if [ -n "$TMUX" ]; then
+#             tmux select-window -t "default:$herdr_window"
+#         else
+#             tmux attach -t "default:$herdr_window"
+#         fi
+#     elif [ -n "$TMUX" ]; then
+#         # Inside tmux, create new window at index 0
+#         tmux new-window -n herdr -t default:0 herdr
+#     else
+#         # Outside tmux: try to create new session with herdr at window 0, or create window in existing default session
+#         if ! tmux new-session -s default -n herdr -d herdr 2>/dev/null; then
+#             tmux new-window -n herdr -t default:0 herdr
+#         fi
+#         tmux attach -t default
+#     fi
+# }
+# alias h=h
 
 # tmux
 alias t="tmux attach -t default || tmux new -s default"  # attach or create default session
@@ -191,7 +230,8 @@ alias cht-ls="cht :list | ff"              # list all cheatsheets, pipe to fzf
 
 # vibe-coding
 alias Claude="IS_SANDBOX=1 claude --dangerously-skip-permissions"
-alias claude-vl="uv-a && IS_SANDBOX=1 CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 CLAUDE_CODE_EFFORT_LEVEL=xhigh claude --settings ~/.claude/settings_vl.json --dangerously-skip-permissions"
+alias claude-vl="uv-a && IS_SANDBOX=1 CLAUDE_CODE_EFFORT_LEVEL=max claude --settings ~/.claude/settings_vl.json --dangerously-skip-permissions"
+alias claude-gpt="IS_SANDBOX=1 CLAUDE_CODE_EFFORT_LEVEL=max claude --settings ~/.claude/settings_gpt.json --dangerously-skip-permissions"
 alias qs="cd vibe-love || claude-vl"
 
 # easytier (mesh VPN)

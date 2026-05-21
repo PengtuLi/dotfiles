@@ -57,10 +57,12 @@ install_proxy(){
     fi
     read -p "---- update mihomo ui? [y/n] " update_ui
     if [[ "$update_ui" == "y" ]]; then
-        # Update to latest version
-        git -C /etc/mihomo/ui pull -r
+        # Update to latest version: remove and re-clone to avoid git issues
+        echo "🔄 更新 mihomo ui..."
+        rm -rf /etc/mihomo/ui
+        git clone --depth 1 https://github.com/metacubex/metacubexd.git -b gh-pages /etc/mihomo/ui
+        rm -rf /etc/mihomo/ui/.git
     fi
-    rm -rf /etc/mihomo/ui/.git
 
     echo ${cmd}
     echo ${cmd2}
@@ -256,6 +258,7 @@ read -p "---- 安装定时配置更新 (cron)? [y/n] " install_cron
 if [[ "$install_cron" == "y" ]]; then
     CLIENT_SCRIPT="$ROOT_DIR/mihomo-clash/mihomo-client-update.sh"
     if [[ -f "$CLIENT_SCRIPT" ]]; then
+        chmod +x "$CLIENT_SCRIPT"
         if [[ -n "${MIHOMO_AUTH:-}" ]]; then
             bash "$CLIENT_SCRIPT" --install-cron "$MIHOMO_AUTH"
         else

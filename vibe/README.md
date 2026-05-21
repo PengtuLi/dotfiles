@@ -11,6 +11,12 @@ npm install -g 9router
 ## 编码
 
 ```sh
+# Agent-Reach - 给 AI Agent 一键装上互联网能力（网页/YouTube/RSS/GitHub/B站/推特/Reddit 等）
+# https://github.com/Panniantong/Agent-Reach
+# 安装方式：让 AI agent 读取 https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md 并执行安装
+```
+
+```sh
 # Anthropic 官方 skills（必装）
 # https://github.com/anthropics/skills
 /plugin marketplace add anthropics/skills
@@ -120,6 +126,9 @@ npx skills add mvanhorn/last30days-skill -g
 - `./skills/python-performance-optimization/` Python 性能优化（cProfile、内存分析、NumPy 向量化、async IO 等 20 个优化模式） — 来自 wshobson/agents → "这个 Python 脚本跑得太慢了，帮我优化" / "分析一下这个函数的内存占用"
 - `./skills/secure-linux-web-hosting/` Linux Web 服务器安全搭建（SSH 加固、Nginx、HTTPS/Let's Encrypt、跨发行版路由） — 来自 xixu-me/skills → "帮我在云服务器上搭建一个安全的 Nginx 站点" / "给服务器配上 HTTPS 证书"
 - `./skills/ssh-server-and-container-setup/` SSH 远程配置 Linux 服务器用户和 Docker 容器（用户创建、公钥部署、GPU 容器创建、容器内 SSH 配置、本地 ~/.ssh/config 管理） → "配置服务器创建容器" / "给服务器添加新用户"
+- `./skills/huggingface-papers/` HuggingFace 论文查找与阅读（HF/arXiv URL 解析、结构化元数据、作者/关联模型/数据集） — https://github.com/huggingface/skills → "帮我看看这篇论文 2602.08025" / "解释一下这个 HF paper"
+- `./skills/ai-model-download/` AI 模型下载与管理（HuggingFace 和 ModelScope 双平台、批量下载、断点续传、完整性校验、参数量统计） → "从 HF 下载 Qwen 模型" / "帮我上传模型到 ModelScope"
+- `./skills/caveman-review/` 超压缩 PR 代码审查（一行一评：位置+问题+修复，emoji 严重度标记） → "review this PR" / "code review" / "/caveman-review"
 
 # Find Place
 

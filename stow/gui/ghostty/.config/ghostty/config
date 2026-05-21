@@ -46,11 +46,11 @@ shell-integration-features = sudo, title
 # padding
 window-padding-x=0
 window-padding-y=0
-macos-titlebar-style = tabs
+# macos-titlebar-style = tabs
 gtk-titlebar = false
 # padding is automatically balanced between all four edges to minimize imbalance on one side
 window-padding-balance = true
-window-step-resize = true
+window-step-resize = false
 confirm-close-surface = false
 macos-option-as-alt = true
 # clear all preset

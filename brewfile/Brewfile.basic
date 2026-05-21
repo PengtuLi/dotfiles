@@ -54,7 +54,7 @@ brew "lazygit"               # 交互式 Git TUI
 brew "git-delta"             # enhanced diff for git,bat...
 brew "onefetch"              # git repo info
 # brew "tig"                   # text-mode interface for Git (for git log)
-# brew "gitui"                 # fast but in developed, maybe use later
+brew "gitui"                 # fast but in developed, maybe use later
 
 # ai
 brew "code2prompt"

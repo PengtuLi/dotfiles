@@ -1,5 +1,6 @@
 # tool
 brew "bear"                  # C/C++ compile_commands.json 生成器
+brew "witr"                  # 进程溯源分析工具 (What Is This Running)
 
 # # macOS 特有软件
 cask "karabiner-elements"                # 键盘映射/改键
@@ -26,5 +27,5 @@ cask "visual-studio-code"                # vscode
 # brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
 # brew "koekeishiya/formulae/skhd"  # 键盘快捷键守护进程
 cask "nikitabobko/tap/aerospace"
-tap "FelixKratz/formulae"
-brew "borders"
+# tap "FelixKratz/formulae"
+# brew "borders"

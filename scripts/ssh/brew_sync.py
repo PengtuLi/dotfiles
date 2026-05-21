@@ -3,97 +3,226 @@
 import base64
 import json
 import os
-import shutil
 import subprocess
 import sys
-import tarfile
-import time
 from pathlib import Path
-from threading import Thread
-from queue import Queue, Empty
+from queue import Empty
 
 import yaml
 from colorama import Fore, Style, init
 
+from archive_utils import sync_configs, sync_scripts, sync_vibe
+from brew_patchelf_fix import fix_all_broken_binaries
+from prompt_utils import confirm, select_option
+from proxy_utils import setup_simple_proxy, setup_socks_proxy_legacy
+from ssh_utils import exec_remote, get_ssh_cmd, get_ssh_hosts
+
 init(autoreset=True)
 
 THIS_DIR = Path(__file__).parent
-CLASH_PORT = 7890  # Local clash HTTP proxy port
-TUNNEL_PORT = 22222  # Use different port to avoid conflicts
-SOCKS_PORT = 1080  # Legacy: SOCKS port on remote
+CLASH_PORT = 7890
+TUNNEL_PORT = 22222
+SOCKS_PORT = 1080
 
 
-def find_available_remote_port(host: str, start_port: int, max_tries: int = 100) -> int:
-    """Find an available port on the remote host, starting from start_port."""
-    # Use ss as primary check (widely available), fallback to bash /dev/tcp
-    check_cmd = (
-        f'ssh {host} "ss -tlnH \\"sport = :{{port}}\\" | grep -q . '
-        f'|| (exec 3<>/dev/tcp/127.0.0.1/{{port}} && echo used) 2>/dev/null"'
+def install_homebrew_remote(
+    ssh_cmd: str, host: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Install Homebrew on remote host using shared install script."""
+    print(f"{Fore.WHITE}Installing Homebrew...{Style.RESET_ALL}")
+    if not confirm("Install Homebrew?"):
+        return
+
+    install_script = THIS_DIR.parent / "lib" / "install_homebrew.sh"
+    subprocess.run(
+        f"scp {install_script} {host}:/tmp/install_homebrew.sh",
+        shell=True,
+        check=True,
     )
-    for port in range(start_port, start_port + max_tries):
-        cmd = check_cmd.format(port=port)
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        if result.returncode != 0:
-            if port != start_port:
-                print(
-                    f"{Fore.YELLOW}[proxy] Port {start_port} in use, using {port}{Style.RESET_ALL}"
-                )
-            return port
-    raise RuntimeError(
-        f"No available port found in range {start_port}-{start_port + max_tries - 1}"
+    exec_remote(
+        ssh_cmd,
+        "bash /tmp/install_homebrew.sh && rm /tmp/install_homebrew.sh",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
     )
 
 
-def get_ssh_cmd(host: str) -> str:
-    """Get SSH command."""
-    return f"ssh {host}"
-
-
-def remote_exec(
-    ssh_cmd: str,
-    cmd: str,
-    proxy: bool = False,
-    proxy_mode: str = "http",
-    proxy_port: int = CLASH_PORT,
-) -> str:
-    """Execute command on remote server with streaming output."""
-    if proxy:
-        if proxy_mode == "socks":
-            cmd = f"export ALL_PROXY=socks5h://127.0.0.1:{proxy_port} && {cmd}"
-        else:
-            cmd = f"export http_proxy=http://127.0.0.1:{proxy_port} https_proxy=http://127.0.0.1:{proxy_port} && {cmd}"
-    # Use double quotes to avoid # being interpreted as comment
-    # Escape $ and " inside the command
-    cmd_escaped = cmd.replace("$", "\\$").replace('"', '\\"')
-    full = f'{ssh_cmd} "{cmd_escaped}"'
-    print(f"{Fore.CYAN}[cmd] {Style.DIM}{full}{Style.RESET_ALL}")
-    process = subprocess.Popen(
-        full, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+def install_herdr_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Install Herdr on remote host if not present."""
+    print(f"{Fore.WHITE}Checking Herdr installation...{Style.RESET_ALL}")
+    herdr_check = exec_remote(
+        ssh_cmd,
+        "command -v herdr &>/dev/null && echo 'installed' || echo 'not_found'",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
     )
-    stdout_lines = []
-    for line in process.stdout:
-        print(line, end="", flush=True)
-        stdout_lines.append(line)
-    process.wait()
-    stderr = process.stderr.read()
-    if stderr:
-        print(f"{Fore.RED}[stderr] {stderr}{Style.RESET_ALL}", end="", flush=True)
-    return "".join(stdout_lines)
+    if "not_found" not in herdr_check:
+        print(f"  {Fore.GREEN}Herdr is already installed{Style.RESET_ALL}")
+        return
+    if confirm("Herdr is not installed. Install Herdr?"):
+        exec_remote(
+            ssh_cmd,
+            "curl -fsSL https://herdr.dev/install.sh | sh",
+            proxy=proxy,
+            proxy_mode=proxy_mode,
+            proxy_port=proxy_port,
+        )
 
 
-def get_ssh_hosts() -> list[str]:
-    """Get all SSH hosts from config."""
-    cfg_file = Path.home() / ".ssh/config"
-    if not cfg_file.exists():
-        return []
-    hosts = []
-    for line in cfg_file.read_text().splitlines():
-        line = line.strip()
-        if line.lower().startswith("host "):
-            host = line.split(maxsplit=1)[1]
-            if "*" not in host:
-                hosts.append(host)
-    return hosts
+def install_uv_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Install UV on remote host if not present."""
+    print(f"{Fore.WHITE}Checking UV installation...{Style.RESET_ALL}")
+    uv_check = exec_remote(
+        ssh_cmd,
+        "command -v uv &>/dev/null && echo 'installed' || echo 'not_found'",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+    if "not_found" not in uv_check:
+        return
+    if confirm("UV is not installed. Install UV?"):
+        exec_remote(
+            ssh_cmd,
+            "wget -qO- https://astral.sh/uv/install.sh | sh",
+            proxy=proxy,
+            proxy_mode=proxy_mode,
+            proxy_port=proxy_port,
+        )
+
+
+def install_packages_remote(
+    ssh_cmd: str, apps: dict, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Install Homebrew packages on remote host."""
+    to_install = [
+        k for k, v in apps.items() if str(v.get("install", False)).lower() == "true"
+    ]
+    if not to_install:
+        return
+
+    print(f"{Fore.BLUE}Installing: {Fore.CYAN}{', '.join(to_install)}{Style.RESET_ALL}")
+    if not confirm("Install packages?"):
+        return
+
+    brew_names = [apps[app].get("brew", app) for app in to_install]
+    exec_remote(
+        ssh_cmd,
+        f"/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+
+
+def setup_locales_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Setup locales on remote host."""
+    print(f"{Fore.WHITE}Setting up locales...{Style.RESET_ALL}")
+    if not confirm("Setup locales?"):
+        return
+    exec_remote(
+        ssh_cmd,
+        "apt-get install -y locales && locale-gen en_US.UTF-8 && locale-gen en_SG.UTF-8",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+
+
+def setup_docker_env_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Setup Docker environment export on remote host if in container."""
+    print(f"{Fore.WHITE}Checking Docker environment...{Style.RESET_ALL}")
+    if not confirm("Setup Docker environment?"):
+        return
+
+    docker_check = exec_remote(
+        ssh_cmd,
+        "test -f /.dockerenv && echo 'docker' || echo 'not_docker'",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+    if "docker" not in docker_check:
+        return
+
+    exec_remote(
+        ssh_cmd,
+        r"""grep -q 'DOCKER_ENV_EXPORTED' ~/.bashrc 2>/dev/null || cat >> ~/.bashrc <<'EOF'
+[ -n "$DOCKER_ENV_EXPORTED" ] || {
+    export $(cat /proc/1/environ | tr '\0' '\n' | grep -vE '^(HOME|USER|PWD|TERM|SHLVL)=') 2>/dev/null
+    export DOCKER_ENV_EXPORTED=1
+}
+EOF""",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+
+
+def ensure_git_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Ensure git is installed on remote host."""
+    git_check = exec_remote(
+        ssh_cmd,
+        "command -v git &>/dev/null && echo 'ok' || echo 'missing'",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+    if "missing" not in git_check:
+        return
+
+    print(f"{Fore.YELLOW}[git] git not found, installing...{Style.RESET_ALL}")
+    exec_remote(
+        ssh_cmd,
+        "apt-get install -y git || yum install -y git",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+
+
+def copy_secret_env(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Copy secret environment variables to remote host."""
+    print(f"{Fore.WHITE}Copying environment variables...{Style.RESET_ALL}")
+    secret_env_file = THIS_DIR / "secret_env.json"
+    if not secret_env_file.exists() or not confirm("Copy environment variables?"):
+        return
+
+    env_vars = json.loads(secret_env_file.read_text()).get("env_vars", [])
+    exports = [
+        f'export {var}="{os.environ.get(var, "")}"'
+        for var in env_vars
+        if os.environ.get(var)
+    ]
+    if not exports:
+        return
+
+    marker_start = "# SECRET_ENV_START"
+    marker_end = "# SECRET_ENV_END"
+    block = f"{marker_start}\n" + "\n".join(exports) + f"\n{marker_end}\n"
+    encoded = base64.b64encode(block.encode()).decode()
+    exec_remote(
+        ssh_cmd,
+        f"sed -i '/{marker_start}/,/{marker_end}/d' ~/.bashrc 2>/dev/null; echo '{encoded}' | base64 -d >> ~/.bashrc",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+    print(f"  Copied {len(exports)} variables")
 
 
 def fzf_select(hosts: list[str]) -> str:
@@ -105,245 +234,67 @@ def fzf_select(hosts: list[str]) -> str:
     return result.stdout.strip()
 
 
-def setup_simple_proxy(host: str) -> tuple[subprocess.Popen, int]:
-    """Set up reverse SSH tunnel forwarding local clash proxy to remote."""
-    remote_port = find_available_remote_port(host, CLASH_PORT)
+def setup_proxy(host: str) -> tuple[bool, str, subprocess.Popen | None, int]:
+    """Setup proxy and return configuration.
+
+    Returns:
+        (use_proxy, proxy_mode, tunnel_proc, active_proxy_port)
+    """
+    if not confirm("Use proxy for remote commands?"):
+        return False, "http", None, CLASH_PORT
+
+    print(f"{Fore.YELLOW}Proxy setup method:{Style.RESET_ALL}")
+    print(f"  {Fore.CYAN}1.{Style.RESET_ALL} Simple (SSH -R, forwards local clash)")
     print(
-        f"{Fore.CYAN}[proxy] Setting up SSH -R tunnel (local:{CLASH_PORT} → remote:{remote_port})...{Style.RESET_ALL}"
+        f"  {Fore.CYAN}2.{Style.RESET_ALL} Legacy (double SSH tunnel, no local proxy needed)"
     )
-    proc = subprocess.Popen(
-        f"ssh -S none -N -R {remote_port}:127.0.0.1:{CLASH_PORT} {host}",
-        shell=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    # Poll until tunnel is ready or process exits
-    for _ in range(50):  # up to ~10s
-        if proc.poll() is not None:
-            stderr = proc.stderr.read()
-            raise RuntimeError(f"Tunnel failed: {stderr}")
-        verify = subprocess.run(
-            f'ssh {host} "ss -tlnH \\"sport = :{remote_port}\\" | grep -q . && echo OK"',
-            shell=True,
-            capture_output=True,
-            text=True,
-        )
-        if "OK" in verify.stdout:
-            break
-        time.sleep(0.2)
-    else:
-        proc.terminate()
-        raise RuntimeError("Proxy port not available on remote")
-    print(
-        f"{Fore.GREEN}[proxy] HTTP proxy ready on remote:127.0.0.1:{remote_port}{Style.RESET_ALL}"
-    )
-    return proc, remote_port
+    choice = select_option("Select:", ["Simple", "Legacy"])
 
+    if choice == "2":
+        proxy_mode = "socks"
+        print(f"""{Fore.YELLOW}Legacy SOCKS proxy setup{Style.RESET_ALL}
+{Style.DIM}# Local machine (A):
+ssh -R 2222:127.0.0.1:22 user@remote_server
 
-def setup_socks_proxy_legacy(
-    host: str, local_user: str, tunnel_port: int = TUNNEL_PORT
-) -> Queue:
-    """Set up SOCKS5 proxy via reverse SSH tunnel using agent forwarding."""
-    result_queue = Queue()
+# Then on remote_server (B):
+ssh -D 1080 -p 2222 -N localuser@localhost{Style.RESET_ALL}
+""")
+        local_user = input(
+            f"{Fore.YELLOW}Enter local username for SOCKS tunnel: {Style.RESET_ALL}"
+        ).strip() or os.environ.get("USER", "")
+        if not local_user:
+            print(f"{Fore.RED}Error: Local username required{Style.RESET_ALL}")
+            return False, "http", None, CLASH_PORT
 
-    def _run_tunnel():
+        print(f"{Fore.GREEN}Setting up SOCKS5 proxy (legacy)...{Style.RESET_ALL}")
+        result_queue = setup_socks_proxy_legacy(host, local_user)
+        tunnel_proc = None
+        actual_socks_port = SOCKS_PORT
         try:
-            # Ensure ssh-agent is running
-            auth_sock = os.environ.get("SSH_AUTH_SOCK", "")
-            if not auth_sock or not Path(auth_sock).exists():
-                print(f"{Fore.YELLOW}[agent] Starting ssh-agent...{Style.RESET_ALL}")
-                agent_output = subprocess.run(
-                    "ssh-agent -s", shell=True, capture_output=True, text=True
-                ).stdout
-                for line in agent_output.splitlines():
-                    if "SSH_AUTH_SOCK=" in line:
-                        os.environ["SSH_AUTH_SOCK"] = line.split("=")[1].split(";")[0]
-                    if "SSH_AGENT_PID=" in line:
-                        os.environ["SSH_AGENT_PID"] = line.split("=")[1].split(";")[0]
-                auth_sock = os.environ.get("SSH_AUTH_SOCK", "")
-                if not auth_sock or not Path(auth_sock).exists():
-                    result_queue.put((False, "Failed to start ssh-agent."))
-                    return
-
-            # Add key to agent if not present
-            if (
-                subprocess.run("ssh-add -l", shell=True, capture_output=True).returncode
-                != 0
-            ):
-                print(f"{Fore.YELLOW}[agent] Adding SSH key...{Style.RESET_ALL}")
-                if subprocess.run("ssh-add", shell=True).returncode != 0:
-                    result_queue.put(
-                        (False, "Failed to add SSH key. Run 'ssh-add' first.")
-                    )
-                    return
-
-            # Find available SOCKS port on remote
-            socks_port = find_available_remote_port(host, SOCKS_PORT)
-
-            # Clean up existing SOCKS processes on that port
-            subprocess.run(
-                f'ssh {host} "pkill -f \\"ssh.*-D {socks_port}\\" 2>/dev/null || true"',
-                shell=True,
-                capture_output=True,
-            )
-
-            # Ensure AllowAgentForwarding on remote
-            fwd_check = subprocess.run(
-                f'ssh {host} "grep -i AllowAgentForwarding /etc/ssh/sshd_config"',
-                shell=True,
-                capture_output=True,
-                text=True,
-            )
-            if (
-                "#AllowAgentForwarding" in fwd_check.stdout
-                or "AllowAgentForwarding" not in fwd_check.stdout
-            ):
-                print(
-                    f"{Fore.CYAN}[config] Enabling AllowAgentForwarding...{Style.RESET_ALL}"
-                )
-                subprocess.run(
-                    f"ssh -t {host} \"sudo sed -i 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /etc/ssh/sshd_config; "
-                    f'sudo grep -q \\"^AllowAgentForwarding yes\\" /etc/ssh/sshd_config || '
-                    f"sudo bash -c 'echo AllowAgentForwarding yes >> /etc/ssh/sshd_config'; "
-                    f'sudo systemctl restart sshd"',
-                    shell=True,
-                )
-                time.sleep(1)
-
-            # Kill existing control master to ensure fresh connection with agent forwarding
-            subprocess.run(
-                f"ssh -O exit {host} 2>/dev/null || true",
-                shell=True,
-                capture_output=True,
-            )
-
-            # Kill any existing processes using tunnel port on remote
-            print(
-                f"{Fore.CYAN}[tunnel] Cleaning up old tunnel processes...{Style.RESET_ALL}"
-            )
-            # First, kill any ssh processes that might be using the port
-            cleanup_result = subprocess.run(
-                f'''ssh -S none -A {host} "
-                    # Kill ssh processes connected to tunnel port
-                    pkill -9 -f 'ssh.*-R.*{tunnel_port}' 2>/dev/null || true
-                    # Kill any process listening on the tunnel port
-                    ss -tlpn 2>/dev/null | grep ':{tunnel_port}' | awk '{{print \\$6}}' | xargs -r kill -9 2>/dev/null || true
-                    # Also try with lsof
-                    lsof -ti :{tunnel_port} | xargs -r kill -9 2>/dev/null || true
-                    # Force release the port
-                    fuser -k -9 {tunnel_port}/tcp 2>/dev/null || true
-                    # Wait a moment for port to be released
-                    sleep 1
-                "''',
-                shell=True,
-                capture_output=True,
-                text=True,
-            )
-            if cleanup_result.stderr:
-                print(
-                    f"{Fore.YELLOW}[cleanup] {cleanup_result.stderr.strip()}{Style.RESET_ALL}"
-                )
-            time.sleep(1)
-
-            print(
-                f"{Fore.CYAN}[tunnel] Setting up reverse SSH tunnel...{Style.RESET_ALL}"
-            )
-
-            # Create reverse tunnel
-            tunnel_proc = subprocess.Popen(
-                f"ssh -S none -A -N -R {tunnel_port}:127.0.0.1:22 {host}",
-                shell=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            time.sleep(2)
-
-            # Check for tunnel errors
-            import select
-
-            stderr_lines = []
-            while (
-                tunnel_proc.stderr
-                in select.select([tunnel_proc.stderr], [], [], 0.1)[0]
-            ):
-                line = tunnel_proc.stderr.readline()
-                if line:
-                    stderr_lines.append(line)
-                else:
-                    break
-
-            if tunnel_proc.poll() is not None:
-                result_queue.put(
-                    (False, f"Tunnel failed to start: {''.join(stderr_lines)}")
-                )
-                return
-
-            # Check if port forwarding actually worked
-            if any("failed" in line.lower() for line in stderr_lines):
-                result_queue.put(
-                    (False, f"Port forwarding failed: {''.join(stderr_lines)}")
-                )
-                tunnel_proc.terminate()
-                return
-
-            # Add host key
-            subprocess.run(
-                f'ssh -S none -A {host} "ssh-keyscan -p {tunnel_port} localhost >> ~/.ssh/known_hosts 2>/dev/null"',
-                shell=True,
-                capture_output=True,
-            )
-
-            # Test tunnel connection
-            test = subprocess.run(
-                f'ssh -S none -A {host} "ssh -A -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p {tunnel_port} {local_user}@localhost echo OK 2>&1"',
-                shell=True,
-                capture_output=True,
-                text=True,
-                timeout=15,
-            )
-            if "OK" not in test.stdout:
-                result_queue.put((False, f"Tunnel test failed: {test.stdout.strip()}"))
-                tunnel_proc.terminate()
-                return
-
-            # Start SOCKS proxy
-            print(f"{Fore.CYAN}[socks] Setting up SOCKS5 proxy...{Style.RESET_ALL}")
-            subprocess.run(
-                f'ssh -S none -A {host} "ssh -A -f -N -D {socks_port} -p {tunnel_port} -o StrictHostKeyChecking=accept-new {local_user}@localhost"',
-                shell=True,
-                capture_output=True,
-                text=True,
-            )
-            time.sleep(1)
-
-            # Verify
-            print(f"{Fore.CYAN}[socks] Verifying SOCKS port...{Style.RESET_ALL}")
-            verify_result = subprocess.run(
-                f'ssh -S none -A {host} "nc -z 127.0.0.1 {socks_port} && echo OK"',
-                shell=True,
-                capture_output=True,
-                text=True,
-            )
-            print(
-                f"{Fore.CYAN}[debug] verify stdout: '{verify_result.stdout.strip()}'{Style.RESET_ALL}"
-            )
-            if "OK" not in verify_result.stdout:
-                result_queue.put((False, "SOCKS port not available."))
-                tunnel_proc.terminate()
-                return
-
-            result_queue.put((True, f"SOCKS5 proxy ready on 127.0.0.1:{socks_port}"))
-            result_queue.put(("tunnel_proc", tunnel_proc))
-            result_queue.put(("host", host))
-            result_queue.put(("socks_port", socks_port))
-
-        except Exception as e:
-            result_queue.put((False, str(e)))
-
-    Thread(target=_run_tunnel, daemon=True).start()
-    return result_queue
+            while True:
+                result = result_queue.get(timeout=30)
+                if isinstance(result, tuple):
+                    if result[0] == "tunnel_proc":
+                        tunnel_proc = result[1]
+                    elif result[0] == "socks_port":
+                        actual_socks_port = result[1]
+                    elif result[0] is True:
+                        print(f"{Fore.GREEN}{result[1]}{Style.RESET_ALL}")
+                        return True, "socks", tunnel_proc, actual_socks_port
+                    elif result[0] is False:
+                        print(f"{Fore.RED}Error: {result[1]}{Style.RESET_ALL}")
+                        return False, "http", None, CLASH_PORT
+        except Empty:
+            print(f"{Fore.RED}Timeout waiting for SOCKS proxy{Style.RESET_ALL}")
+            return False, "http", None, CLASH_PORT
+    else:
+        proxy_mode = "http"
+        try:
+            tunnel_proc, remote_proxy_port = setup_simple_proxy(host)
+            return True, "http", tunnel_proc, remote_proxy_port
+        except RuntimeError as e:
+            print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
+            return False, "http", None, CLASH_PORT
 
 
 def main():
@@ -370,428 +321,57 @@ def main():
     if not hosts:
         print(f"{Fore.RED}No SSH hosts found in ~/.ssh/config{Style.RESET_ALL}")
         sys.exit(1)
+
     host = fzf_select(hosts)
     ssh_cmd = get_ssh_cmd(host)
 
-    # Ask if using proxy for remote commands
-    use_proxy = (
-        input(f"{Fore.YELLOW}Use proxy for remote commands? [y/N] {Style.RESET_ALL}")
-        .strip()
-        .lower()
-        == "y"
-    )
-
-    # Initialize cleanup variables before try block
-    tunnel_proc = None
-    proxy_mode = "http"  # "http" for simple, "socks" for legacy
-    remote_proxy_port = CLASH_PORT  # actual port used on remote
-    actual_socks_port = SOCKS_PORT  # actual SOCKS port used on remote
+    # Setup proxy
+    use_proxy, proxy_mode, tunnel_proc, active_proxy_port = setup_proxy(host)
 
     try:
-        if use_proxy:
-            print(f"{Fore.YELLOW}Proxy setup method:{Style.RESET_ALL}")
-            print(
-                f"  {Fore.CYAN}1.{Style.RESET_ALL} Simple (SSH -R, forwards local clash)"
-            )
-            print(
-                f"  {Fore.CYAN}2.{Style.RESET_ALL} Legacy (double SSH tunnel, no local proxy needed)"
-            )
-            choice = input(f"{Fore.YELLOW}Select [1/2]: {Style.RESET_ALL}").strip()
-
-            if choice == "2":
-                # Legacy method
-                proxy_mode = "socks"
-                print(f"""{Fore.YELLOW}Legacy SOCKS proxy setup{Style.RESET_ALL}
-{Style.DIM}# 本地机器（A）执行：
-ssh -R 2222:127.0.0.1:22 user@remote_server
-# 保持这个连接不断开
-
-# 然后登录到 remote_server（B），执行：
-ssh -D 1080 -p 2222 -N localuser@localhost
-# -N 表示不执行远程命令，只做端口转发{Style.RESET_ALL}
-""")
-                local_user = input(
-                    f"{Fore.YELLOW}Enter local username for SOCKS tunnel: {Style.RESET_ALL}"
-                ).strip() or os.environ.get("USER", "")
-                if not local_user:
-                    print(f"{Fore.RED}Error: Local username required{Style.RESET_ALL}")
-                    use_proxy = False
-                else:
-                    print(
-                        f"{Fore.GREEN}Setting up SOCKS5 proxy (legacy)...{Style.RESET_ALL}"
-                    )
-                    result_queue = setup_socks_proxy_legacy(host, local_user)
-                    try:
-                        while True:
-                            result = result_queue.get(timeout=30)
-                            if isinstance(result, tuple):
-                                if result[0] == "tunnel_proc":
-                                    tunnel_proc = result[1]
-                                elif result[0] == "socks_port":
-                                    actual_socks_port = result[1]
-                                elif result[0] is True:
-                                    print(f"{Fore.GREEN}{result[1]}{Style.RESET_ALL}")
-                                    break
-                                elif result[0] is False:
-                                    print(
-                                        f"{Fore.RED}Error: {result[1]}{Style.RESET_ALL}"
-                                    )
-                                    use_proxy = False
-                                    break
-                    except Empty:
-                        print(
-                            f"{Fore.RED}Timeout waiting for SOCKS proxy{Style.RESET_ALL}"
-                        )
-                        use_proxy = False
-            else:
-                # Simple method
-                proxy_mode = "http"
-                try:
-                    tunnel_proc, remote_proxy_port = setup_simple_proxy(host)
-                except RuntimeError as e:
-                    print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
-                    use_proxy = False
-
-        # Resolve actual proxy port for remote_exec
-        active_proxy_port = (
-            actual_socks_port if proxy_mode == "socks" else remote_proxy_port
-        )
-
-        # Setup SSH server on remote (needed for legacy SOCKS proxy)
-        if proxy_mode == "socks":
-            print(f"{Fore.WHITE}Setting up SSH server...{Style.RESET_ALL}")
-            print(f"""{Style.DIM}# 在 remote_server（B）上执行：
-# Install openssh-server if not present
-if ! command -v sshd &>/dev/null; then
-    apt-get update
-    apt-get install -y openssh-server
-fi
-# Ensure root password is set (change '1234' to your desired password)
-echo 'root:1234' | chpasswd
-# Enable root login with password
-sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-# Start SSH service
-service ssh start{Style.RESET_ALL}
-""")
-
         # Setup locales
-        print(f"{Fore.WHITE}Setting up locales...{Style.RESET_ALL}")
-        if (
-            input(f"{Fore.YELLOW}Setup locales? [y/N] {Style.RESET_ALL}")
-            .strip()
-            .lower()
-            == "y"
-        ):
-            remote_exec(
-                ssh_cmd,
-                r"""apt-get install -y locales
-locale-gen en_US.UTF-8
-locale-gen en_SG.UTF-8""",
-                proxy=use_proxy,
-                proxy_mode=proxy_mode,
-                proxy_port=active_proxy_port,
-            )
+        setup_locales_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
-        # Setup Docker environment export if in container
-        print(f"{Fore.WHITE}Checking Docker environment...{Style.RESET_ALL}")
-        if (
-            input(f"{Fore.YELLOW}Setup Docker environment? [y/N] {Style.RESET_ALL}")
-            .strip()
-            .lower()
-            == "y"
-        ):
-            docker_check = remote_exec(
-                ssh_cmd,
-                "test -f /.dockerenv && echo 'docker' || echo 'not_docker'",
-                proxy=use_proxy,
-                proxy_mode=proxy_mode,
-                proxy_port=active_proxy_port,
-            )
-            if "docker" in docker_check:
-                remote_exec(
-                    ssh_cmd,
-                    r"""grep -q 'DOCKER_ENV_EXPORTED' ~/.bashrc 2>/dev/null || cat >> ~/.bashrc <<'EOF'
-[ -n "$DOCKER_ENV_EXPORTED" ] || {
-    export $(cat /proc/1/environ | tr '\0' '\n' | grep -vE '^(HOME|USER|PWD|TERM|SHLVL)=') 2>/dev/null
-    export DOCKER_ENV_EXPORTED=1
-}
-EOF""",
-                    proxy=use_proxy,
-                    proxy_mode=proxy_mode,
-                )
+        # Setup Docker environment
+        setup_docker_env_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
-        # Install Homebrew through local network
-        print(f"{Fore.WHITE}Installing Homebrew...{Style.RESET_ALL}")
-        if (
-            input(f"{Fore.YELLOW}Install Homebrew? [y/N] {Style.RESET_ALL}")
-            .strip()
-            .lower()
-            == "y"
-        ):
-            remote_exec(
-                ssh_cmd,
-                r"""if [ ! -f /home/linuxbrew/.linuxbrew/bin/brew ] &>/dev/null; then
-NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-# Add to ~/.bashrc if not already present
-grep -q 'linuxbrew/.linuxbrew/bin/brew shellenv' ~/.bashrc 2>/dev/null || \
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
-                proxy=use_proxy,
-                proxy_mode=proxy_mode,
-                proxy_port=active_proxy_port,
-            )
+        # Ensure git is installed
+        ensure_git_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
-        # Install UV if not present
-        print(f"{Fore.WHITE}Checking UV installation...{Style.RESET_ALL}")
-        uv_check = remote_exec(
-            ssh_cmd,
-            "command -v uv &>/dev/null && echo 'installed' || echo 'not_found'",
-            proxy=use_proxy,
-            proxy_mode=proxy_mode,
-        )
-        if "not_found" in uv_check:
-            response = (
-                input(
-                    f"{Fore.YELLOW}UV is not installed. Install UV? [y/N] {Style.RESET_ALL}"
-                )
-                .strip()
-                .lower()
-            )
-            if response == "y":
-                remote_exec(
-                    ssh_cmd,
-                    "wget -qO- https://astral.sh/uv/install.sh | sh",
-                    proxy=use_proxy,
-                    proxy_mode=proxy_mode,
-                )
+        # Install Homebrew
+        install_homebrew_remote(ssh_cmd, host, use_proxy, proxy_mode, active_proxy_port)
+
+        # Install UV
+        install_uv_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
+
+        # Install Herdr
+        install_herdr_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
         # Install packages
-        to_install = [
-            k for k, v in apps.items() if str(v.get("install", False)).lower() == "true"
-        ]
-        if to_install:
-            print(
-                f"{Fore.BLUE}Installing: {Fore.CYAN}{', '.join(to_install)}{Style.RESET_ALL}"
-            )
-            if (
-                input(f"{Fore.YELLOW}Install packages? [y/N] {Style.RESET_ALL}")
-                .strip()
-                .lower()
-                == "y"
-            ):
-                brew_names = [apps[app].get("brew", app) for app in to_install]
-                remote_exec(
-                    ssh_cmd,
-                    f"/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
-                    proxy=use_proxy,
-                    proxy_mode=proxy_mode,
-                )
+        install_packages_remote(ssh_cmd, apps, use_proxy, proxy_mode, active_proxy_port)
 
-        # Copy configs via archive (compress, transfer, extract)
-        print(f"{Fore.GREEN}{Fore.WHITE}Copying config files...{Style.RESET_ALL}")
-        if (
-            input(f"{Fore.YELLOW}Copy config files? [y/N] {Style.RESET_ALL}")
-            .strip()
-            .lower()
-            == "y"
-        ):
-            import tempfile
+        # Fix broken ELF interpreters (after all installations)
+        fix_all_broken_binaries(ssh_cmd)
 
-            # Collect all files to transfer
-            all_paths = []
-            for app, info in apps.items():
-                configs = info.get("config", [])
-                if not configs:
-                    continue
-                if isinstance(configs, str):
-                    configs = [configs]
-                for cfg in configs:
-                    cfg_path = Path(cfg).expanduser()
-                    files = (
-                        list(cfg_path.parent.glob(cfg_path.name))
-                        if "*" in cfg_path.name
-                        else [cfg_path]
-                    )
-                    for f in files:
-                        if f.exists():
-                            if f.is_dir():
-                                # Expand directory: add each file (resolve symlinks)
-                                for child in sorted(f.rglob("*")):
-                                    if child.is_file() or child.is_dir():
-                                        real_child = child.resolve()
-                                        if real_child.is_file():
-                                            all_paths.append(
-                                                (
-                                                    real_child,
-                                                    child.relative_to(Path.home()),
-                                                )
-                                            )
-                                            print(
-                                                f"  {Fore.CYAN}Adding {Fore.WHITE}{child.relative_to(Path.home())}{Style.RESET_ALL}"
-                                            )
-                            else:
-                                rel_path = f.relative_to(Path.home())
-                                all_paths.append((f.resolve(), rel_path))
-                                print(
-                                    f"  {Fore.CYAN}Adding {Fore.WHITE}{rel_path}{Style.RESET_ALL}"
-                                )
+        # Copy configs
+        print(f"{Fore.WHITE}Copying config files...{Style.RESET_ALL}")
+        if confirm("Copy config files?"):
+            sync_configs(host, ssh_cmd, apps, use_proxy, proxy_mode, active_proxy_port)
 
-            if all_paths:
-                # Remove existing files/dirs/symlinks on remote first (one command)
-                rm_paths = " ".join(f"~/{rp}" for _, rp in all_paths)
-                print(
-                    f"  {Fore.YELLOW}Removing existing files on remote...{Style.RESET_ALL}"
-                )
-                remote_exec(ssh_cmd, f"rm -rf {rm_paths}")
-
-                # Create tar archive (use Python tarfile to avoid macOS AppleDouble issues)
-                with tempfile.NamedTemporaryFile(suffix=".tar.gz", delete=False) as tmp:
-                    tmp_path = Path(tmp.name)
-                try:
-                    with tarfile.open(tmp_path, "w:gz") as tar:
-                        for real_file, rel_path in all_paths:
-                            tar.add(str(real_file), arcname=str(rel_path))
-
-                    # Transfer archive
-                    archive_size = tmp_path.stat().st_size / 1024 / 1024
-                    print(
-                        f"  {Fore.GREEN}Transferring archive ({archive_size:.2f} MB)...{Style.RESET_ALL}"
-                    )
-                    subprocess.run(
-                        f"scp {tmp_path} {host}:/tmp/config_sync.tar.gz",
-                        shell=True,
-                        check=True,
-                    )
-
-                    # Extract on remote
-                    remote_exec(
-                        ssh_cmd,
-                        "tar -xzf /tmp/config_sync.tar.gz -C ~ && rm /tmp/config_sync.tar.gz",
-                    )
-                    print(
-                        f"  {Fore.GREEN}Extracted {len(all_paths)} items{Style.RESET_ALL}"
-                    )
-                finally:
-                    tmp_path.unlink(missing_ok=True)
-
-        # Copy .local/bin scripts and bashrc (single archive transfer)
+        # Copy scripts
         print(f"{Fore.WHITE}Copying scripts and shell config...{Style.RESET_ALL}")
-        if (
-            input(f"{Fore.YELLOW}Copy bin scripts and .bashrc? [y/N] {Style.RESET_ALL}")
-            .strip()
-            .lower()
-            == "y"
-        ):
-            import tempfile
-
-            archive_paths = []  # (src_abs, rel_from_home)
-
-            # Collect .local/bin scripts (from dotfiles repo, not ~)
-            local_bin = THIS_DIR.parent.parent / ".local" / "bin"
-            for name in sorted(bin_scripts):
-                src = local_bin / name
-                if src.exists():
-                    rel = Path(".local/bin") / name
-                    archive_paths.append((src, rel))
-                    print(f"  {Fore.CYAN}Adding {Fore.WHITE}{rel}{Style.RESET_ALL}")
-                else:
-                    print(f"  {Fore.YELLOW}Skip {name} (not found){Style.RESET_ALL}")
-
-            # Collect bashrc and common shell scripts
-            shell_dir = THIS_DIR.parent.parent / "shell"
-            bashrc_local = shell_dir / "bash/.bashrc"
-            common_dir = shell_dir / "common"
-            if bashrc_local.exists():
-                # Stage to temp dir as ._bashrc
-                archive_paths.append((bashrc_local, Path("._bashrc")))
-                print(f"  {Fore.CYAN}Adding {Fore.WHITE}._bashrc{Style.RESET_ALL}")
-                if common_dir.exists():
-                    for sh in sorted(common_dir.glob("*.sh")):
-                        rel = Path("._shell/common") / sh.name
-                        archive_paths.append((sh, rel))
-                        print(f"  {Fore.CYAN}Adding {Fore.WHITE}{rel}{Style.RESET_ALL}")
-
-            if archive_paths:
-                # Prepare remote dirs
-                remote_exec(ssh_cmd, "mkdir -p ~/.local/bin ~/._shell/common")
-
-                # Build tar from a staging dir to preserve relative paths
-                with tempfile.TemporaryDirectory() as staging:
-                    staging = Path(staging)
-                    for src, rel in archive_paths:
-                        dest = staging / rel
-                        dest.parent.mkdir(parents=True, exist_ok=True)
-                        # copy preserves executable bit
-                        import shutil
-
-                        shutil.copy2(str(src), str(dest))
-
-                    # Create tar from staging dir (use Python tarfile to avoid macOS AppleDouble issues)
-                    tmp_tar = staging / "_archive.tar.gz"
-                    with tarfile.open(tmp_tar, "w:gz") as tar:
-                        for _, rel in archive_paths:
-                            tar.add(str(staging / rel), arcname=str(rel))
-
-                    archive_size = tmp_tar.stat().st_size / 1024 / 1024
-                    print(
-                        f"  {Fore.GREEN}Transferring ({archive_size:.2f} MB)...{Style.RESET_ALL}"
-                    )
-                    subprocess.run(
-                        f"scp {tmp_tar} {host}:/tmp/scripts_sync.tar.gz",
-                        shell=True,
-                        check=True,
-                    )
-
-                remote_exec(
-                    ssh_cmd,
-                    "tar -xzf /tmp/scripts_sync.tar.gz -C ~ && rm /tmp/scripts_sync.tar.gz",
-                )
-                remote_exec(ssh_cmd, "chmod +x ~/.local/bin/* 2>/dev/null || true")
-
-                # Fix SHELL_DIR in remote ._bashrc
-                if bashrc_local.exists() and common_dir.exists():
-                    remote_exec(
-                        ssh_cmd,
-                        """sed -i 's|^SHELL_DIR=.*|SHELL_DIR="$HOME/._shell"|' ~/._bashrc""",
-                    )
-                # Source it in remote .bashrc
-                remote_exec(
-                    ssh_cmd,
-                    r"""grep -q 'source.*\._bashrc' ~/.bashrc 2>/dev/null || echo 'source $HOME/._bashrc' >> ~/.bashrc""",
-                )
-                print(
-                    f"  {Fore.GREEN}Copied {len(archive_paths)} items{Style.RESET_ALL}"
-                )
-
-        # Copy secret environment variables
-        print(f"{Fore.WHITE}Copying environment variables...{Style.RESET_ALL}")
-        secret_env_file = THIS_DIR / "secret_env.json"
-        if (
-            secret_env_file.exists()
-            and input(
-                f"{Fore.YELLOW}Copy environment variables? [y/N] {Style.RESET_ALL}"
+        if confirm("Copy bin scripts and .bashrc?"):
+            sync_scripts(
+                host, ssh_cmd, bin_scripts, use_proxy, proxy_mode, active_proxy_port
             )
-            .strip()
-            .lower()
-            == "y"
-        ):
-            env_vars = json.loads(secret_env_file.read_text()).get("env_vars", [])
-            exports = [
-                f'export {var}="{os.environ.get(var, "")}"'
-                for var in env_vars
-                if os.environ.get(var)
-            ]
-            if exports:
-                marker_start = "# SECRET_ENV_START"
-                marker_end = "# SECRET_ENV_END"
-                block = f"{marker_start}\n" + "\n".join(exports) + f"\n{marker_end}\n"
-                encoded = base64.b64encode(block.encode()).decode()
-                remote_exec(
-                    ssh_cmd,
-                    f"sed -i '/{marker_start}/,/{marker_end}/d' ~/.bashrc 2>/dev/null; echo '{encoded}' | base64 -d >> ~/.bashrc",
-                )
-                print(f"  {Fore.CYAN}Copied {len(exports)} variables{Style.RESET_ALL}")
+
+        # Copy secret env
+        copy_secret_env(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
+
+        # Upload vibe
+        print(f"{Fore.WHITE}Uploading vibe directory...{Style.RESET_ALL}")
+        if confirm("Upload vibe/ to server?"):
+            sync_vibe(host, ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
         print(f"{Fore.GREEN}Done!{Style.RESET_ALL}")
 
@@ -800,11 +380,10 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc""",
             print(f"{Fore.YELLOW}Cleaning up tunnel...{Style.RESET_ALL}")
             tunnel_proc.terminate()
             tunnel_proc.wait()
-        # Clean up remote SOCKS processes (legacy mode only)
         if proxy_mode == "socks" and use_proxy:
             print(f"{Fore.YELLOW}Cleaning up remote SOCKS process...{Style.RESET_ALL}")
             subprocess.run(
-                f'ssh {host} "pkill -f \\"ssh.*-D {actual_socks_port}\\""',
+                f'ssh {host} "pkill -f \\"ssh.*-D {active_proxy_port}\\""',
                 shell=True,
                 capture_output=True,
             )

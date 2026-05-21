@@ -30,13 +30,7 @@ install_homebrew() {
         if command -v sudo &>/dev/null; then
             sudo --validate
         fi
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
-        if [[ "$(get_platform)" == "linux" ]]; then
-            echo >> ~/.zshrc
-            echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
-        fi
-
+        "$ROOT_DIR/scripts/lib/install_homebrew.sh"
     fi
 }
 
