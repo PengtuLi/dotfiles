@@ -1,7 +1,7 @@
 # Shared functions (POSIX compatible)
 
 # 记录当前文件路径，供函数使用
-__FUNCTIONS_DIR__="$(cd "$(dirname "$0")" && pwd)"
+__FUNCTIONS_DIR__="$(builtin cd -- "$(dirname -- "${BASH_SOURCE[0]:-${(%):-%N}}")" && pwd)"
 
 # Cheat.sh lookup
 cheatsh() {

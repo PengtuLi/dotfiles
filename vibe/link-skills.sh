@@ -5,6 +5,21 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_DIR="$SCRIPT_DIR/skills"
 CLAUDE_MD="$SCRIPT_DIR/CLAUDE.md"
 
+# Non-interactive options
+INSTALL_GLOBAL=false
+INSTALL_SKILLS=false
+INSTALL_CLAUDE_MD=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --global) INSTALL_GLOBAL=true; shift ;;
+    --skills) INSTALL_SKILLS=true; shift ;;
+    --claude-md) INSTALL_CLAUDE_MD=true; shift ;;
+    --all) INSTALL_SKILLS=true; INSTALL_CLAUDE_MD=true; shift ;;
+    *) echo "Unknown option: $1" >&2; exit 1 ;;
+  esac
+done
+
 echo "选择要安装的内容："
 echo "  1) skills（本地 skill 插件）"
 echo "  2) Karpathy CLAUDE.md（编码风格）"
@@ -56,6 +71,17 @@ install_claude_md() {
   ln -s "$CLAUDE_MD" "$target_file"
   echo "linked CLAUDE.md -> $target_file"
 }
+
+# Non-interactive global install
+if $INSTALL_GLOBAL; then
+  if $INSTALL_SKILLS; then
+    install_skills "$HOME/.claude/skills"
+  fi
+  if $INSTALL_CLAUDE_MD; then
+    install_claude_md "$HOME/.claude"
+  fi
+  exit 0
+fi
 
 echo ""
 echo "安装到："
