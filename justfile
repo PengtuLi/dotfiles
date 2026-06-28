@@ -14,7 +14,8 @@ default:
     @echo "  osx              - macOS 完整配置"
     @echo "  linux-gui        - Linux GUI 配置"
     @echo "  linux-headless   - Linux 无头配置"
-    @echo "  ssh              - Linux ssh配置"
+    @echo "  ssh              - Linux ssh host配置"
+    @echo "  ssh-docker       - Linux ssh host docker配置"
     @echo ""
     @echo "可用组件 (单独安装):"
     @echo "  proxy            - 代理配置"
@@ -58,6 +59,7 @@ linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-
 linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless
 
 ssh: _ssh_linux
+ssh-docker: _ssh_linux_docker
 # ============================================================================
 # 组件 (单独安装)
 # ============================================================================
@@ -148,15 +150,20 @@ ssh-proxy host='':
     @echo "   bash ~/mihomo-setup/scripts/core/proxy.sh"
 
 # ============================================================================
-# _ssh_linux
+# _ssh
 # ============================================================================
 
 _ssh_linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/brew_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/brew_sync 不存在"; exit 1; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/config_sync 不存在"; exit 1; fi
     @echo "📦 ssh setup..."
     @uv pip install -r "requirements.txt"
-    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/brew_sync.py"
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/config_sync.py"
 
+_ssh_linux_docker:
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/docker_config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/docker_config_sync 不存在"; exit 1; fi
+    @echo "📦 ssh setup..."
+    @uv pip install -r "requirements.txt"
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/docker_config_sync.py"
 # ============================================================================
 # Brew 包组 (公开命令)
 # ============================================================================

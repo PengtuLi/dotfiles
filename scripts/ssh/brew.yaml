@@ -70,7 +70,6 @@ bash-completion@2:
   install: true
 
 claude-code:
-  install: true
   config: ~/.claude/settings.json
 
 dooit:

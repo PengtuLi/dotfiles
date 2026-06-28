@@ -46,7 +46,10 @@ easytier/easytier-*/*
 easytier/config/*.conf
 !easytier/config/*.conf.sops
 
-stow/cli/claude-code/.claude/settings.json
+stow/cli/claude-code/
+!stow/cli/claude-code/.claude/settings.json.sops
+!stow/cli/claude-code/.claude/settings.json.sops.checksum
+
 stow/cli/opencode/.config/opencode/
 stow/cli/opencode/.config/opencode/opencode.json.sops
 stow/cli/opencode/.config/opencode/opencode.json.sops.checksum

@@ -10,9 +10,12 @@ sshfs_mount() {
         -o reconnect \
         -o ServerAliveInterval=15 \
         -o ServerAliveCountMax=3 \
-        -o dir_cache=yes \
-        -o dcache_max_size=100000 \
-        -o dcache_timeout=1200 \
+        -o attr_timeout=2 \
+        -o entry_timeout=2 \
+        -o ac_attr_timeout=2 \
+        -o dcache_timeout=10 \
+        -o auto_cache \
+        -o no_readahead \
         -o max_conns=4 \
         -o compression=yes \
         "$@"

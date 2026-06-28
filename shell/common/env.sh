@@ -26,9 +26,9 @@ export LANG=en_SG.UTF-8
 
 # BREW RELATED
 # Homebrew mirror settings (USTC)
-export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+# export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+# export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+# export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 # Disable auto-update for faster operations
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1

@@ -97,6 +97,31 @@ def install_uv_remote(
         )
 
 
+def install_claude_code_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Install Claude Code on remote host if not present."""
+    print(f"{Fore.WHITE}Checking Claude Code installation...{Style.RESET_ALL}")
+    claude_check = exec_remote(
+        ssh_cmd,
+        "command -v claude &>/dev/null && echo 'installed' || echo 'not_found'",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
+    if "not_found" not in claude_check:
+        print(f"  {Fore.GREEN}Claude Code is already installed{Style.RESET_ALL}")
+        return
+    if confirm("Claude Code is not installed. Install Claude Code?"):
+        exec_remote(
+            ssh_cmd,
+            "curl -fsSL https://claude.ai/install.sh | bash",
+            proxy=proxy,
+            proxy_mode=proxy_mode,
+            proxy_port=proxy_port,
+        )
+
+
 def install_packages_remote(
     ssh_cmd: str, apps: dict, proxy: bool, proxy_mode: str, proxy_port: int
 ) -> None:
@@ -111,10 +136,18 @@ def install_packages_remote(
     if not confirm("Install packages?"):
         return
 
+    mirror_env = ""
+    if confirm("Use Homebrew mirror for package installation?"):
+        mirror_env = (
+            "HOMEBREW_API_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/api "
+            "HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles "
+            "HOMEBREW_BREW_GIT_REMOTE=https://mirrors.ustc.edu.cn/brew.git "
+        )
+
     brew_names = [apps[app].get("brew", app) for app in to_install]
     exec_remote(
         ssh_cmd,
-        f"/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
+        f"{mirror_env}/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
@@ -223,6 +256,20 @@ def copy_secret_env(
         proxy_port=proxy_port,
     )
     print(f"  Copied {len(exports)} variables")
+
+
+def link_skills_remote(
+    ssh_cmd: str, proxy: bool, proxy_mode: str, proxy_port: int
+) -> None:
+    """Link vibe skills globally on remote host."""
+    print(f"{Fore.WHITE}Linking skills globally...{Style.RESET_ALL}")
+    exec_remote(
+        ssh_cmd,
+        "bash ~/workspace/vibe/link-skills.sh --global --skills",
+        proxy=proxy,
+        proxy_mode=proxy_mode,
+        proxy_port=proxy_port,
+    )
 
 
 def fzf_select(hosts: list[str]) -> str:
@@ -347,6 +394,9 @@ def main():
         # Install Herdr
         install_herdr_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
+        # Install Claude Code
+        install_claude_code_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
+
         # Install packages
         install_packages_remote(ssh_cmd, apps, use_proxy, proxy_mode, active_proxy_port)
 
@@ -372,6 +422,7 @@ def main():
         print(f"{Fore.WHITE}Uploading vibe directory...{Style.RESET_ALL}")
         if confirm("Upload vibe/ to server?"):
             sync_vibe(host, ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
+            link_skills_remote(ssh_cmd, use_proxy, proxy_mode, active_proxy_port)
 
         print(f"{Fore.GREEN}Done!{Style.RESET_ALL}")
 

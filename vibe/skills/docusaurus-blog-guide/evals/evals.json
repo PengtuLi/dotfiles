@@ -1,0 +1,38 @@
+{
+  "skill_name": "docusaurus-blog-guide",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Docusaurus 博客的 truncate 语法是什么？",
+      "expected_output": "Answer explains the truncate syntax for .md and .mdx files, and cites the official Docusaurus blog docs URL.",
+      "files": [],
+      "expectations": [
+        "Mentions the `<!-- truncate -->` syntax for Markdown files",
+        "Mentions the `{/* truncate */}` syntax for MDX files",
+        "Cites the official Docusaurus blog URL (https://docusaurus.io/docs/blog)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Docusaurus 里怎么配置代码块高亮的额外语言？",
+      "expected_output": "Answer mentions themeConfig.prism.additionalLanguages and provides a config example, citing the official code blocks docs URL.",
+      "files": [],
+      "expectations": [
+        "Mentions `themeConfig.prism.additionalLanguages`",
+        "Provides a `docusaurus.config.js` example showing additionalLanguages",
+        "Cites the official code blocks URL (https://docusaurus.io/docs/markdown-features/code-blocks)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我想把 Docusaurus 站点部署到 GitHub Pages，需要配置哪些字段？",
+      "expected_output": "Answer lists required docusaurus.config.js fields like url, baseUrl, organizationName, projectName, deploymentBranch, and cites the official deployment docs URL.",
+      "files": [],
+      "expectations": [
+        "Mentions `url`, `baseUrl`, `organizationName`, and `projectName` fields",
+        "Mentions `deploymentBranch` for GitHub Pages",
+        "Cites the official deployment URL (https://docusaurus.io/docs/deployment)"
+      ]
+    }
+  ]
+}

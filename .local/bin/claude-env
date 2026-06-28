@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Extract environment variables from ~/.claude/settings.json.
+# Usage: eval "$(claude-env [MODEL])" and then run claude, or copy the printed output.
+
+set -euo pipefail
+
+CONFIG_PATH="${HOME}/.claude/settings.json"
+MODEL="${1:-}"
+
+if [[ ! -f "$CONFIG_PATH" ]]; then
+    echo "Error: config not found at $CONFIG_PATH" >&2
+    exit 1
+fi
+
+python3 -c '
+import json, shlex, sys
+config_path = "'"$CONFIG_PATH"'"
+model = sys.argv[1] if len(sys.argv) > 1 else ""
+try:
+    with open(config_path) as f:
+        data = json.load(f)
+    env = data.get("env", {})
+    if not env:
+        print("No env variables found in config", file=sys.stderr)
+        sys.exit(1)
+    for key, value in env.items():
+        if model and key in ("ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL"):
+            continue
+        print(f"export {key}={shlex.quote(str(value))}")
+    if model:
+        for key in ("ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL"):
+            print(f"export {key}={shlex.quote(model)}")
+    print("IS_SANDBOX=1 claude --dangerously-skip-permissions")
+except Exception as e:
+    print(f"Error: {e}", file=sys.stderr)
+    sys.exit(1)
+' "$MODEL"

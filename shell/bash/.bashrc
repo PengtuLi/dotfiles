@@ -74,10 +74,11 @@ __fh_search() {
     history | awk '
         {
             sub(/^[ ]*[0-9]+[ ]+/, "");
-            sub(/^: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}: /, "");
-            print
+            sub(/^:[ ]*[0-9]{4}-[0-9]{2}-[0-9]{2}[ ][0-9]{2}:[0-9]{2}:[0-9]{2}[ ]*:[ ]*/, "");
+            if (!seen[$0]++) { a[++n]=$0 }
         }
-    ' | awk '!seen[$0]++' | awk '{a[NR]=$0} END {for(i=NR;i>=1;i--) print a[i]}' > "$tmpfile"
+        END { for(i=n;i>=1;i--) print a[i] }
+    ' > "$tmpfile"
 
     local old_stty
     old_stty=$(stty -g)

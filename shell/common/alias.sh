@@ -163,8 +163,8 @@ alias ng="nginx"
 alias wget="wget -c"                        # -c: resume interrupted downloads
 
 # git
-alias Lg="gitui"
-alias lg="lazygit"
+alias lg="gitui"
+alias Lg="lazygit"
 alias g="git"
 alias gs="git status"
 alias ga="git add"
@@ -229,7 +229,13 @@ alias cht=cheatsh
 alias cht-ls="cht :list | ff"              # list all cheatsheets, pipe to fzf
 
 # vibe-coding
-alias Claude="IS_SANDBOX=1 claude --dangerously-skip-permissions"
+Claude() {
+    if [ -n "$1" ]; then
+        IS_SANDBOX=1 claude --model "$1" --dangerously-skip-permissions
+    else
+        IS_SANDBOX=1 claude --dangerously-skip-permissions
+    fi
+}
 alias claude-vl="uv-a && IS_SANDBOX=1 CLAUDE_CODE_EFFORT_LEVEL=max claude --settings ~/.claude/settings_vl.json --dangerously-skip-permissions"
 alias claude-gpt="IS_SANDBOX=1 CLAUDE_CODE_EFFORT_LEVEL=max claude --settings ~/.claude/settings_gpt.json --dangerously-skip-permissions"
 alias qs="cd vibe-love || claude-vl"
@@ -273,3 +279,6 @@ alias s="TERM=xterm-256color ssh"
 alias px-fwd="ssh -L 9190:localhost:9090"
 alias s-kg="ssh-keygen -t rsa -b 4096"
 alias s-kc="ssh-copy-id"
+
+# atuin
+alias atuin-login="atuin login -u ${ATUIN_USER}"

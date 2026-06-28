@@ -50,11 +50,12 @@ brew "tmuxinator"            # tmux tool
 brew "gdb"                   # gdb debugger
 
 # git tool
-brew "lazygit"               # 交互式 Git TUI
+# brew "lazygit"               # 交互式 Git TUI
 brew "git-delta"             # enhanced diff for git,bat...
 brew "onefetch"              # git repo info
 # brew "tig"                   # text-mode interface for Git (for git log)
 brew "gitui"                 # fast but in developed, maybe use later
+brew "gh"
 
 # ai
 brew "code2prompt"

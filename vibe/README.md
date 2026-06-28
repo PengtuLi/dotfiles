@@ -49,25 +49,45 @@ npx skills@latest add mattpocock/skills
 # 安装后运行 /setup-matt-pocock-skills 配置
 ```
 
-包含 15 个 skill：
-Engineering:
-- diagnose — 诊断硬 bug：复现→最小化→假设→定位→修复→回归测试 → "/diagnose 这个并发崩溃"
-- grill-with-docs — 用领域模型挑战你的方案，更新 CONTEXT.md → "/grill-with-docs 审查我的架构设计"
-- triage — 通过状态机分流 issue → "/triage 处理积压的 20 个 issue"
-- improve-codebase-architecture — 发现代码库中的架构优化机会 → "/improve-codebase-architecture 看看 src/ 怎么重构"
-- tdd — 红绿重构 TDD 循环 → "/tdd 用 TDD 实现用户注册功能"
-- to-issues — 把方案/PRD 拆成可独立认领的 GitHub issue → "/to-issues 把这个方案拆成 issue"
-- to-prd — 把对话上下文转为 PRD 并提交为 issue → "/to-prd 整理刚才讨论的功能写成 PRD"
-- zoom-out — 获取不熟悉代码的更高层视角 → "/zoom-out 这个微服务整体架构是什么"
-- prototype — 快速构建一次性原型验证设计 → "/prototype 做个 CLI 原型验证交互流程"
-Productivity:
-- caveman — 超压缩沟通模式，省 ~75% token → "/caveman"
-- grill-me — 反复质问你的方案直到决策树完整 → "/grill-me 我的数据库选型方案"
-- handoff — 压缩当前对话为交接文档 → "/handoff 生成交接文档"
-- write-a-skill — 创建新 skill → "/write-a-skill 写个自动部署的 skill"
-Misc:
-- git-guardrails-claude-code — 阻止危险 git 命令的 hooks → "/git-guardrails-claude-code"
-- setup-pre-commit — 配置 Husky + lint-staged → "/setup-pre-commit"
+设计哲学：小、可组合、适配任意模型，不接管流程，只解决真实工程中的常见失败模式。
+
+安装后运行 `/setup-matt-pocock-skills` 配置 issue tracker（GitHub/Linear/本地文件）、triage 标签和文档保存位置。
+
+**Engineering（用户触发）**
+
+- **ask-matt** — 路由到当前场景最适合的技能 → "/ask-matt"
+- **grill-with-docs** — 拷问方案并构建项目领域模型，更新 CONTEXT.md 和 ADR → "/grill-with-docs 审查我的架构设计"
+- **triage** — 通过状态机分流 issue → "/triage 处理积压的 20 个 issue"
+- **improve-codebase-architecture** — 扫描代码库中的架构深化机会，生成可视化 HTML 报告 → "/improve-codebase-architecture 看看 src/ 怎么重构"
+- **setup-matt-pocock-skills** — 首次配置本仓库 → "/setup-matt-pocock-skills"
+- **to-issues** — 把方案/PRD 拆成可独立认领的 issue → "/to-issues 把这个方案拆成 issue"
+- **to-prd** — 把当前对话上下文转为 PRD 并提交到 issue tracker → "/to-prd 整理刚才讨论的功能写成 PRD"
+
+**Engineering（模型自动触发）**
+
+- **prototype** — 快速构建一次性原型验证设计 → "/prototype 做个 CLI 原型验证交互流程"
+- **diagnosing-bugs** — 硬 bug 与性能回归的诊断循环：复现→最小化→假设→定位→修复→回归测试 → "/diagnosing-bugs 这个并发崩溃"
+- **tdd** — 红绿重构 TDD 循环，一次一个垂直切片 → "/tdd 用 TDD 实现用户注册功能"
+- **domain-modeling** — 主动构建和打磨领域模型，挑战术语并更新 CONTEXT.md → "/domain-modeling"
+- **codebase-design** — 设计深模块：小接口、大行为、干净接缝、可测试 → "/codebase-design"
+
+**Productivity（用户触发）**
+
+- **grill-me** — 反复质问你的方案直到决策树完整 → "/grill-me 我的数据库选型方案"
+- **handoff** — 压缩当前对话为交接文档 → "/handoff 生成交接文档"
+- **teach** — 在多会话中教用户新技能或概念，以当前目录为教学工作区 → "/teach 我想学 React Server Components"
+- **writing-great-skills** — 编写高质量 skill 的参考手册 → "/writing-great-skills"
+
+**Productivity（模型自动触发）**
+
+- **grilling** — 反复质问直到决策树完整，grill-me / grill-with-docs 的复用循环
+
+**Misc**
+
+- **git-guardrails-claude-code** — 阻止危险 git 命令的 hooks → "/git-guardrails-claude-code"
+- **migrate-to-shoehorn** — 把测试里的 `as` 类型断言迁移到 @total-typescript/shoehorn → "/migrate-to-shoehorn"
+- **scaffold-exercises** — 创建包含章节、题目、解答和讲解的练习目录结构 → "/scaffold-exercises"
+- **setup-pre-commit** — 配置 Husky pre-commit hooks + lint-staged + Prettier + 类型检查 + 测试 → "/setup-pre-commit"
 
 ```sh
 # GSD - Get Shit Done
@@ -76,6 +96,52 @@ Misc:
 # GStack
 # https://github.com/garrytan/gstack
 ```
+
+```sh
+# Addy Osmani - 生产级工程技能（24 skills）
+# https://github.com/addyosmani/agent-skills
+/plugin marketplace add addyosmani/agent-skills
+/plugin install agent-skills@addy-agent-skills
+```
+
+包含 24 个 skill，覆盖完整开发流程 DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP：
+
+**定义阶段**
+- **interview-me** — 逐题访谈提取真实需求 → "/interview-me 帮我定义这个功能"
+- **idea-refine** — 结构化发散/收敛思维，将模糊想法转为具体提案 → "/idea-refine 优化这个方案"
+- **spec-driven-development** — 编写涵盖目标、命令、结构、代码风格、测试和边界的 PRD → "/spec"
+
+**规划阶段**
+- **planning-and-task-breakdown** — 将规格分解为带验收标准和依赖排序的小型可验证任务 → "/plan"
+
+**构建阶段**
+- **incremental-implementation** — 薄垂直切片——实现、测试、验证、提交 → "/build"
+- **test-driven-development** — 红-绿-重构，测试金字塔（80/15/5） → "/test"
+- **context-engineering** — 在正确时间向代理提供正确信息 → "/context"
+- **source-driven-development** — 每个框架决策基于官方文档 → "/source"
+- **doubt-driven-development** — 对抗性新上下文审查 → "/doubt"
+- **frontend-ui-engineering** — 组件架构、设计系统、状态管理、响应式设计、WCAG 2.1 AA → "/frontend"
+- **api-and-interface-design** — 契约优先设计、Hyrum 定律、单版本规则 → "/api"
+
+**验证阶段**
+- **browser-testing-with-devtools** — Chrome DevTools MCP 实时运行时数据 → "/webperf"
+- **debugging-and-error-recovery** — 五步分类：重现、定位、缩减、修复、防护 → "/debug"
+
+**审查阶段**
+- **code-review-and-quality** — 五轴审查，变更规模约 100 行 → "/review"
+- **code-simplification** — Chesterton 栅栏，500 规则，降低复杂度 → "/code-simplify"
+- **security-and-hardening** — OWASP Top 10 预防、认证模式、密钥管理 → "/security"
+- **performance-optimization** — Core Web Vitals 目标、分析工作流、包分析 → "/perf"
+
+**发布阶段**
+- **git-workflow-and-versioning** — 基于主干的开发、原子提交 → "/git"
+- **ci-cd-and-automation** — 左移、功能标志、质量门禁流水线 → "/cicd"
+- **deprecation-and-migration** — 代码即负债思维、强制与建议弃用 → "/deprecate"
+- **documentation-and-adrs** — 架构决策记录、API 文档、内联文档标准 → "/docs"
+- **observability-and-instrumentation** — 结构化日志、RED 指标、OpenTelemetry → "/observability"
+- **shipping-and-launch** — 发布前检查清单、分阶段推出、回滚程序 → "/ship"
+
+> **对比**：与 Matt Pocock skills 和 Superpowers 相比，agent-skills 覆盖**完整产品生命周期**（需求→发布），每个阶段设有人类检查点；Superpowers 押注自主推理，适合长周期自主运行；Matt Pocock 则是低仪式感的个人实战工具箱。三者可"点菜"混用（如引入 Matt 的 `grill-me`、Superpowers 的子代理隔离），但不要同时运行两个作为主动路由，否则元技能会争夺命令名。
 
 ## 领域技能
 
@@ -105,10 +171,33 @@ npx skills add https://github.com/op7418/guizang-ppt-skill --skill guizang-ppt-s
 ## Research
 
 ```sh
-# 多来源搜索
+# 多来源搜索（按真实互动排序，而非 SEO）
 # https://github.com/mvanhorn/last30days-skill
 npx skills add mvanhorn/last30days-skill -g
+# Claude Code 用户：/plugin marketplace add mvanhorn/last30days-skill && /plugin install last30days
+# 调用：/last30days <主题>，例如 /last30days Peter Steinberger
 ```
+
+- 预研究：先解析相关人物、Subreddit、X 账号、YouTube 频道等，再决定去哪搜
+- 多源并行：Reddit、X、YouTube、Hacker News、Polymarket、GitHub、TikTok、Instagram 等
+- 按真实互动排序：upvote、点赞、播放量、赔率等，而非编辑推荐
+- 跨源聚合：同一事件在不同平台合并为一条，可单次对比竞品
+- 输出：可分享的深色模式 HTML 简报，支持 ELI5 简化模式和 Best Takes 精选
+
+```sh
+# AI Berkshire（价值投资研究框架，兼容 Claude Code / Codex）
+# https://github.com/xbtlin/ai-berkshire
+npx skills add xbtlin/ai-berkshire
+# Claude Code 用户：./scripts/install-claude-commands.sh
+# Codex 用户：./scripts/install-codex-skills.sh
+# 调用：/investment-research 腾讯（或“使用 investment-research 研究腾讯”）
+```
+
+- 18 个可调用 Skill，覆盖深度研究、财报分析、行业筛选、持仓管理与思维工具
+- 四大师视角（巴菲特、芒格、段永平、李录）并行分析，强制对抗与交叉验证
+- 反偏见机制：信息丰富度评级、芒格式逆向检验、否决清单、反共识检查
+- 财务精确校验：使用 decimal 计算，关键数据至少两个独立来源
+
 
 ## 本地 skills
 
