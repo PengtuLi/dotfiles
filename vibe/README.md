@@ -171,10 +171,33 @@ npx skills add https://github.com/op7418/guizang-ppt-skill --skill guizang-ppt-s
 ## Research
 
 ```sh
-# 多来源搜索
+# 多来源搜索（按真实互动排序，而非 SEO）
 # https://github.com/mvanhorn/last30days-skill
 npx skills add mvanhorn/last30days-skill -g
+# Claude Code 用户：/plugin marketplace add mvanhorn/last30days-skill && /plugin install last30days
+# 调用：/last30days <主题>，例如 /last30days Peter Steinberger
 ```
+
+- 预研究：先解析相关人物、Subreddit、X 账号、YouTube 频道等，再决定去哪搜
+- 多源并行：Reddit、X、YouTube、Hacker News、Polymarket、GitHub、TikTok、Instagram 等
+- 按真实互动排序：upvote、点赞、播放量、赔率等，而非编辑推荐
+- 跨源聚合：同一事件在不同平台合并为一条，可单次对比竞品
+- 输出：可分享的深色模式 HTML 简报，支持 ELI5 简化模式和 Best Takes 精选
+
+```sh
+# AI Berkshire（价值投资研究框架，兼容 Claude Code / Codex）
+# https://github.com/xbtlin/ai-berkshire
+npx skills add xbtlin/ai-berkshire
+# Claude Code 用户：./scripts/install-claude-commands.sh
+# Codex 用户：./scripts/install-codex-skills.sh
+# 调用：/investment-research 腾讯（或“使用 investment-research 研究腾讯”）
+```
+
+- 18 个可调用 Skill，覆盖深度研究、财报分析、行业筛选、持仓管理与思维工具
+- 四大师视角（巴菲特、芒格、段永平、李录）并行分析，强制对抗与交叉验证
+- 反偏见机制：信息丰富度评级、芒格式逆向检验、否决清单、反共识检查
+- 财务精确校验：使用 decimal 计算，关键数据至少两个独立来源
+
 
 ## 本地 skills
 
