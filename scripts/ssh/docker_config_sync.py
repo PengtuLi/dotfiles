@@ -1,9 +1,11 @@
 """Sync dotfile configs, shell config and bin scripts into a remote Docker container."""
 
+import shlex
 import subprocess
 import sys
 import tarfile
 import tempfile
+import uuid
 from pathlib import Path
 
 import yaml
@@ -17,6 +19,8 @@ init(autoreset=True)
 
 THIS_DIR = Path(__file__).parent
 REPO_ROOT = THIS_DIR.parent.parent
+
+BREW_BIN = "/home/linuxbrew/.linuxbrew/bin/brew"
 
 
 def fzf_select(options: list[str], prompt: str = "> ") -> str:
@@ -85,6 +89,19 @@ def collect_shell_config() -> list[tuple[Path, Path]]:
     return paths
 
 
+def collect_vibe_paths() -> list[tuple[Path, Path]]:
+    """Collect vibe directory contents."""
+    paths = []
+    vibe_dir = REPO_ROOT / "vibe"
+    if not vibe_dir.exists():
+        return paths
+    for item in sorted(vibe_dir.iterdir()):
+        if item.name == ".git":
+            continue
+        paths.append((item, Path("workspace/vibe") / item.name))
+    return paths
+
+
 def create_archive(items: list[tuple[Path, Path]]) -> Path:
     """Create a local tar.gz archive from (src, rel_path) items."""
     with tempfile.NamedTemporaryFile(suffix=".tar.gz", delete=False) as tmp:
@@ -95,8 +112,31 @@ def create_archive(items: list[tuple[Path, Path]]) -> Path:
     return tmp_path
 
 
+def build_shell_setup_script(
+    target: str, bin_relpaths: list[Path], brew_bin: str
+) -> str:
+    """Build a single shell script to configure the container after copy."""
+    q_target = shlex.quote(target)
+    q_brew_bin = shlex.quote(brew_bin)
+    lines = [
+        "set -e",
+        f"if [ -f {q_target}/._bashrc ]; then",
+        f'    sed -i "s|^SHELL_DIR=.*|SHELL_DIR={q_target}/._shell|" {q_target}/._bashrc',
+        f'    grep -q "source.*\\._bashrc" {q_target}/.bashrc 2>/dev/null ||',
+        f'        echo "source {q_target}/._bashrc" >> {q_target}/.bashrc',
+        "fi",
+        f"if [ -x {q_brew_bin} ]; then",
+        f'    grep -q "brew shellenv" {q_target}/.bashrc 2>/dev/null ||',
+        f"        echo 'eval \"$({q_brew_bin} shellenv)\"' >> {q_target}/.bashrc",
+        "fi",
+    ]
+    if bin_relpaths:
+        q_files = " ".join(shlex.quote(str(Path(target) / rel)) for rel in bin_relpaths)
+        lines.append(f"chmod +x {q_files}")
+    return "\n".join(lines) + "\n"
+
+
 def main():
-    # Load brew.yaml and collect config paths
     brew_file = THIS_DIR / "brew.yaml"
     if not brew_file.exists():
         print(f"{Fore.RED}Error: {brew_file} not found{Style.RESET_ALL}")
@@ -105,15 +145,13 @@ def main():
     apps = yaml.safe_load(brew_file.read_text())
     local_paths = collect_config_paths(apps)
 
-    # Load bin.yaml and collect bin scripts
     bin_file = THIS_DIR / "bin.yaml"
-    bin_scripts = {}
-    if bin_file.exists():
-        bin_scripts = yaml.safe_load(bin_file.read_text()) or {}
+    bin_scripts = yaml.safe_load(bin_file.read_text()) if bin_file.exists() else {}
     local_paths.extend(collect_bin_scripts(bin_scripts))
+    bin_relpaths = [rel for _, rel in local_paths if str(rel).startswith(".local/bin/")]
 
-    # Collect shell config (bashrc etc.)
     local_paths.extend(collect_shell_config())
+    local_paths.extend(collect_vibe_paths())
 
     if not local_paths:
         print(f"{Fore.YELLOW}No files to sync{Style.RESET_ALL}")
@@ -123,37 +161,40 @@ def main():
     for _, rel in local_paths:
         print(f"  {rel}")
 
-    # Select SSH host
     hosts = get_ssh_hosts()
     if not hosts:
         print(f"{Fore.RED}No SSH hosts found in ~/.ssh/config{Style.RESET_ALL}")
         sys.exit(1)
 
     host = fzf_select(hosts, "Select SSH host> ")
+    q_host = shlex.quote(host)
     ssh_cmd = get_ssh_cmd(host)
 
-    # Select container
     print(f"{Fore.WHITE}Listing remote Docker containers...{Style.RESET_ALL}")
     containers = list_remote_containers(ssh_cmd)
     container_id = select_container(containers)
+    q_container = shlex.quote(container_id)
     print(f"  {Fore.GREEN}Selected container: {container_id[:12]}{Style.RESET_ALL}")
 
-    # Target path in container
     target = input(
         f"{Fore.YELLOW}Target path in container [default: /root]: {Style.RESET_ALL}"
     ).strip()
     if not target:
         target = "/root"
+    q_target = shlex.quote(target)
 
     if not confirm(f"Copy all files to {target} in container {container_id[:12]}?"):
         sys.exit(0)
 
     archive = create_archive(local_paths)
-    remote_tmp = f"/tmp/docker_config_sync_{archive.stem}"
+    q_archive = shlex.quote(str(archive))
+    remote_tmp = f"/tmp/docker_config_sync_{uuid.uuid4().hex}"
+    q_remote_tmp = shlex.quote(remote_tmp)
+
     try:
         print(f"{Fore.WHITE}Transferring archive to remote host...{Style.RESET_ALL}")
         subprocess.run(
-            f"scp {archive} {host}:{remote_tmp}.tar.gz",
+            f"scp {q_archive} {q_host}:{q_remote_tmp}.tar.gz",
             shell=True,
             check=True,
         )
@@ -161,34 +202,26 @@ def main():
         print(f"{Fore.WHITE}Extracting archive on remote host...{Style.RESET_ALL}")
         exec_remote(
             ssh_cmd,
-            f"mkdir -p {remote_tmp} && tar -xzf {remote_tmp}.tar.gz -C {remote_tmp}",
+            f"mkdir -p {q_remote_tmp} && tar -xzf {q_remote_tmp}.tar.gz -C {q_remote_tmp}",
         )
 
         print(f"{Fore.WHITE}Copying into container via docker cp...{Style.RESET_ALL}")
-        exec_remote(ssh_cmd, f"docker cp {remote_tmp}/. {container_id}:{target}")
+        exec_remote(ssh_cmd, f"docker cp {q_remote_tmp}/. {q_container}:{q_target}")
 
-        # Set up shell config inside the container if bashrc was synced
         bashrc_synced = any(rel == Path("._bashrc") for _, rel in local_paths)
         if bashrc_synced:
             print(f"{Fore.WHITE}Configuring shell inside container...{Style.RESET_ALL}")
+            setup_script = build_shell_setup_script(target, bin_relpaths, BREW_BIN)
             exec_remote(
                 ssh_cmd,
-                f"docker exec {container_id} sed -i 's|^SHELL_DIR=.*|SHELL_DIR=\"$HOME/._shell\"|' {target}/._bashrc",
-            )
-            exec_remote(
-                ssh_cmd,
-                f"docker exec {container_id} bash -c \"grep -q 'source .*\\\\._bashrc' {target}/.bashrc 2>/dev/null || echo 'source {target}/._bashrc' >> {target}/.bashrc\"",
-            )
-            exec_remote(
-                ssh_cmd,
-                f"docker exec {container_id} chmod +x {target}/.local/bin/* 2>/dev/null || true",
+                f"docker exec {q_container} bash -c {shlex.quote(setup_script)}",
             )
 
         print(
             f"{Fore.GREEN}Copied {len(local_paths)} items to {target}{Style.RESET_ALL}"
         )
     finally:
-        exec_remote(ssh_cmd, f"rm -rf {remote_tmp} {remote_tmp}.tar.gz")
+        exec_remote(ssh_cmd, f"rm -rf {q_remote_tmp} {q_remote_tmp}.tar.gz")
         archive.unlink(missing_ok=True)
 
 
