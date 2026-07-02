@@ -229,7 +229,13 @@ alias cht=cheatsh
 alias cht-ls="cht :list | ff"              # list all cheatsheets, pipe to fzf
 
 # vibe-coding
-alias Claude="IS_SANDBOX=1 claude --dangerously-skip-permissions"
+Claude() {
+    if [ -n "$1" ]; then
+        IS_SANDBOX=1 claude --model "$1" --dangerously-skip-permissions
+    else
+        IS_SANDBOX=1 claude --dangerously-skip-permissions
+    fi
+}
 alias claude-vl="uv-a && IS_SANDBOX=1 CLAUDE_CODE_EFFORT_LEVEL=max claude --settings ~/.claude/settings_vl.json --dangerously-skip-permissions"
 alias claude-gpt="IS_SANDBOX=1 CLAUDE_CODE_EFFORT_LEVEL=max claude --settings ~/.claude/settings_gpt.json --dangerously-skip-permissions"
 alias qs="cd vibe-love || claude-vl"
