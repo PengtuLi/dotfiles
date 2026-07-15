@@ -1,6 +1,8 @@
 return {
   'rmagatti/auto-session',
   lazy = false,
+  -- fzf-lua 本身是 lazy 加载的，这里声明依赖保证 picker 检测时 :FzfLua 已注册
+  dependencies = { 'ibhagwan/fzf-lua' },
 
   keys = {
     { '<leader>sa', '<cmd>AutoSession search<CR>', desc = 'search [a]uto-session' },
@@ -13,8 +15,10 @@ return {
   ---@type AutoSession.Config
   opts = {
     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
-    -- log_level = 'debug',
-    -- show_auto_restore_notif = true,
+    cwd_change_handling = false,
+    show_auto_restore_notif = true,
+    -- 保存 session 前关掉这些特殊窗口，避免恢复出坏掉的侧边栏
+    bypass_save_filetypes = { 'neo-tree', 'aerial' },
 
     session_lens = {
       picker = 'fzf',

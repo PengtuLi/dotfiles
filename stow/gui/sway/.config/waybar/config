@@ -1,7 +1,7 @@
 {
   "reload_style_on_change": true,
+  "output": "DP-3",
   "position": "top",
-  "margin-bottom": -8,
   "spacing": 0,
   "modules-left": [
     "niri/workspaces",
@@ -13,20 +13,21 @@
     "clock"
   ],
   "modules-right": [
+    "tray",
     "bluetooth",
     "network",
     "wireplumber",
-    "user",
     "custom/idle-inhibit",
     "custom/notification",
+    "user",
     "custom/lock"
   ],
+  "tray": {
+    "icon-size": 15,
+    "spacing": 20
+  },
   "niri/workspaces": {
-    "format": "{value}:{icon}",
-    "format-icons": {
-      "active": "",
-      "default": ""
-    }
+    "format": "{value}"
   },
   "bluetooth": {
     "format": "{icon}",
@@ -44,11 +45,12 @@
   "clock": {
     "timezone": "Asia/Shanghai",
     "tooltip": false,
-    "format": "{:%H:%M:%S - %A, %d}",
+    "format": "{:%H:%M:%S - %A, %m-%d}",
     "interval": 1
   },
   "network": {
-    "format-wifi": "󰤢",
+    "format-wifi": "{icon}",
+    "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"],
     "format-ethernet": "󰈀",
     "format-disconnected": "󰤠",
     "interval": 5,
@@ -59,20 +61,30 @@
     "interval": 1,
     "format": "  {icon0}{icon1}{icon2}{icon3} {usage:>2}%",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "states": {
+      "warning": 70,
+      "critical": 90
+    },
     "on-click": "ghostty -e btop"
   },
   "memory": {
     "interval": 30,
     "format": "  {used:0.1f}G/{total:0.1f}G",
+    "states": {
+      "warning": 80,
+      "critical": 95
+    },
     "tooltip-format": "Memory"
   },
   "wireplumber": {
     "format": "{icon} {volume}%",
-    "format-muted": "",
+    "format-muted": "󰝟 {volume}%",
     "format-icons": {
       "default": ["", "", ""]
     },
-    "on-click": "pavucontrol"
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "scroll-step": 5
   },
   "custom/notification": {
     "tooltip": true,
@@ -94,7 +106,7 @@
     "on-click-right": "swaync-client -d -sw"
   },
   "user": {
-    "format": "{user}(up {work_d} d)",
+    "format": "{user} (up {work_d} d)",
     "interval": 60,
     "icon": true
   },
@@ -118,6 +130,7 @@
   },
   "custom/temperature": {
     "exec": "~/.config/waybar/scripts/temperature.sh",
+    "return-type": "json",
     "interval": 5
   }
 }

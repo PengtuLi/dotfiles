@@ -1,5 +1,6 @@
 nvim:
   install: true
+  visitor: true
   config:
     - ~/.config/nvim
 
@@ -8,6 +9,7 @@ tree-sitter-cli:
 
 yazi:
   install: true
+  visitor: true
   config:
     - ~/.config/yazi
 
@@ -24,6 +26,7 @@ gh:
 
 rg:
   install: true
+  visitor: true
   config:
     - ~/.ripgreprc
 
@@ -33,11 +36,13 @@ lazygit:
 
 gitui:
   install: true
+  visitor: true
   config:
     - ~/.config/gitui
 
 tmux:
   install: true
+  visitor: true
   config:
     - ~/.config/tmux/*.conf
 
@@ -97,7 +102,9 @@ witr:
 
 btop:
   install: true
-  config: ~/.config/btop
+  visitor: true
+  config:
+    - ~/.config/btop
 
 herdr:
   config:

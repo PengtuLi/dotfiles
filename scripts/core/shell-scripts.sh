@@ -49,6 +49,67 @@ setup_local_bin() {
     success "Bin scripts installed"
 }
 
+# Change default shell to zsh (asks user first, skips if already zsh)
+change_default_shell() {
+    local zsh_path
+    zsh_path="$(command -v zsh 2>/dev/null)"
+
+    if [ -z "$zsh_path" ]; then
+        warning "zsh not found, skipping default shell change"
+        return
+    fi
+
+    if [ "$SHELL" = "$zsh_path" ]; then
+        warning "Default shell is already zsh ($zsh_path), skipping"
+        return
+    fi
+
+    read -r -p "Change default shell to zsh ($zsh_path)? [y/N] " answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+        info "Changing default shell to $zsh_path..."
+        # Ensure zsh is in /etc/shells
+        if ! grep -qxF "$zsh_path" /etc/shells 2>/dev/null; then
+            echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
+        fi
+        chsh -s "$zsh_path"
+        success "Default shell changed to zsh (takes effect on next login)"
+    else
+        info "Skipped changing default shell"
+    fi
+}
+
+# Generate en_US.UTF-8 and zh_CN.UTF-8 locales (skips if already generated)
+# Works on both Debian/Ubuntu and Arch-based systems (same /etc/locale.gen + locale-gen flow)
+setup_locales() {
+    if ! command -v locale-gen >/dev/null 2>&1; then
+        warning "locale-gen not found, skipping locale setup"
+        return
+    fi
+
+    local need_gen=0
+    for locale in en_US.UTF-8 zh_CN.UTF-8; do
+        # locale -a normalizes to form like "en_US.utf8"
+        if locale -a 2>/dev/null | grep -qi "${locale%%.*}\.utf8$\|${locale%%.*}\.UTF-8$"; then
+            continue
+        fi
+        need_gen=1
+    done
+
+    if [ "$need_gen" -eq 0 ]; then
+        warning "Locales en_US.UTF-8 and zh_CN.UTF-8 already generated, skipping"
+        return
+    fi
+
+    info "Generating UTF-8 locales..."
+    sudo touch /etc/locale.gen
+    sudo sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+    sudo sed -i 's/^# *zh_CN.UTF-8/zh_CN.UTF-8/' /etc/locale.gen
+    sudo locale-gen
+    success "Locales generated"
+}
+
 # Main
+change_default_shell
+setup_locales
 add_zshrc_source
 setup_local_bin

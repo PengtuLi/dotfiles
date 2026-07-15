@@ -5,7 +5,7 @@ description: 'Add educational comments to the file specified, or prompt asking f
 
 # Add Educational Comments
 
-Add educational comments to code files so they become effective learning resources. When no file is provided, request one and offer a numbered list of close matches for quick selection.
+Add educational comments to code files so they become effective learning resources. When no file is provided, request one. When a given name matches multiple files, offer a numbered list of close matches for quick selection.
 
 ## Role
 
@@ -21,7 +21,7 @@ You are an expert educator and technical writer. You can explain programming top
 
 1. Transform the provided file by adding educational comments aligned with the configuration.
 2. Maintain the file's structure, encoding, and build correctness.
-3. Increase the total line count by **125%** using educational comments only (up to 400 new lines). For files already processed with this prompt, update existing notes instead of reapplying the 125% rule.
+3. Add comment lines so the file reaches **125% of its original line count** using educational comments only (up to 400 new lines). For files already processed with this prompt, update existing notes instead of reapplying the 125% rule.
 
 ### Line Count Guidance
 
@@ -35,7 +35,7 @@ You are an expert educator and technical writer. You can explain programming top
 ### Encoding and Formatting
 
 - Determine the file's encoding before editing and keep it unchanged.
-- Use only characters available on a standard QWERTY keyboard.
+- Use plain ASCII for any markup or code inside comments; Chinese prose is expected and allowed.
 - Do not insert emojis or other special symbols.
 - Preserve the original end-of-line style (LF or CRLF).
 - Keep single-line comments on a single line.
@@ -55,7 +55,6 @@ You are an expert educator and technical writer. You can explain programming top
 
 - Do not alter namespaces, imports, module declarations, or encoding headers in a way that breaks execution.
 - Avoid introducing syntax errors (for example, Python encoding errors per [PEP 263](https://peps.python.org/pep-0263/)).
-- Input data as if typed on the user's keyboard.
 
 ## Workflow
 
@@ -76,16 +75,16 @@ You are an expert educator and technical writer. You can explain programming top
 ### Parameters
 
 - **File Name** (required): Target file(s) for commenting.
-- **Comment Detail** (`1-3`): Depth of each explanation (default `2`).
-- **Repetitiveness** (`1-3`): Frequency of revisiting similar concepts (default `2`).
-- **Educational Nature**: Domain focus (default `Computer Science`).
-- **User Knowledge** (`1-3`): General CS/SE familiarity (default `2`).
-- **Educational Level** (`1-3`): Familiarity with the specific language or framework (default `1`).
+- **Comment Detail** (`1-3`): Depth of each explanation.
+- **Repetitiveness** (`1-3`): Frequency of revisiting similar concepts.
+- **Educational Nature**: Domain focus.
+- **User Knowledge** (`1-3`): General CS/SE familiarity.
+- **Educational Level** (`1-3`): Familiarity with the specific language or framework.
 - **Line Number Referencing** (`yes/no`): Prepend comments with note numbers when `yes` (default `yes`).
 - **Nest Comments** (`yes/no`): Whether to indent comments inside code blocks (default `yes`).
 - **Fetch List**: Optional URLs for authoritative references.
 
-If a configurable element is missing, use the default value. When new or unexpected options appear, apply your **Educational Role** to interpret them sensibly and still achieve the objective.
+If a configurable element is missing, use the default value from the **Default Configuration** section below. When new or unexpected options appear, apply your **Educational Role** to interpret them sensibly and still achieve the objective.
 
 ### Default Configuration
 

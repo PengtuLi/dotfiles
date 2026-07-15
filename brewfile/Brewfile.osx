@@ -1,6 +1,5 @@
 # tool
 brew "bear"                  # C/C++ compile_commands.json 生成器
-brew "witr"                  # 进程溯源分析工具 (What Is This Running)
 
 # # macOS 特有软件
 cask "karabiner-elements"                # 键盘映射/改键
@@ -11,7 +10,7 @@ cask "stats"
 # brew "batt"                              # cli battery-toolkit, not need anymore
 cask "the-unarchiver"
 # cask "lunar" # unlock XDR display
-cask "jordanbaird-ice"
+# cask "jordanbaird-ice"
 cask "google-drive"
 cask "vlc"                               # media player
 cask "google-chrome"

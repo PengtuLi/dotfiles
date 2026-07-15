@@ -42,7 +42,7 @@ automatically-unhide-macos-hidden-apps = true
 
 # List of workspaces that should stay alive even when they contain no windows,
 # even when they are invisible.
-persistent-workspaces = ["1", "2", "3", "4"]
+persistent-workspaces = ["1", "2", "3", "4", "9", "0"]
 
 # A callback that runs every time binding mode changes
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -131,6 +131,8 @@ on-mode-changed = []
     cmd-2 = 'workspace 2'
     cmd-3 = 'workspace 3'
     cmd-4 = 'workspace 4'
+    cmd-9 = 'workspace 9'
+    cmd-0 = 'workspace 0'
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     cmd-backslash = 'workspace-back-and-forth'
 
@@ -144,6 +146,8 @@ on-mode-changed = []
     cmd-ctrl-2 = 'move-node-to-workspace 2'
     cmd-ctrl-3 = 'move-node-to-workspace 3'
     cmd-ctrl-4 = 'move-node-to-workspace 4'
+    cmd-ctrl-9 = 'move-node-to-workspace 9'
+    cmd-ctrl-0 = 'move-node-to-workspace 0'
     # cmd-ctrl-d = 'move-node-to-workspace next'
     # cmd-ctrl-u = 'move-node-to-workspace prev'
 
@@ -153,11 +157,54 @@ on-mode-changed = []
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
     cmd-comma = 'layout v_accordion'
     cmd-period = 'layout h_accordion'
+    # 对齐 niri Mod+V: 浮动/平铺切换
+    # cmd-v = 'layout floating tiling'
 
 # 让 Finder 的所有窗口都保持浮动（不参与平铺）
 [[on-window-detected]]
     if.app-id = 'com.apple.finder'
     run = 'layout floating'
+
+# Google Chrome 固定分配到 workspace 9
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome'
+    run = 'move-node-to-workspace 9'
+
+# Ghostty 固定分配到 workspace 0
+[[on-window-detected]]
+    if.app-id = 'com.mitchellh.ghostty'
+    run = 'move-node-to-workspace 0'
+
+# VSCode 固定分配到 workspace 0
+[[on-window-detected]]
+    if.app-id = 'com.microsoft.VSCode'
+    run = 'move-node-to-workspace 0'
+
+# Spotify 固定分配到 workspace 4
+[[on-window-detected]]
+    if.app-id = 'com.spotify.client'
+    run = 'move-node-to-workspace 4'
+
+# WeChat 固定分配到 workspace 3
+[[on-window-detected]]
+    if.app-id = 'com.tencent.xinWeChat'
+    run = 'move-node-to-workspace 3'
+
+# 钉钉固定分配到 workspace 3
+[[on-window-detected]]
+    if.app-id = '5ZSL2CJU2T.com.dingtalk.mac'
+    run = 'move-node-to-workspace 3'
+
+# WPS 固定分配到 workspace 2
+[[on-window-detected]]
+    if.app-id = 'com.kingsoft.wpsoffice.mac'
+    run = 'move-node-to-workspace 2'
+
+# 兜底规则：其余所有 app 的新窗口默认进入 workspace 1 并保持浮动（不参与平铺）
+# 注意：on-window-detected 按顺序匹配，第一个命中的规则生效，此规则必须放在最后
+[[on-window-detected]]
+    if = 'true'
+    run = ['move-node-to-workspace 1', 'layout floating']
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes

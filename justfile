@@ -13,9 +13,12 @@ default:
     @echo "可用预设 (完整安装流程):"
     @echo "  osx              - macOS 完整配置"
     @echo "  linux-gui        - Linux GUI 配置"
-    @echo "  linux-headless   - Linux 无头配置"
+    @echo "  linux-headless   - Linux 无头配置(wsl里用这个,额外配置看这个文档workspace/dotfiles/scripts/extras/wsl2.md)"
     @echo "  ssh              - Linux ssh host配置"
     @echo "  ssh-docker       - Linux ssh host docker配置"
+    @echo ""
+    @echo "预设执行顺序: prerequisites -> brew -> stow -> shell_scripts -> extras -> vscode"
+    @echo "前置要求: brew 已安装(可跑 bash scripts/lib/install_homebrew.sh 安装)"
     @echo ""
     @echo "可用组件 (单独安装):"
     @echo "  proxy            - 代理配置"
@@ -50,13 +53,13 @@ list: default
 # ============================================================================
 
 # macOS 完整配置
-osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx vscode
+osx: prerequisites-osx brew-osx stow-osx shell_scripts extras-osx vscode
 
 # Linux GUI 配置
-linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-gui vscode
+linux-gui: prerequisites-linux brew-linux-gui stow-linux shell_scripts extras-linux vscode
 
 # Linux 无头配置
-linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless
+linux-headless: prerequisites-linux brew-linux-headless stow-linux shell_scripts vscode
 
 ssh: _ssh_linux
 ssh-docker: _ssh_linux_docker
@@ -111,11 +114,11 @@ extras-osx:
     @echo "⚙️  安装额外配置 (osx)..."
     @bash "{{SCRIPTS_DIR}}/extras/osx.sh"
 
-# 额外配置 (Linux)
+# 额外配置 (Linux-gui)
 extras-linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux.sh"; exit 0; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux-gui-arch.sh"; exit 0; fi
     @echo "⚙️  安装额外配置 (linux)..."
-    @bash "{{SCRIPTS_DIR}}/extras/linux.sh"
+    @bash "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh"
 
 # Mesh 设置
 mesh:
@@ -154,16 +157,16 @@ ssh-proxy host='':
 # ============================================================================
 
 _ssh_linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/config_sync 不存在"; exit 1; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh_sync/config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh_sync/config_sync 不存在"; exit 1; fi
     @echo "📦 ssh setup..."
     @uv pip install -r "requirements.txt"
-    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/config_sync.py"
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh_sync/config_sync.py"
 
 _ssh_linux_docker:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/docker_config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/docker_config_sync 不存在"; exit 1; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh_sync/docker_config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh_sync/docker_config_sync 不存在"; exit 1; fi
     @echo "📦 ssh setup..."
     @uv pip install -r "requirements.txt"
-    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/docker_config_sync.py"
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh_sync/docker_config_sync.py"
 # ============================================================================
 # Brew 包组 (公开命令)
 # ============================================================================

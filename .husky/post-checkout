@@ -1,1 +1,12 @@
+# Only run on branch switch (arg3 = 1); skip file checkouts (arg3 = 0)
+if [ "$3" != "1" ]; then
+    exit 0
+fi
+
+# Skip during rebase (rebase checks out the base commit, which is also arg3 = 1)
+GIT_DIR=$(git rev-parse --git-dir)
+if [ -d "$GIT_DIR/rebase-merge" ] || [ -d "$GIT_DIR/rebase-apply" ]; then
+    exit 0
+fi
+
 bash scripts/crypt/decrypt-secret.sh

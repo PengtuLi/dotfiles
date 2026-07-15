@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "$ROOT_DIR/scripts/lib/common.sh"
 
@@ -81,7 +83,8 @@ install_vscode_extensions() {
 
     for e in "${extensions[@]}"; do
         info "installing $e"
-        code --install-extension "$e" 2>&1 > /dev/null
+        # stdout 静默，保留 stderr；单个扩展失败不中断后续安装
+        code --install-extension "$e" > /dev/null || warning "$e 安装失败"
     done
 
     success "VSCode extensions installed successfully"
@@ -93,6 +96,7 @@ if is_wsl; then
     copy_vscode_config_to_windows
 fi
 
+# 注意：WSL 下 `code` 是 Windows 侧的 shim，此处是有意把扩展装到 Windows 版 VSCode
 if command -v code &> /dev/null; then
     install_vscode_extensions
 fi

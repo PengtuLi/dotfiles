@@ -27,7 +27,7 @@
 #    theme. E.g. a link to your github user page.
 
 [delta "Monokai"]
-    syntax-theme = Darcula
+    syntax-theme = Dracula
     dark = true
 
     file-added4-label = [+]

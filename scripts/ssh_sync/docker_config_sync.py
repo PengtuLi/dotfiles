@@ -61,7 +61,7 @@ def select_container(containers: list[tuple[str, str]]) -> str:
 
 
 def collect_bin_scripts(bin_scripts: dict) -> list[tuple[Path, Path]]:
-    """Collect .local/bin scripts selected in bin.yaml."""
+    """Collect .local/bin scripts selected in ssh_sync_bin.yaml."""
     paths = []
     local_bin = REPO_ROOT / ".local" / "bin"
     for name, enabled in bin_scripts.items():
@@ -137,7 +137,7 @@ def build_shell_setup_script(
 
 
 def main():
-    brew_file = THIS_DIR / "brew.yaml"
+    brew_file = THIS_DIR / "ssh_sync_pkg.yaml"
     if not brew_file.exists():
         print(f"{Fore.RED}Error: {brew_file} not found{Style.RESET_ALL}")
         sys.exit(1)
@@ -145,7 +145,7 @@ def main():
     apps = yaml.safe_load(brew_file.read_text())
     local_paths = collect_config_paths(apps)
 
-    bin_file = THIS_DIR / "bin.yaml"
+    bin_file = THIS_DIR / "ssh_sync_bin.yaml"
     bin_scripts = yaml.safe_load(bin_file.read_text()) if bin_file.exists() else {}
     local_paths.extend(collect_bin_scripts(bin_scripts))
     bin_relpaths = [rel for _, rel in local_paths if str(rel).startswith(".local/bin/")]

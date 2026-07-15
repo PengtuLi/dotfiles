@@ -7,7 +7,7 @@ My personal development environment configuration.
 First install just and python.
 
 ```bash
-git clone https://github.com/tutu/dotfiles.git ~/.dotfiles
+git clone https://github.com/PengtuLi/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 just
 ```

@@ -19,8 +19,7 @@ npm install -g 9router
 ```sh
 # Anthropic 官方 skills（必装）
 # https://github.com/anthropics/skills
-/plugin marketplace add anthropics/skills
-/plugin install document-skills@anthropic-agent-skills
+npx skills add anthropics/skills -g
 ```
 
 包含 17 个 skill：
@@ -45,7 +44,7 @@ npm install -g 9router
 ```sh
 # Matt Pocock 大神技能
 # https://github.com/mattpocock/skills
-npx skills@latest add mattpocock/skills
+npx skills@latest add mattpocock/skills -g
 # 安装后运行 /setup-matt-pocock-skills 配置
 ```
 
@@ -146,6 +145,12 @@ npx skills@latest add mattpocock/skills
 ## 领域技能
 
 ```sh
+# 微信读书官方 skill（书架/笔记/划线/书评/阅读统计/搜索/推荐）
+# 介绍页：https://weread.qq.com/r/weread-skills
+npx skills add Tencent/WeChatReading -g
+```
+
+```sh
 # AI 研究 98 skills
 # https://github.com/Orchestra-Research/AI-Research-SKILLs
 npx @orchestra-research/ai-research-skills
@@ -201,7 +206,7 @@ npx skills add xbtlin/ai-berkshire
 
 ## 本地 skills
 
-- `./CLAUDE.md` Karpathy 编码风格（必装）— https://github.com/forrestchang/andrej-karpathy-skills
+- `./CLAUDE.md` Karpathy 编码风格（必装）— https://github.com/multica-ai/andrej-karpathy-skills
 - `./skills/paper-glance-skill/` 论文全能处理（分析、思维导图、审稿、播客） → "帮我看这篇论文" / "上传 PDF 做审稿"
 - `./skills/academic-pptx-skill/` 学术 PPT 内容与结构 — https://github.com/Gabberflast/academic-pptx-skill → "帮我做一篇关于 X 论文的会议演讲 PPT"
 - `./skills/excalidraw-diagram-generator/` 自然语言生成 Excalidraw 图表 — 来自 copilot-awesome → "画一个用户注册流程图" / "创建 AWS 架构图"
@@ -218,14 +223,29 @@ npx skills add xbtlin/ai-berkshire
 - `./skills/huggingface-papers/` HuggingFace 论文查找与阅读（HF/arXiv URL 解析、结构化元数据、作者/关联模型/数据集） — https://github.com/huggingface/skills → "帮我看看这篇论文 2602.08025" / "解释一下这个 HF paper"
 - `./skills/ai-model-download/` AI 模型下载与管理（HuggingFace 和 ModelScope 双平台、批量下载、断点续传、完整性校验、参数量统计） → "从 HF 下载 Qwen 模型" / "帮我上传模型到 ModelScope"
 - `./skills/caveman-review/` 超压缩 PR 代码审查（一行一评：位置+问题+修复，emoji 严重度标记） → "review this PR" / "code review" / "/caveman-review"
+- `./skills/docusaurus-blog-guide/` Docusaurus 博客与文档站点指南（配置、Markdown/MDX、部署、官方文档引用） → "Docusaurus 博客配置在哪里" / "Docusaurus 支持哪些 Markdown 功能"
+- `./skills/feynman-perspective/` 费曼思维操作系统（基于 40+ 一手来源：命名≠理解、反自欺、cargo cult 检测、5 心智模型 + 8 决策启发式，事实型问题强制联网验证） — https://github.com/alchaincyf/feynman-skill → "用费曼的视角看看我这个想法" / "这是不是 cargo cult" / "我真的理解了还是只记住了名字"
+- `./skills/taleb-perspective/` 塔勒布思维操作系统（6 核心心智模型 + 9 决策启发式：尾部风险、反脆弱、skin in the game、杠铃策略、预防原则） — https://github.com/alchaincyf/taleb-skill → "用塔勒布的视角看看" / "会不会黑天鹅" / "这个有尾部风险吗" / "杠铃策略怎么用"
+- `./skills/naval-perspective/` Naval Ravikant 思维操作系统（5 核心心智模型 + 8 决策启发式：杠杆、specific knowledge、财富 vs 金钱、欲望管理，沉浸式角色扮演） — https://github.com/alchaincyf/naval-skill → "用 Naval 的视角看看" / "这份工作有杠杆吗" / "什么是真正的财富"
+- `./skills/taste-skill/` 反模板前端设计（先读懂需求再推断设计方向，落地页/作品集/重构，产出不像模板套的界面） — https://github.com/Leonxlnx/taste-skill → "做一个 Awwwards 风格的落地页" / "帮我重新设计这个主页，别像模板"
+- `./skills/i-have-adhd/` ADHD 友好输出风格（行动放第一行、步骤编号、每轮重申进度、列表≤5项、禁客套话，/i-have-adhd 开启，"stop adhd mode" 关闭） — https://github.com/ayghri/i-have-adhd → "/i-have-adhd" / "stop adhd mode"
 
 # Find Place
+
+全局安装（注意：find-skills 使用 PromptScript，全局安装时可能会显示一个兼容性警告，但最终可正常工作）
 
 ```sh
 # skills.sh - Agent Skills Directory (Vercel)
 # https://skills.sh
-npx skills add vercel-labs/skills --skill find-skills
+npx skills add vercel-labs/skills --skill find-skills -g
 
 # claude-code official plugin market
 # /plugin marketplace
+```
+
+```sh
+# Matt Pocock 大神技能
+# https://github.com/mattpocock/skills
+npx skills@latest add mattpocock/skills -g
+# 安装后运行 /setup-matt-pocock-skills 配置
 ```
