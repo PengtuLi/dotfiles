@@ -13,7 +13,7 @@ default:
     @echo "可用预设 (完整安装流程):"
     @echo "  osx              - macOS 完整配置"
     @echo "  linux-gui        - Linux GUI 配置"
-    @echo "  linux-headless   - Linux 无头配置"
+    @echo "  linux-headless   - Linux 无头配置(wsl里用这个,额外配置看这个文档workspace/dotfiles/scripts/extras/wsl2.md)"
     @echo "  ssh              - Linux ssh host配置"
     @echo "  ssh-docker       - Linux ssh host docker配置"
     @echo ""
@@ -53,10 +53,10 @@ list: default
 osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx vscode
 
 # Linux GUI 配置
-linux-gui: prerequisites-linux stow-linux shell_scripts extras-linux brew-linux-gui vscode
+linux-gui: prerequisites-linux stow-linux shell_scripts brew-linux-gui vscode extras-linux
 
 # Linux 无头配置
-linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless
+linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless vscode
 
 ssh: _ssh_linux
 ssh-docker: _ssh_linux_docker
@@ -111,11 +111,11 @@ extras-osx:
     @echo "⚙️  安装额外配置 (osx)..."
     @bash "{{SCRIPTS_DIR}}/extras/osx.sh"
 
-# 额外配置 (Linux)
+# 额外配置 (Linux-gui)
 extras-linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux.sh"; exit 0; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux-gui.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux.sh"; exit 0; fi
     @echo "⚙️  安装额外配置 (linux)..."
-    @bash "{{SCRIPTS_DIR}}/extras/linux.sh"
+    @bash "{{SCRIPTS_DIR}}/extras/linux-gui.sh"
 
 # Mesh 设置
 mesh:

@@ -62,13 +62,21 @@ def sync_archive(
         tmp_path.unlink(missing_ok=True)
 
 
-def collect_config_paths(apps: dict) -> list[tuple[Path, Path]]:
+def collect_config_paths(
+    apps: dict, visitor_only: bool = False
+) -> list[tuple[Path, Path]]:
     """Collect config file paths from apps dict.
+
+    Args:
+        apps: Dictionary of app configurations.
+        visitor_only: If True, only include configs marked with visitor: true.
 
     Returns list of (absolute_path, relative_to_home) tuples.
     """
     all_paths = []
     for app, info in apps.items():
+        if visitor_only and not info.get("visitor", False):
+            continue
         configs = info.get("config", [])
         if not configs:
             continue
@@ -101,6 +109,7 @@ def sync_configs(
     host: str,
     ssh_cmd: str,
     apps: dict,
+    visitor_only: bool = False,
     proxy: bool = False,
     proxy_mode: str = "http",
     proxy_port: int = 7890,
@@ -108,7 +117,7 @@ def sync_configs(
     """Sync config files from apps dict to remote host."""
     from ssh_utils import exec_remote
 
-    local_paths = collect_config_paths(apps)
+    local_paths = collect_config_paths(apps, visitor_only=visitor_only)
     if not local_paths:
         print("  No config files to sync")
         return

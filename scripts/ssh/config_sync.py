@@ -59,6 +59,7 @@ def install_herdr_remote(
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
+        capture=True,
     )
     if "not_found" not in herdr_check:
         print(f"  {Fore.GREEN}Herdr is already installed{Style.RESET_ALL}")
@@ -84,6 +85,7 @@ def install_uv_remote(
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
+        capture=True,
     )
     if "not_found" not in uv_check:
         return
@@ -108,6 +110,7 @@ def install_claude_code_remote(
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
+        capture=True,
     )
     if "not_found" not in claude_check:
         print(f"  {Fore.GREEN}Claude Code is already installed{Style.RESET_ALL}")
@@ -145,9 +148,10 @@ def install_packages_remote(
         )
 
     brew_names = [apps[app].get("brew", app) for app in to_install]
+    brew_env = "CI=1 HOMEBREW_NO_COLOR=1 HOMEBREW_NO_AUTO_UPDATE=1 NONINTERACTIVE=1 "
     exec_remote(
         ssh_cmd,
-        f"{mirror_env}/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
+        f"{brew_env}{mirror_env}/home/linuxbrew/.linuxbrew/bin/brew install {' '.join(brew_names)}",
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
@@ -184,6 +188,7 @@ def setup_docker_env_remote(
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
+        capture=True,
     )
     if "docker" not in docker_check:
         return
@@ -212,6 +217,7 @@ def ensure_git_remote(
         proxy=proxy,
         proxy_mode=proxy_mode,
         proxy_port=proxy_port,
+        capture=True,
     )
     if "missing" not in git_check:
         return
@@ -290,14 +296,15 @@ def setup_proxy(host: str) -> tuple[bool, str, subprocess.Popen | None, int]:
     if not confirm("Use proxy for remote commands?"):
         return False, "http", None, CLASH_PORT
 
-    print(f"{Fore.YELLOW}Proxy setup method:{Style.RESET_ALL}")
-    print(f"  {Fore.CYAN}1.{Style.RESET_ALL} Simple (SSH -R, forwards local clash)")
-    print(
-        f"  {Fore.CYAN}2.{Style.RESET_ALL} Legacy (double SSH tunnel, no local proxy needed)"
+    choice = select_option(
+        "Proxy setup method:",
+        [
+            "Simple (SSH -R, forwards local clash)",
+            "Legacy (double SSH tunnel, no local proxy needed)",
+        ],
     )
-    choice = select_option("Select:", ["Simple", "Legacy"])
 
-    if choice == "2":
+    if choice.startswith("2") or "Legacy" in choice:
         proxy_mode = "socks"
         print(f"""{Fore.YELLOW}Legacy SOCKS proxy setup{Style.RESET_ALL}
 {Style.DIM}# Local machine (A):
@@ -338,6 +345,9 @@ ssh -D 1080 -p 2222 -N localuser@localhost{Style.RESET_ALL}
         proxy_mode = "http"
         try:
             tunnel_proc, remote_proxy_port = setup_simple_proxy(host)
+            print(
+                f"{Fore.GREEN}Proxy ready on remote port {remote_proxy_port}{Style.RESET_ALL}"
+            )
             return True, "http", tunnel_proc, remote_proxy_port
         except RuntimeError as e:
             print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
@@ -406,7 +416,23 @@ def main():
         # Copy configs
         print(f"{Fore.WHITE}Copying config files...{Style.RESET_ALL}")
         if confirm("Copy config files?"):
-            sync_configs(host, ssh_cmd, apps, use_proxy, proxy_mode, active_proxy_port)
+            mode_choice = select_option(
+                "Config sync mode:",
+                [
+                    "Full (sync all configs)",
+                    "Visitor (only configs marked with visitor: true) [default]",
+                ],
+            )
+            visitor_only = not (mode_choice.startswith("1") or "Full" in mode_choice)
+            sync_configs(
+                host,
+                ssh_cmd,
+                apps,
+                visitor_only=visitor_only,
+                proxy=use_proxy,
+                proxy_mode=proxy_mode,
+                proxy_port=active_proxy_port,
+            )
 
         # Copy scripts
         print(f"{Fore.WHITE}Copying scripts and shell config...{Style.RESET_ALL}")

@@ -9,6 +9,38 @@ from queue import Queue
 from threading import Thread
 
 
+def is_wsl() -> bool:
+    """Return True if running inside WSL."""
+    try:
+        version = Path("/proc/version").read_text().lower()
+        return "microsoft" in version
+    except Exception:
+        return False
+
+
+def get_local_proxy_host() -> str:
+    """Get the proxy host address from the perspective of the SSH client.
+
+    In WSL2 this points at the Windows host (the default gateway). In native
+    Linux/macOS this is localhost because the proxy runs on the same machine.
+    """
+    try:
+        version = Path("/proc/version").read_text().lower()
+        if "microsoft" in version:
+            result = subprocess.run(
+                "ip route show default | awk '{print $3}'",
+                shell=True,
+                capture_output=True,
+                text=True,
+            )
+            ip = result.stdout.strip()
+            if ip:
+                return ip
+    except Exception:
+        pass
+    return "127.0.0.1"
+
+
 def find_available_remote_port(host: str, start_port: int, max_tries: int = 100) -> int:
     """Find an available port on the remote host, starting from start_port."""
     check_cmd = (
@@ -30,8 +62,9 @@ def setup_simple_proxy(
 ) -> tuple[subprocess.Popen, int]:
     """Set up reverse SSH tunnel forwarding local clash proxy to remote."""
     remote_port = find_available_remote_port(host, clash_port)
+    local_target = get_local_proxy_host()
     proc = subprocess.Popen(
-        f"ssh -S none -N -R {remote_port}:127.0.0.1:{clash_port} {host}",
+        f"ssh -S none -N -R {remote_port}:{local_target}:{clash_port} {host}",
         shell=True,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,
@@ -134,7 +167,7 @@ def setup_socks_proxy_legacy(
             cleanup_result = subprocess.run(
                 f'''ssh -S none -A {host} "
                     pkill -9 -f 'ssh.*-R.*{tunnel_port}' 2>/dev/null || true
-                    ss -tlpn 2>/dev/null | grep ':{tunnel_port}' | awk '{{print \$6}}' | xargs -r kill -9 2>/dev/null || true
+                    ss -tlpn 2>/dev/null | grep ':{tunnel_port}' | awk '{{print \\$6}}' | xargs -r kill -9 2>/dev/null || true
                     lsof -ti :{tunnel_port} | xargs -r kill -9 2>/dev/null || true
                     fuser -k -9 {tunnel_port}/tcp 2>/dev/null || true
                     sleep 1

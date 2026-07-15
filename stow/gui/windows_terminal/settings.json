@@ -20,10 +20,6 @@
             "id": "User.moveFocus.2A0DA8E0"
         },
         {
-            "command": "openCWD",
-            "id": "User.openCWD"
-        },
-        {
             "command":
             {
                 "action": "adjustFontSize",
@@ -32,11 +28,16 @@
             "id": "User.adjustFontSize.E04D5229"
         },
         {
+            "command": "openCWD",
+            "id": "User.openCWD"
+        },
+        {
             "command":
             {
-                "action": "selectOutput"
+                "action": "splitPane",
+                "split": "down"
             },
-            "id": "User.selectOutput.D3F0B923"
+            "id": "User.splitPane.D5151347"
         },
         {
             "command":
@@ -48,10 +49,9 @@
         {
             "command":
             {
-                "action": "splitPane",
-                "split": "down"
+                "action": "selectOutput"
             },
-            "id": "User.splitPane.D5151347"
+            "id": "User.selectOutput.D3F0B923"
         },
         {
             "command":
@@ -93,17 +93,17 @@
             "command":
             {
                 "action": "moveFocus",
-                "direction": "previous"
+                "direction": "right"
             },
-            "id": "User.moveFocus.75247157"
+            "id": "User.moveFocus.87C324ED"
         },
         {
             "command":
             {
                 "action": "moveFocus",
-                "direction": "right"
+                "direction": "previous"
             },
-            "id": "User.moveFocus.87C324ED"
+            "id": "User.moveFocus.75247157"
         },
         {
             "command":
@@ -117,16 +117,16 @@
             "id": "User.openTabColorPicker"
         },
         {
-            "command": "switchSelectionEndpoint",
-            "id": "User.switchSelectionEndpoint"
-        },
-        {
             "command":
             {
                 "action": "swapPane",
                 "direction": "previous"
             },
             "id": "User.swapPane.75247157"
+        },
+        {
+            "command": "switchSelectionEndpoint",
+            "id": "User.switchSelectionEndpoint"
         },
         {
             "command": "markMode",
@@ -149,9 +149,10 @@
     "alwaysShowNotificationIcon": true,
     "copyFormatting": "none",
     "copyOnSelect": true,
-    "defaultProfile": "{b7ec7ed3-53fa-5050-b9fc-bf4fbe5f242e}",
+    "defaultProfile": "{0bc0b822-6ffc-5a1d-85b4-ea46205912a5}",
     "disableAnimations": false,
     "experimental.enableColorSelection": true,
+    "experimental.scrollToChangeOpacity": false,
     "focusFollowMouse": true,
     "keybindings":
     [
@@ -165,18 +166,6 @@
         },
         {
             "id": null,
-            "keys": "ctrl+shift+d"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+k"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+tab"
-        },
-        {
-            "id": null,
             "keys": "ctrl+tab"
         },
         {
@@ -184,16 +173,24 @@
             "keys": "alt+shift+down"
         },
         {
-            "id": "Terminal.ResizePaneDown",
-            "keys": "alt+shift+j"
+            "id": null,
+            "keys": "ctrl+shift+d"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+tab"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+k"
         },
         {
             "id": "Terminal.CloseWindow",
             "keys": "alt+shift+w"
         },
         {
-            "id": null,
-            "keys": "ctrl+comma"
+            "id": "Terminal.ResizePaneDown",
+            "keys": "alt+shift+j"
         },
         {
             "id": "Terminal.ScrollUpPage",
@@ -204,16 +201,40 @@
             "keys": "ctrl+shift+f"
         },
         {
-            "id": "Terminal.OpenNewWindow",
-            "keys": "alt+n"
+            "id": null,
+            "keys": "ctrl+comma"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+plus"
         },
         {
             "id": null,
             "keys": "ctrl+minus"
         },
         {
+            "id": "Terminal.OpenNewWindow",
+            "keys": "alt+n"
+        },
+        {
+            "id": "Terminal.NextTab",
+            "keys": "alt+]"
+        },
+        {
             "id": null,
-            "keys": "ctrl+plus"
+            "keys": "alt+shift+6"
+        },
+        {
+            "id": "User.moveFocus.2A0DA8E0",
+            "keys": "alt+h"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+comma"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+0"
         },
         {
             "id": null,
@@ -225,47 +246,35 @@
         },
         {
             "id": null,
-            "keys": "ctrl+0"
-        },
-        {
-            "id": "User.moveFocus.2A0DA8E0",
-            "keys": "alt+h"
+            "keys": "alt+f4"
         },
         {
             "id": null,
-            "keys": "ctrl+shift+comma"
-        },
-        {
-            "id": "Terminal.NextTab",
-            "keys": "alt+]"
-        },
-        {
-            "id": "User.scrollToTop",
-            "keys": "alt+g"
-        },
-        {
-            "id": "Terminal.ScrollDownPage",
-            "keys": "alt+f"
+            "keys": "alt+shift+8"
         },
         {
             "id": "Terminal.SwitchToTab0",
             "keys": "alt+1"
         },
         {
-            "id": null,
-            "keys": "alt+f4"
+            "id": "Terminal.ScrollDownPage",
+            "keys": "alt+f"
         },
         {
-            "id": null,
-            "keys": "ctrl+alt+8"
+            "id": "User.scrollToTop",
+            "keys": "alt+g"
+        },
+        {
+            "id": "Terminal.ClosePane",
+            "keys": "alt+w"
         },
         {
             "id": "Terminal.PasteFromClipboard",
             "keys": "ctrl+shift+v"
         },
         {
-            "id": "Terminal.ClosePane",
-            "keys": "alt+w"
+            "id": null,
+            "keys": "ctrl+alt+8"
         },
         {
             "id": null,
@@ -273,7 +282,11 @@
         },
         {
             "id": null,
-            "keys": "ctrl+shift+n"
+            "keys": "ctrl+alt+4"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+7"
         },
         {
             "id": "Terminal.DecreaseFontSize",
@@ -281,39 +294,23 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+7"
+            "keys": "ctrl+shift+n"
         },
         {
             "id": null,
-            "keys": "ctrl+alt+4"
-        },
-        {
-            "id": null,
-            "keys": "alt+right"
+            "keys": "alt+shift+2"
         },
         {
             "id": null,
             "keys": "ctrl+numpad_minus"
         },
         {
+            "id": null,
+            "keys": "alt+right"
+        },
+        {
             "id": "User.adjustFontSize.E04D5229",
             "keys": "alt+plus"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+pgdn"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+pgup"
-        },
-        {
-            "id": "Terminal.SwitchToTab3",
-            "keys": "alt+4"
-        },
-        {
-            "id": null,
-            "keys": "ctrl+shift+period"
         },
         {
             "id": null,
@@ -325,7 +322,19 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+2"
+            "keys": "ctrl+shift+period"
+        },
+        {
+            "id": "Terminal.SwitchToTab3",
+            "keys": "alt+4"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+pgup"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+pgdn"
         },
         {
             "id": null,
@@ -333,7 +342,11 @@
         },
         {
             "id": null,
-            "keys": "alt+shift+left"
+            "keys": "ctrl+alt+2"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+1"
         },
         {
             "id": "Terminal.SwitchToTab5",
@@ -341,7 +354,15 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+1"
+            "keys": "ctrl+shift+0"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+left"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+6"
         },
         {
             "id": "Terminal.SwitchToTab1",
@@ -352,12 +373,20 @@
             "keys": "alt+3"
         },
         {
+            "id": null,
+            "keys": "ctrl+alt+3"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+4"
+        },
+        {
             "id": "Terminal.ScrollDown",
             "keys": "alt+d"
         },
         {
             "id": null,
-            "keys": "ctrl+alt+3"
+            "keys": "alt+shift+1"
         },
         {
             "id": "Terminal.SwitchToTab4",
@@ -365,7 +394,7 @@
         },
         {
             "id": null,
-            "keys": "alt+shift+right"
+            "keys": "ctrl+alt+5"
         },
         {
             "id": "Terminal.CopyToClipboard",
@@ -373,11 +402,15 @@
         },
         {
             "id": null,
-            "keys": "ctrl+alt+5"
+            "keys": "alt+shift+right"
         },
         {
             "id": null,
             "keys": "ctrl+alt+6"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+2"
         },
         {
             "id": "Terminal.SwitchToTab6",
@@ -393,6 +426,10 @@
         },
         {
             "id": null,
+            "keys": "ctrl+8"
+        },
+        {
+            "id": null,
             "keys": "ctrl+shift+m"
         },
         {
@@ -405,15 +442,15 @@
         },
         {
             "id": null,
-            "keys": "ctrl+shift+t"
-        },
-        {
-            "id": null,
             "keys": "ctrl+shift+4"
         },
         {
             "id": "Terminal.ScrollUp",
             "keys": "alt+u"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+t"
         },
         {
             "id": "User.openTabColorPicker",
@@ -422,6 +459,10 @@
         {
             "id": null,
             "keys": "ctrl+shift+up"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+7"
         },
         {
             "id": null,
@@ -434,6 +475,10 @@
         {
             "id": null,
             "keys": "ctrl+insert"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+9"
         },
         {
             "id": null,
@@ -489,6 +534,10 @@
         },
         {
             "id": null,
+            "keys": "ctrl+3"
+        },
+        {
+            "id": null,
             "keys": "win+sc(41)"
         },
         {
@@ -521,6 +570,10 @@
         },
         {
             "id": null,
+            "keys": "alt+9"
+        },
+        {
+            "id": null,
             "keys": "alt+shift+up"
         },
         {
@@ -542,6 +595,10 @@
         {
             "id": "User.splitPane.864CD510",
             "keys": "alt+v"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+5"
         },
         {
             "id": "User.moveFocus.87C324ED",
@@ -566,6 +623,34 @@
         {
             "id": "User.moveFocus.75247157",
             "keys": "alt+\\"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+9"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+7"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+3"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+0"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+4"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+5"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+1"
         }
     ],
     "launchMode": "maximized",
@@ -575,6 +660,7 @@
             "type": "remainingProfiles"
         }
     ],
+    "newTabPosition": "afterCurrentTab",
     "profiles":
     {
         "defaults":
@@ -623,16 +709,9 @@
                 "name": "\u547d\u4ee4\u63d0\u793a\u7b26"
             },
             {
-                "guid": "{b7ec7ed3-53fa-5050-b9fc-bf4fbe5f242e}",
+                "guid": "{0bc0b822-6ffc-5a1d-85b4-ea46205912a5}",
                 "hidden": false,
-                "name": "archlinux",
-                "source": "Microsoft.WSL",
-                "startingDirectory": "~/workspace"
-            },
-            {
-                "guid": "{6a1e4862-ca13-5d06-b696-7ed6019e8a47}",
-                "hidden": false,
-                "name": "Ubuntu-24.04",
+                "name": "Arch",
                 "source": "Microsoft.WSL",
                 "startingDirectory": "~/workspace"
             }
@@ -787,9 +866,9 @@
     "tabWidthMode": "equal",
     "theme": "dark",
     "themes": [],
-    "trimBlockSelection": false,
+    "trimBlockSelection": true,
     "trimPaste": false,
     "useAcrylicInTabRow": false,
     "warning.largePaste": false,
-    "warning.multiLinePaste": false
+    "warning.multiLinePaste": "never"
 }

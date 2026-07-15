@@ -112,15 +112,44 @@ y() {
 
 # Proxy management
 set_local_proxy() {
-    if [ -z "$1" ]; then
-        echo "use port 7890 as default proxy port"
-        local proxy_port=7890
-    else
-        local proxy_port="$1"
+    local dry_run=0
+    local proxy_port=""
+    local arg
+    for arg in "$@"; do
+        case "$arg" in
+            --dry-run) dry_run=1 ;;
+            *)         proxy_port="$arg" ;;
+        esac
+    done
+
+    if [ -z "$proxy_port" ]; then
+        echo "use port 7890 as default proxy port" >&2
+        proxy_port=7890
     fi
 
     local proxy_host="localhost"
+    # In WSL2 the proxy runs on the Windows host, not on localhost.
+    if [ -f /proc/version ] && grep -qi microsoft /proc/version; then
+        proxy_host="$(ip route show default | awk '{print $3}')"
+        if [ -z "$proxy_host" ]; then
+            proxy_host="localhost"
+        fi
+    fi
     local proxy_addr="${proxy_host}:${proxy_port}"
+
+    if [ "$dry_run" -eq 1 ]; then
+        echo "export http_proxy=\"http://${proxy_addr}\""
+        echo "export https_proxy=\"http://${proxy_addr}\""
+        echo "export ftp_proxy=\"http://${proxy_addr}\""
+        echo "export all_proxy=\"http://${proxy_addr}\""
+        echo "export no_proxy=\"localhost,127.0.0.1,::1\""
+        echo "export HTTP_PROXY=\"http://${proxy_addr}\""
+        echo "export HTTPS_PROXY=\"http://${proxy_addr}\""
+        echo "export FTP_PROXY=\"http://${proxy_addr}\""
+        echo "export ALL_PROXY=\"http://${proxy_addr}\""
+        echo "export NO_PROXY=\"localhost,127.0.0.1,::1\""
+        return 0
+    fi
 
     export http_proxy="http://${proxy_addr}"
     export https_proxy="http://${proxy_addr}"
@@ -137,6 +166,12 @@ set_local_proxy() {
 }
 
 unset_local_proxy() {
+    if [ "$1" = "--dry-run" ]; then
+        echo "unset http_proxy https_proxy ftp_proxy all_proxy no_proxy \\"
+        echo "      HTTP_PROXY HTTPS_PROXY FTP_PROXY ALL_PROXY NO_PROXY"
+        return 0
+    fi
+
     unset http_proxy https_proxy ftp_proxy all_proxy no_proxy \
           HTTP_PROXY HTTPS_PROXY FTP_PROXY ALL_PROXY NO_PROXY
     echo "unset proxy."

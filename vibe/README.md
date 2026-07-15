@@ -19,8 +19,7 @@ npm install -g 9router
 ```sh
 # Anthropic 官方 skills（必装）
 # https://github.com/anthropics/skills
-/plugin marketplace add anthropics/skills
-/plugin install document-skills@anthropic-agent-skills
+npx skills add anthropics/skills -g
 ```
 
 包含 17 个 skill：
@@ -45,7 +44,7 @@ npm install -g 9router
 ```sh
 # Matt Pocock 大神技能
 # https://github.com/mattpocock/skills
-npx skills@latest add mattpocock/skills
+npx skills@latest add mattpocock/skills -g
 # 安装后运行 /setup-matt-pocock-skills 配置
 ```
 
@@ -201,7 +200,7 @@ npx skills add xbtlin/ai-berkshire
 
 ## 本地 skills
 
-- `./CLAUDE.md` Karpathy 编码风格（必装）— https://github.com/forrestchang/andrej-karpathy-skills
+- `./CLAUDE.md` Karpathy 编码风格（必装）— https://github.com/multica-ai/andrej-karpathy-skills
 - `./skills/paper-glance-skill/` 论文全能处理（分析、思维导图、审稿、播客） → "帮我看这篇论文" / "上传 PDF 做审稿"
 - `./skills/academic-pptx-skill/` 学术 PPT 内容与结构 — https://github.com/Gabberflast/academic-pptx-skill → "帮我做一篇关于 X 论文的会议演讲 PPT"
 - `./skills/excalidraw-diagram-generator/` 自然语言生成 Excalidraw 图表 — 来自 copilot-awesome → "画一个用户注册流程图" / "创建 AWS 架构图"
@@ -218,14 +217,24 @@ npx skills add xbtlin/ai-berkshire
 - `./skills/huggingface-papers/` HuggingFace 论文查找与阅读（HF/arXiv URL 解析、结构化元数据、作者/关联模型/数据集） — https://github.com/huggingface/skills → "帮我看看这篇论文 2602.08025" / "解释一下这个 HF paper"
 - `./skills/ai-model-download/` AI 模型下载与管理（HuggingFace 和 ModelScope 双平台、批量下载、断点续传、完整性校验、参数量统计） → "从 HF 下载 Qwen 模型" / "帮我上传模型到 ModelScope"
 - `./skills/caveman-review/` 超压缩 PR 代码审查（一行一评：位置+问题+修复，emoji 严重度标记） → "review this PR" / "code review" / "/caveman-review"
+- `./skills/docusaurus-blog-guide/` Docusaurus 博客与文档站点指南（配置、Markdown/MDX、部署、官方文档引用） → "Docusaurus 博客配置在哪里" / "Docusaurus 支持哪些 Markdown 功能"
 
 # Find Place
+
+全局安装（注意：find-skills 使用 PromptScript，全局安装时可能会显示一个兼容性警告，但最终可正常工作）
 
 ```sh
 # skills.sh - Agent Skills Directory (Vercel)
 # https://skills.sh
-npx skills add vercel-labs/skills --skill find-skills
+npx skills add vercel-labs/skills --skill find-skills -g
 
 # claude-code official plugin market
 # /plugin marketplace
+```
+
+```sh
+# Matt Pocock 大神技能
+# https://github.com/mattpocock/skills
+npx skills@latest add mattpocock/skills -g
+# 安装后运行 /setup-matt-pocock-skills 配置
 ```

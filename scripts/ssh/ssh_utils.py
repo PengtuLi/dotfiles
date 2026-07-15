@@ -5,7 +5,26 @@ import subprocess
 from pathlib import Path
 
 
-_ANSI_RE = re.compile(r"\x1b\[[0-9;]*[a-zA-Z]")
+_CONNECTION_CLOSED_RE = re.compile(r"^Shared connection to .+ closed\.\s*$")
+
+
+def _get_proxy_host() -> str:
+    """Return the proxy host to use from the current environment."""
+    try:
+        version = Path("/proc/version").read_text().lower()
+        if "microsoft" in version:
+            result = subprocess.run(
+                "ip route show default | awk '{print $3}'",
+                shell=True,
+                capture_output=True,
+                text=True,
+            )
+            ip = result.stdout.strip()
+            if ip:
+                return ip
+    except Exception:
+        pass
+    return "127.0.0.1"
 
 
 def get_ssh_cmd(host: str) -> str:
@@ -28,15 +47,13 @@ def get_ssh_hosts() -> list[str]:
     return hosts
 
 
-def _clean_terminal_line(line: str) -> str:
-    """Strip ANSI escape codes and apply carriage returns to stdout/stderr."""
-    line = _ANSI_RE.sub("", line)
-    if "\r" in line:
-        parts = line.split("\r")
-        # A carriage return means the later segment overwrites the earlier one.
-        # Keep only the final segment to avoid duplicated/leftover text.
-        line = parts[-1]
-    return line
+def _strip_connection_closed(output: str) -> str:
+    """Drop the 'Shared connection to ... closed.' noise from ssh stderr."""
+    return "".join(
+        line
+        for line in output.splitlines(keepends=True)
+        if not _CONNECTION_CLOSED_RE.match(line.rstrip("\n"))
+    )
 
 
 def exec_remote(
@@ -45,26 +62,47 @@ def exec_remote(
     proxy: bool = False,
     proxy_mode: str = "http",
     proxy_port: int = 7890,
-) -> str:
-    """Execute command on remote server with streaming output."""
+    capture: bool = False,
+) -> str | None:
+    """Execute command on remote server.
+
+    By default the ssh process is attached directly to the local terminal so
+    progress bars, colors, and carriage returns work exactly as they do when
+    running ssh manually. Use capture=True for short commands whose output is
+    inspected by the caller (e.g. 'command -v ...').
+    """
     if proxy:
+        proxy_host = _get_proxy_host()
         if proxy_mode == "socks":
-            cmd = f"export ALL_PROXY=socks5h://127.0.0.1:{proxy_port} && {cmd}"
+            proxy_url = f"socks5h://{proxy_host}:{proxy_port}"
+            env_block = (
+                f"export ALL_PROXY={proxy_url} "
+                f"export all_proxy={proxy_url} "
+                f"export NO_PROXY=localhost,127.0.0.1,::1 "
+                f"export no_proxy=localhost,127.0.0.1,::1 "
+            )
         else:
-            cmd = f"export http_proxy=http://127.0.0.1:{proxy_port} https_proxy=http://127.0.0.1:{proxy_port} && {cmd}"
+            proxy_url = f"http://{proxy_host}:{proxy_port}"
+            env_block = (
+                f"export http_proxy={proxy_url} "
+                f"export https_proxy={proxy_url} "
+                f"export ftp_proxy={proxy_url} "
+                f"export all_proxy={proxy_url} "
+                f"export HTTP_PROXY={proxy_url} "
+                f"export HTTPS_PROXY={proxy_url} "
+                f"export FTP_PROXY={proxy_url} "
+                f"export ALL_PROXY={proxy_url} "
+                f"export NO_PROXY=localhost,127.0.0.1,::1 "
+                f"export no_proxy=localhost,127.0.0.1,::1 "
+            )
+        cmd = f"{env_block}&& {cmd}"
+
     cmd_escaped = cmd.replace("$", "\\$").replace('"', '\\"')
     full = f'{ssh_cmd} "{cmd_escaped}"'
-    process = subprocess.Popen(
-        full, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-    )
-    stdout_lines = []
-    for line in process.stdout:
-        line = _clean_terminal_line(line)
-        print(line, end="", flush=True)
-        stdout_lines.append(line)
-    process.wait()
-    stderr = process.stderr.read()
-    if stderr:
-        stderr = _clean_terminal_line(stderr)
-        print(f"[stderr] {stderr}", end="", flush=True)
-    return "".join(stdout_lines)
+
+    if capture:
+        result = subprocess.run(full, shell=True, capture_output=True, text=True)
+        return _strip_connection_closed(result.stdout + result.stderr).strip()
+
+    subprocess.run(full, shell=True)
+    return None
