@@ -13,8 +13,8 @@ return {
   ---@type AutoSession.Config
   opts = {
     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
-    -- log_level = 'debug',
-    -- show_auto_restore_notif = true,
+    cwd_change_handling = false,
+    show_auto_restore_notif = true,
 
     session_lens = {
       picker = 'fzf',

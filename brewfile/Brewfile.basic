@@ -41,6 +41,7 @@ brew "duf"                   # disk info
 brew "dust"                  # fold level disk info
 brew "sd"                    # alternative for sed&awk
 brew "grex"                  # grex generator
+brew "witr"                  # 进程溯源分析工具 (What Is This Running)
 
 # terminal multiplier
 brew "tmux"                  # 终端复用器
