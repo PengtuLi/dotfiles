@@ -15,6 +15,8 @@ return {
     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
     cwd_change_handling = false,
     show_auto_restore_notif = true,
+    -- 保存 session 前关掉这些特殊窗口，避免恢复出坏掉的侧边栏
+    bypass_save_filetypes = { 'neo-tree', 'aerial' },
 
     session_lens = {
       picker = 'fzf',
