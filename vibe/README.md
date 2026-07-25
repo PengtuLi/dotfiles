@@ -218,6 +218,9 @@ npx skills add xbtlin/ai-berkshire
 - `./skills/ai-model-download/` AI 模型下载与管理（HuggingFace 和 ModelScope 双平台、批量下载、断点续传、完整性校验、参数量统计） → "从 HF 下载 Qwen 模型" / "帮我上传模型到 ModelScope"
 - `./skills/caveman-review/` 超压缩 PR 代码审查（一行一评：位置+问题+修复，emoji 严重度标记） → "review this PR" / "code review" / "/caveman-review"
 - `./skills/docusaurus-blog-guide/` Docusaurus 博客与文档站点指南（配置、Markdown/MDX、部署、官方文档引用） → "Docusaurus 博客配置在哪里" / "Docusaurus 支持哪些 Markdown 功能"
+- `./skills/feynman-perspective/` 费曼思维操作系统（基于 40+ 一手来源：命名≠理解、反自欺、cargo cult 检测、5 心智模型 + 8 决策启发式，事实型问题强制联网验证） — https://github.com/alchaincyf/feynman-skill → "用费曼的视角看看我这个想法" / "这是不是 cargo cult" / "我真的理解了还是只记住了名字"
+- `./skills/taleb-perspective/` 塔勒布思维操作系统（6 核心心智模型 + 9 决策启发式：尾部风险、反脆弱、skin in the game、杠铃策略、预防原则） — https://github.com/alchaincyf/taleb-skill → "用塔勒布的视角看看" / "会不会黑天鹅" / "这个有尾部风险吗" / "杠铃策略怎么用"
+- `./skills/naval-perspective/` Naval Ravikant 思维操作系统（5 核心心智模型 + 8 决策启发式：杠杆、specific knowledge、财富 vs 金钱、欲望管理，沉浸式角色扮演） — https://github.com/alchaincyf/naval-skill → "用 Naval 的视角看看" / "这份工作有杠杆吗" / "什么是真正的财富"
 
 # Find Place
 

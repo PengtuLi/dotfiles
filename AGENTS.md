@@ -1,6 +1,18 @@
 # AGENTS.md
 
-This file provides guidance to agentic coding tools (Claude Code, etc.) when working in this repository.
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues for this repo (`PengtuLi/dotfiles`), managed via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Uses the default five-role vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
 
 ## What this repo is
 
@@ -43,17 +55,3 @@ just ssh-proxy <host>  # 推送 mihomo 代理到远程服务器（自动探测�
 - `vibe/` — AI coding 相关：skills 集合（`vibe/skills/` 下的 skill 通过符号链接装到 `~/.claude/skills/`，见 `link-skills.sh`）。
 - `static/` — 壁纸、头像等静态资源。
 - `code-snip/` — 代码片段。
-
-## Agent skills
-
-### Issue tracker
-
-Issues are tracked in GitHub Issues for this repo (`PengtuLi/dotfiles`), managed via the `gh` CLI. See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-Uses the default five-role vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
