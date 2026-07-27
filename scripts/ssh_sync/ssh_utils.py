@@ -4,27 +4,10 @@ import re
 import subprocess
 from pathlib import Path
 
+from proxy_utils import get_local_proxy_host
+
 
 _CONNECTION_CLOSED_RE = re.compile(r"^Shared connection to .+ closed\.\s*$")
-
-
-def _get_proxy_host() -> str:
-    """Return the proxy host to use from the current environment."""
-    try:
-        version = Path("/proc/version").read_text().lower()
-        if "microsoft" in version:
-            result = subprocess.run(
-                "ip route show default | awk '{print $3}'",
-                shell=True,
-                capture_output=True,
-                text=True,
-            )
-            ip = result.stdout.strip()
-            if ip:
-                return ip
-    except Exception:
-        pass
-    return "127.0.0.1"
 
 
 def get_ssh_cmd(host: str) -> str:
@@ -72,7 +55,7 @@ def exec_remote(
     inspected by the caller (e.g. 'command -v ...').
     """
     if proxy:
-        proxy_host = _get_proxy_host()
+        proxy_host = get_local_proxy_host()
         if proxy_mode == "socks":
             proxy_url = f"socks5h://{proxy_host}:{proxy_port}"
             env_block = (

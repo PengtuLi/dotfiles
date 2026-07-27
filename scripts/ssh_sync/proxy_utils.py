@@ -63,8 +63,10 @@ def setup_simple_proxy(
     """Set up reverse SSH tunnel forwarding local clash proxy to remote."""
     remote_port = find_available_remote_port(host, clash_port)
     local_target = get_local_proxy_host()
+    tunnel_cmd = f"ssh -S none -N -R {remote_port}:{local_target}:{clash_port} {host}"
+    print(f"[proxy] {tunnel_cmd}", flush=True)
     proc = subprocess.Popen(
-        f"ssh -S none -N -R {remote_port}:{local_target}:{clash_port} {host}",
+        tunnel_cmd,
         shell=True,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,

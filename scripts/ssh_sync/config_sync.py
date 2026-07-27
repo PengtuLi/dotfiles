@@ -1,7 +1,6 @@
 """SSH forward Homebrew install and config sync."""
 
 import base64
-import json
 import os
 import subprocess
 import sys
@@ -12,7 +11,6 @@ import yaml
 from colorama import Fore, Style, init
 
 from archive_utils import sync_configs, sync_scripts, sync_vibe
-from brew_patchelf_fix import fix_all_broken_binaries
 from prompt_utils import confirm, select_option
 from proxy_utils import setup_simple_proxy, setup_socks_proxy_legacy
 from ssh_utils import exec_remote, get_ssh_cmd, get_ssh_hosts
@@ -237,11 +235,11 @@ def copy_secret_env(
 ) -> None:
     """Copy secret environment variables to remote host."""
     print(f"{Fore.WHITE}Copying environment variables...{Style.RESET_ALL}")
-    secret_env_file = THIS_DIR / "secret_env.json"
+    secret_env_file = THIS_DIR / "ssh_sync_secret.yaml"
     if not secret_env_file.exists() or not confirm("Copy environment variables?"):
         return
 
-    env_vars = json.loads(secret_env_file.read_text()).get("env_vars", [])
+    env_vars = (yaml.safe_load(secret_env_file.read_text()) or {}).get("env_vars", [])
     exports = [
         f'export {var}="{os.environ.get(var, "")}"'
         for var in env_vars
@@ -355,16 +353,16 @@ ssh -D 1080 -p 2222 -N localuser@localhost{Style.RESET_ALL}
 
 
 def main():
-    # Load brew.yaml
-    brew_file = THIS_DIR / "brew.yaml"
+    # Load ssh_sync_pkg.yaml
+    brew_file = THIS_DIR / "ssh_sync_pkg.yaml"
     if not brew_file.exists():
         print(f"{Fore.RED}Error: {brew_file} not found{Style.RESET_ALL}")
         sys.exit(1)
 
     apps = yaml.safe_load(brew_file.read_text())
 
-    # Load bin.yaml
-    bin_file = THIS_DIR / "bin.yaml"
+    # Load ssh_sync_bin.yaml
+    bin_file = THIS_DIR / "ssh_sync_bin.yaml"
     bin_scripts = {}
     if bin_file.exists():
         bin_scripts = {
@@ -409,9 +407,6 @@ def main():
 
         # Install packages
         install_packages_remote(ssh_cmd, apps, use_proxy, proxy_mode, active_proxy_port)
-
-        # Fix broken ELF interpreters (after all installations)
-        fix_all_broken_binaries(ssh_cmd)
 
         # Copy configs
         print(f"{Fore.WHITE}Copying config files...{Style.RESET_ALL}")

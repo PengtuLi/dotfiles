@@ -113,9 +113,9 @@ extras-osx:
 
 # 额外配置 (Linux-gui)
 extras-linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux-gui.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux.sh"; exit 0; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux.sh"; exit 0; fi
     @echo "⚙️  安装额外配置 (linux)..."
-    @bash "{{SCRIPTS_DIR}}/extras/linux-gui.sh"
+    @bash "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh"
 
 # Mesh 设置
 mesh:
@@ -154,16 +154,16 @@ ssh-proxy host='':
 # ============================================================================
 
 _ssh_linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/config_sync 不存在"; exit 1; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh_sync/config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh_sync/config_sync 不存在"; exit 1; fi
     @echo "📦 ssh setup..."
     @uv pip install -r "requirements.txt"
-    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/config_sync.py"
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh_sync/config_sync.py"
 
 _ssh_linux_docker:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh/docker_config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh/docker_config_sync 不存在"; exit 1; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/ssh_sync/docker_config_sync.py" ]]; then echo "❌ 错误: {{SCRIPTS_DIR}}/ssh_sync/docker_config_sync 不存在"; exit 1; fi
     @echo "📦 ssh setup..."
     @uv pip install -r "requirements.txt"
-    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh/docker_config_sync.py"
+    @source ".venv/bin/activate" && python "{{SCRIPTS_DIR}}/ssh_sync/docker_config_sync.py"
 # ============================================================================
 # Brew 包组 (公开命令)
 # ============================================================================

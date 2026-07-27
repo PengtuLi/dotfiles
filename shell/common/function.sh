@@ -113,29 +113,39 @@ y() {
 # Proxy management
 set_local_proxy() {
     local dry_run=0
-    local proxy_port=""
+    local proxy_arg=""
     local arg
     for arg in "$@"; do
         case "$arg" in
             --dry-run) dry_run=1 ;;
-            *)         proxy_port="$arg" ;;
+            *)         proxy_arg="$arg" ;;
         esac
     done
 
-    if [ -z "$proxy_port" ]; then
-        echo "use port 7890 as default proxy port" >&2
-        proxy_port=7890
-    fi
+    local proxy_addr
+    case "$proxy_arg" in
+        # 手动指定完整地址 host:port，跳过 WSL 自动检测
+        *:*)
+            proxy_addr="$proxy_arg"
+            ;;
+        *)
+            local proxy_port="$proxy_arg"
+            if [ -z "$proxy_port" ]; then
+                echo "use port 7890 as default proxy port" >&2
+                proxy_port=7890
+            fi
 
-    local proxy_host="localhost"
-    # In WSL2 the proxy runs on the Windows host, not on localhost.
-    if [ -f /proc/version ] && grep -qi microsoft /proc/version; then
-        proxy_host="$(ip route show default | awk '{print $3}')"
-        if [ -z "$proxy_host" ]; then
-            proxy_host="localhost"
-        fi
-    fi
-    local proxy_addr="${proxy_host}:${proxy_port}"
+            local proxy_host="localhost"
+            # In WSL2 the proxy runs on the Windows host, not on localhost.
+            if [ -f /proc/version ] && grep -qi microsoft /proc/version; then
+                proxy_host="$(ip route show default | awk '{print $3}')"
+                if [ -z "$proxy_host" ]; then
+                    proxy_host="localhost"
+                fi
+            fi
+            proxy_addr="${proxy_host}:${proxy_port}"
+            ;;
+    esac
 
     if [ "$dry_run" -eq 1 ]; then
         echo "export http_proxy=\"http://${proxy_addr}\""
