@@ -30,7 +30,7 @@ try:
     if model:
         for key in ("ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL"):
             print(f"export {key}={shlex.quote(model)}")
-    print("IS_SANDBOX=1 claude --dangerously-skip-permissions")
+    print("IS_SANDBOX=1 claude --dangerously-skip-permissions --setting-sources project,local")
 except Exception as e:
     print(f"Error: {e}", file=sys.stderr)
     sys.exit(1)
