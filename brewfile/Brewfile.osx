@@ -10,7 +10,7 @@ cask "stats"
 # brew "batt"                              # cli battery-toolkit, not need anymore
 cask "the-unarchiver"
 # cask "lunar" # unlock XDR display
-cask "jordanbaird-ice"
+# cask "jordanbaird-ice"
 cask "google-drive"
 cask "vlc"                               # media player
 cask "google-chrome"
