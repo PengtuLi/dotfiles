@@ -222,6 +222,7 @@ npx skills add xbtlin/ai-berkshire
 - `./skills/taleb-perspective/` 塔勒布思维操作系统（6 核心心智模型 + 9 决策启发式：尾部风险、反脆弱、skin in the game、杠铃策略、预防原则） — https://github.com/alchaincyf/taleb-skill → "用塔勒布的视角看看" / "会不会黑天鹅" / "这个有尾部风险吗" / "杠铃策略怎么用"
 - `./skills/naval-perspective/` Naval Ravikant 思维操作系统（5 核心心智模型 + 8 决策启发式：杠杆、specific knowledge、财富 vs 金钱、欲望管理，沉浸式角色扮演） — https://github.com/alchaincyf/naval-skill → "用 Naval 的视角看看" / "这份工作有杠杆吗" / "什么是真正的财富"
 - `./skills/taste-skill/` 反模板前端设计（先读懂需求再推断设计方向，落地页/作品集/重构，产出不像模板套的界面） — https://github.com/Leonxlnx/taste-skill → "做一个 Awwwards 风格的落地页" / "帮我重新设计这个主页，别像模板"
+- `./skills/i-have-adhd/` ADHD 友好输出风格（行动放第一行、步骤编号、每轮重申进度、列表≤5项、禁客套话，/i-have-adhd 开启，"stop adhd mode" 关闭） — https://github.com/ayghri/i-have-adhd → "/i-have-adhd" / "stop adhd mode"
 
 # Find Place
 
