@@ -221,6 +221,7 @@ npx skills add xbtlin/ai-berkshire
 - `./skills/feynman-perspective/` 费曼思维操作系统（基于 40+ 一手来源：命名≠理解、反自欺、cargo cult 检测、5 心智模型 + 8 决策启发式，事实型问题强制联网验证） — https://github.com/alchaincyf/feynman-skill → "用费曼的视角看看我这个想法" / "这是不是 cargo cult" / "我真的理解了还是只记住了名字"
 - `./skills/taleb-perspective/` 塔勒布思维操作系统（6 核心心智模型 + 9 决策启发式：尾部风险、反脆弱、skin in the game、杠铃策略、预防原则） — https://github.com/alchaincyf/taleb-skill → "用塔勒布的视角看看" / "会不会黑天鹅" / "这个有尾部风险吗" / "杠铃策略怎么用"
 - `./skills/naval-perspective/` Naval Ravikant 思维操作系统（5 核心心智模型 + 8 决策启发式：杠杆、specific knowledge、财富 vs 金钱、欲望管理，沉浸式角色扮演） — https://github.com/alchaincyf/naval-skill → "用 Naval 的视角看看" / "这份工作有杠杆吗" / "什么是真正的财富"
+- `./skills/taste-skill/` 反模板前端设计（先读懂需求再推断设计方向，落地页/作品集/重构，产出不像模板套的界面） — https://github.com/Leonxlnx/taste-skill → "做一个 Awwwards 风格的落地页" / "帮我重新设计这个主页，别像模板"
 
 # Find Place
 
