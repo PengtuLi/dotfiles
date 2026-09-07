@@ -1,6 +1,8 @@
 return {
   'rmagatti/auto-session',
   lazy = false,
+  -- fzf-lua 本身是 lazy 加载的，这里声明依赖保证 picker 检测时 :FzfLua 已注册
+  dependencies = { 'ibhagwan/fzf-lua' },
 
   keys = {
     { '<leader>sa', '<cmd>AutoSession search<CR>', desc = 'search [a]uto-session' },

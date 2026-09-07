@@ -31,7 +31,9 @@ return {
         },
         window = {
           position = 'left',
-          width = 0.2,
+          width = function()
+            return math.floor(vim.o.columns * 0.2)
+          end,
         },
         filesystem = {
           filtered_items = {
