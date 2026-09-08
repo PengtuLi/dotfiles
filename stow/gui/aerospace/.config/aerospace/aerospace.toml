@@ -6,7 +6,6 @@ config-version = 2
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
   # 'exec-and-forget borders active_color=0xff00ff00 inactive_color=0xffe1e3e4 hidpi=on width=5.0'
-  'layout --workspace 1 --root tiles' # workspace 1 使用平铺布局
 ]
 
 # Start AeroSpace at login
@@ -199,11 +198,11 @@ on-mode-changed = []
     if.app-id = 'com.kingsoft.wpsoffice.mac'
     run = 'move-node-to-workspace 2'
 
-# 兜底规则：其余所有 app 的新窗口默认进入 workspace 1
+# 兜底规则：其余所有 app 的新窗口默认进入 workspace 1 并保持浮动（不参与平铺）
 # 注意：on-window-detected 按顺序匹配，第一个命中的规则生效，此规则必须放在最后
 [[on-window-detected]]
     if = 'true'
-    run = 'move-node-to-workspace 1'
+    run = ['move-node-to-workspace 1', 'layout floating']
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
