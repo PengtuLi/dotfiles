@@ -145,6 +145,12 @@ npx skills@latest add mattpocock/skills -g
 ## 领域技能
 
 ```sh
+# 微信读书官方 skill（书架/笔记/划线/书评/阅读统计/搜索/推荐）
+# 介绍页：https://weread.qq.com/r/weread-skills
+npx skills add Tencent/WeChatReading -g
+```
+
+```sh
 # AI 研究 98 skills
 # https://github.com/Orchestra-Research/AI-Research-SKILLs
 npx @orchestra-research/ai-research-skills
