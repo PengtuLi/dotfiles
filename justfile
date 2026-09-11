@@ -17,6 +17,9 @@ default:
     @echo "  ssh              - Linux ssh host配置"
     @echo "  ssh-docker       - Linux ssh host docker配置"
     @echo ""
+    @echo "预设执行顺序: prerequisites -> brew -> stow -> shell_scripts -> extras -> vscode"
+    @echo "前置要求: brew 已安装(可跑 bash scripts/lib/install_homebrew.sh 安装)"
+    @echo ""
     @echo "可用组件 (单独安装):"
     @echo "  proxy            - 代理配置"
     @echo "  conda            - Conda 环境设置"
@@ -50,13 +53,13 @@ list: default
 # ============================================================================
 
 # macOS 完整配置
-osx: prerequisites-osx stow-osx shell_scripts extras-osx brew-osx vscode
+osx: prerequisites-osx brew-osx stow-osx shell_scripts extras-osx vscode
 
 # Linux GUI 配置
-linux-gui: prerequisites-linux stow-linux shell_scripts brew-linux-gui vscode extras-linux
+linux-gui: prerequisites-linux brew-linux-gui stow-linux shell_scripts extras-linux vscode
 
 # Linux 无头配置
-linux-headless: prerequisites-linux stow-linux shell_scripts brew-linux-headless vscode
+linux-headless: prerequisites-linux brew-linux-headless stow-linux shell_scripts vscode
 
 ssh: _ssh_linux
 ssh-docker: _ssh_linux_docker
@@ -113,7 +116,7 @@ extras-osx:
 
 # 额外配置 (Linux-gui)
 extras-linux:
-    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux.sh"; exit 0; fi
+    @if [[ ! -f "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh" ]]; then echo "⚠️  脚本不存在: {{SCRIPTS_DIR}}/extras/linux-gui-arch.sh"; exit 0; fi
     @echo "⚙️  安装额外配置 (linux)..."
     @bash "{{SCRIPTS_DIR}}/extras/linux-gui-arch.sh"
 

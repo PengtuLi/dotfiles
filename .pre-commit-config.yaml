@@ -14,7 +14,6 @@ repos:
       - id: check-added-large-files
       # - id: check-executables-have-shebangs
       # - id: check-shebang-scripts-are-executable
-      - id: trailing-whitespace
       - id: detect-private-key
 
   # ============== Python ==============
