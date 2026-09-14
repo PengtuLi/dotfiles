@@ -1,5 +1,6 @@
 {
   "reload_style_on_change": true,
+  "output": "DP-3",
   "position": "top",
   "spacing": 0,
   "modules-left": [
