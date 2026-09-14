@@ -19,8 +19,8 @@
 #cpu,
 #custom-temperature {
   background-color: #232634;
-  padding: 0.3rem 0.7rem;
-  margin: 5px 5px;
+  padding: 5px 10px;
+  margin: 8px 5px 0;
   border-radius: 16px;
   border: none;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -33,13 +33,13 @@
 #memory:hover,
 #cpu:hover,
 #custom-temperature:hover {
-  background-color: rgb(41, 42, 53);
+  background-color: #414559;
 }
 
 #workspaces button {
   color: #babbf1;
   border-radius: 10px;
-  padding: 0.3rem 0.6rem;
+  padding: 5px 9px;
   background: transparent;
   transition: all 0.2s ease-in-out;
   border: none;
@@ -52,16 +52,16 @@
 }
 
 #workspaces button:hover {
-  background: rgb(41, 42, 53);
+  background: #414559;
   color: #c6d0f5;
 }
 
 /* --- Center Module --- */
 #clock {
   background-color: #232634;
-  padding: 0.3rem 0.7rem;
-  margin: 5px 0;
-  border-radius: 6px;
+  padding: 5px 10px;
+  margin: 8px 0 0;
+  border-radius: 16px;
   box-shadow: 0 1px 3px rgba(153, 209, 219, 0.2);
   min-width: 0;
   border: none;
@@ -74,16 +74,17 @@
 }
 
 /* --- Right Modules (Single, Seamless Bar) --- */
+#tray,
 #bluetooth,
 #wireplumber,
 #network,
 #custom-notification,
-#user,
 #custom-idle-inhibit,
+#user,
 #custom-lock {
   background-color: #232634;
-  padding: 0.3rem 0.7rem;
-  margin: 5px 0;
+  padding: 5px 10px;
+  margin: 8px 0 0;
   border-radius: 0;
   box-shadow: none;
   min-width: 0;
@@ -91,26 +92,30 @@
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
+#tray:hover,
 #bluetooth:hover,
 #wireplumber:hover,
 #network:hover,
 #custom-notification:hover,
-#user:hover,
 #custom-idle-inhibit:hover,
+#user:hover,
 #custom-lock:hover {
-  background-color: rgb(41, 42, 53);
+  background-color: #414559;
 }
 
-/* Right edge rounding */
-#bluetooth {
+/* Bar end rounding (tray = leftmost, lock = rightmost) */
+#tray {
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
-  color: #888888;
+}
+
+#bluetooth {
+  color: #737994;
   font-size: 16px;
 }
 
 #bluetooth.on {
-  color: #2196f3;
+  color: #8caaee;
 }
 
 #bluetooth.connected {
@@ -150,4 +155,17 @@
   border-bottom-right-radius: 16px;
   margin-right: 8px;
   color: #babbf1;
+}
+
+/* --- Threshold States --- */
+#cpu.warning,
+#memory.warning,
+#custom-temperature.warning {
+  color: #e5c890;
+}
+
+#cpu.critical,
+#memory.critical,
+#custom-temperature.critical {
+  color: #e78284;
 }

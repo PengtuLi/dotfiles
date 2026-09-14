@@ -35,9 +35,9 @@ scoop install openssh
 复制到 Windows Terminal 用户配置目录(windows_terminal有个打开配置文件的按钮)
 
 # 4. WSL2 与 WSLg 配置
-# 4.1 安装 WSL2（默认 Ubuntu，可按需替换）
+# 4.1 安装 WSL2（默认 Ubuntu，可用 `wsl --install archlinux` 等替换发行版）
 wsl --install
-# 安装完成后重启，按提示设置 archlinux 用户密码
+# 安装完成后重启，按提示设置 Linux 用户密码
 
 # 4.2 启用 systemd（默认已启用，旧版本需手动配置）
 # 在 WSL 内编辑 /etc/wsl.conf，添加：
@@ -49,5 +49,5 @@ wsl --install
 # 5. AutoHotkey 热键脚本（可选）
 # 可将 AHK 脚本放入 %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 # 实现开机自动加载，例如将仓库中的 ahk 脚本复制到启动目录：
-# "$env:USERPROFILE\workspace\dotfiles\scripts\extras\hotkey.ahk" `
-# "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\hotkey.ahk" -Force
+# Copy-Item "$env:USERPROFILE\workspace\dotfiles\stow\gui\ahk\.config\ahk\windows.ahk" `
+#   "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\windows.ahk" -Force

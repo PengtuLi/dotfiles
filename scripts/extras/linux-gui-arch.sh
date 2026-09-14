@@ -5,6 +5,13 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "$ROOT_DIR/scripts/lib/common.sh"
 
+update_system() {
+    info "刷新包数据库..."
+    sudo pacman -Sy
+    UPDATE_INSTALLED=1
+    success "将更新列表中已安装的包"
+}
+
 install_niri() {
 
     if ! command -v yay &>/dev/null; then
@@ -16,66 +23,70 @@ install_niri() {
         cd "$ROOT_DIR"
     fi
 
+    confirm_run "是否更新列表中已安装的包（默认跳过，不做全系统 Syu）？" update_system
+
     local packages=(
-        # niri                 # windows manager
-        # xwayland-satellite
-        # waybar               # status bar
-        # fuzzel               # launch pad
-        # gdm                  # display manager
-        # swaync                  # Notification Daemon
-        # xdg-desktop-portal-gnome # with gdm
-        # xdg-desktop-portal-gtk
-        # gnome-keyring
-        # polkit-gnome
+        niri                    # window manager
+        xwayland-satellite
+        waybar                  # status bar
+        fuzzel                  # launcher
+        gdm                     # display manager
+        swaync                  # notification daemon
+        xdg-desktop-portal-gnome # with gdm
+        xdg-desktop-portal-gtk
+        gnome-keyring
+        polkit-gnome
 
-        # awww             # 设置壁纸
-        # hyprlock            # lock screen
-        # nautilus            # file manager
-        # swayidle           # 休眠管理
-        # brightnessctl        # 亮度管理
+        awww                    # 壁纸
+        hyprlock                # 锁屏
+        nautilus                # 文件管理器
+        swayidle                # 休眠管理
+        brightnessctl           # 亮度管理
 
-        # pipewire
-        # pipewire-pulse
-        # pipewire-alsa
-        # wireplumber
-        # sof-firmware
-        # pavucontrol
+        pipewire
+        pipewire-pulse
+        pipewire-alsa
+        wireplumber
+        sof-firmware
+        pavucontrol
 
-        # # 藍牙
-        # bluez
-        # blueman
-        # # 快照
-        # timeshift
-        # grub-btrfs
+        # 蓝牙
+        bluez
+        blueman
+        # 快照
+        timeshift
+        grub-btrfs
 
-        # vlc
-        # google-chrome
-        # wechat-bin
-        # wps-office-cn
-        # ghostty                           # GPU 加速终端
-        # visual-studio-code-bin
+        vlc
+        google-chrome
+        wechat-bin
+        wps-office-cn
+        ghostty                 # GPU 加速终端
+        visual-studio-code-bin
 
-        # input
-        # fcitx5-im                # meta: fcitx5 + gtk/qt/configtool
-        # fcitx5-chinese-addons    # 拼音、注音等
-        # fcitx5-material-color    # 主題
+        # 输入法
+        fcitx5-im               # meta: fcitx5 + gtk/qt/configtool
+        fcitx5-chinese-addons   # 拼音、注音等
+        fcitx5-material-color   # 主题
 
-        # fonts
-        # adobe-source-han-sans-cn-fonts
-        # adobe-source-han-serif-cn-fonts
-
+        # 字体
+        adobe-source-han-sans-cn-fonts
+        adobe-source-han-serif-cn-fonts
     )
 
     for pkg in "${packages[@]}"; do
+        if pacman -Qq "$pkg" &>/dev/null && [[ "${UPDATE_INSTALLED:-0}" != "1" ]]; then
+            info "$pkg 已安装，跳过"
+            continue
+        fi
         echo ">>> 正在安装 $pkg ..."
         if pacman -Si "$pkg" &> /dev/null; then
-            if ! sudo pacman -S --noconfirm "$pkg"; then
+            if ! sudo pacman -S --needed --noconfirm "$pkg"; then
                 error "pacman 安装 $pkg 失败"
                 exit 1
             fi
         else
-            output=$(yay -S --noconfirm "$pkg" 2>&1) || true
-            if echo "$output" | grep -qi "there is nothing to do\|no aur package found\|failed"; then
+            if ! output=$(yay -S --needed --noconfirm "$pkg" 2>&1); then
                 error "yay 安装 $pkg 失败"
                 echo "$output"
                 exit 1
@@ -85,7 +96,7 @@ install_niri() {
     done
 
     mkdir -p ~/.config/systemd/user
-    sudo tee ~/.config/systemd/user/awww.service > /dev/null << 'EOF'
+    tee ~/.config/systemd/user/awww.service > /dev/null << 'EOF'
 [Unit]
 PartOf=graphical-session.target
 After=graphical-session.target
@@ -96,7 +107,7 @@ ExecStart=awww-daemon
 Restart=on-failure
 EOF
 
-    sudo tee ~/.config/systemd/user/swayidle.service > /dev/null << 'EOF'
+    tee ~/.config/systemd/user/swayidle.service > /dev/null << 'EOF'
 [Unit]
 PartOf=graphical-session.target
 After=graphical-session.target
@@ -145,7 +156,7 @@ install_fontconfig() {
 EOF
 
     fc-cache -fv
-    success "字體配置完成"
+    success "字体配置完成"
     echo "  sans-serif → $(fc-match sans-serif)"
     echo "  serif      → $(fc-match serif)"
     echo "  monospace  → $(fc-match monospace)"
@@ -225,49 +236,37 @@ troubleshoot_tips() {
     info "========== Arch Linux 常見問題排查 =========="
     echo ""
     echo "1. CMake: 'Package xxx not found' 但 pacman 顯示已安裝"
-    echo "   → linuxbrew 的 pkg-config 覆蓋了系統版本，搜索路徑不含 /usr/lib/pkgconfig"
-    echo "   → 修復：~/.zshrc 中 brew shellenv 之後加："
+    echo "   → linuxbrew 的 pkg-config 覆盖了系统版本，搜索路径不含 /usr/lib/pkgconfig"
+    echo "   → 修复：~/.zshrc 中 brew shellenv 之后加："
     echo '     export PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}/usr/lib/pkgconfig:/usr/share/pkgconfig"'
     echo ""
     echo "2. yay: 'request failed: Get ... EOF'"
-    echo "   → AUR API 連接失敗，校園網 DNS 被汙染"
-    echo "   → 修復：mihomo nameserver 加 #proxy；或加 /etc/hosts 條目"
+    echo "   → AUR API 连接失败，校园网 DNS 被污染"
+    echo "   → 修复：mihomo nameserver 加 #proxy；或加 /etc/hosts 条目"
     echo ""
-    success "排查提示輸出完畢"
+    success "排查提示输出完毕"
     echo ""
 }
 
 
+confirm_run() {
+    local prompt="$1" func="$2"
+    read -r -p "$prompt [y/N]: " proceed
+    case "$proceed" in
+        [yY])
+            echo "开始执行..."
+            "$func"
+            ;;
+    esac
+}
+
 if is_arch_linux; then
     echo ""
-    read -r -p "检测到 Arch Linux，是否运行常见问题排查？[y/N]: " proceed
-    case "$proceed" in
-        [yY])
-            troubleshoot_tips
-    esac
-    read -r -p "检测到 Arch Linux，是否安装 niri 桌面环境？[y/N]: " proceed
-    case "$proceed" in
-        [yY])
-            echo "开始安装..."
-            install_niri
-    esac
-    read -r -p "检测到 Arch Linux，是否配置字体？[y/N]: " proceed
-    case "$proceed" in
-        [yY])
-            install_fontconfig
-    esac
-    read -r -p "检测到 Arch Linux，是否安装 wifi [y/N]: " proceed
-    case "$proceed" in
-        [yY])
-            echo "开始安装..."
-            install_wifi
-    esac
-    read -r -p "检测到 Arch Linux，是否安装 rclone [y/N]: " proceed
-    case "$proceed" in
-        [yY])
-            echo "开始安装..."
-            install_rclone
-    esac
+    confirm_run "检测到 Arch Linux，是否运行常见问题排查？" troubleshoot_tips
+    confirm_run "检测到 Arch Linux，是否安装 niri 桌面环境？" install_niri
+    confirm_run "检测到 Arch Linux，是否配置字体？" install_fontconfig
+    confirm_run "检测到 Arch Linux，是否配置 wifi？" install_wifi
+    confirm_run "检测到 Arch Linux，是否配置 rclone？" install_rclone
 fi
 
 
