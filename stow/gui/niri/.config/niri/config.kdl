@@ -100,12 +100,14 @@ output "DP-3" {
 // 集合与 aerospace 严格对齐: {1,2,3,4,9,0}
 // 注意: niri 把命名 workspace 逐个插到列表顶部，最终显示顺序是声明顺序的逆序，
 // 所以这里要倒着写，实际显示才是 1 2 3 4 9 0。
-workspace "0" {}
-workspace "9" {}
-workspace "4" {}
-workspace "3" {}
-workspace "2" {}
-workspace "1" {}
+// open-on-output 把它们钉在 DP-3（左边 Philips，主显示器）；
+// 否则 niri 会按启动时聚焦的显示器分配，导致全部落到 DP-2（右边）。
+workspace "0" { open-on-output "DP-3"; }
+workspace "9" { open-on-output "DP-3"; }
+workspace "4" { open-on-output "DP-3"; }
+workspace "3" { open-on-output "DP-3"; }
+workspace "2" { open-on-output "DP-3"; }
+workspace "1" { open-on-output "DP-3"; }
 
 // Settings that influence how windows are positioned and sized.
 // Find more information on the wiki:
