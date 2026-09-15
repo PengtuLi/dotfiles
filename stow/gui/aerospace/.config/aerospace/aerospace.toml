@@ -158,7 +158,7 @@ on-mode-changed = []
     cmd-comma = 'layout v_accordion'
     cmd-period = 'layout h_accordion'
     # 对齐 niri Mod+V: 浮动/平铺切换
-    cmd-v = 'layout floating tiling'
+    # cmd-v = 'layout floating tiling'
 
 # 让 Finder 的所有窗口都保持浮动（不参与平铺）
 [[on-window-detected]]

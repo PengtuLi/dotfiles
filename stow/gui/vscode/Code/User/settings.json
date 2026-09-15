@@ -39,5 +39,6 @@
       "editor.lineHighlightBackground": "#2d3a4d"
     },
     "workbench.iconTheme": "vscode-icons",
-    "editor.accessibilitySupport": "on"
+    "editor.accessibilitySupport": "on",
+    "vsicons.dontShowNewVersionMessage": true
 }
