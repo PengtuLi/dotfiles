@@ -61,7 +61,7 @@ install_niri() {
         google-chrome
         wechat-bin
         wps-office-cn
-        ghostty                 # GPU 加速终端
+        ghostty-nightly-bin     # GPU 加速终端
         visual-studio-code-bin
 
         # 输入法
