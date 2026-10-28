@@ -261,8 +261,12 @@ return {
         auto_update = true,
         ensure_installed = ensure_installed,
         run_on_start = true,
-        start_delay = 3000,
+        debounce_hours = 14 * 24,
       }
+
+      -- NOTE: mason-tool-installer is lazy-loaded via `event = 'VeryLazy'`, so its
+      -- plugin/ VimEnter autocmd never fires. Trigger the install/update manually.
+      require('mason-tool-installer').check_install()
 
       vim.api.nvim_create_autocmd('User', {
         pattern = 'MasonToolsStartingInstall',
