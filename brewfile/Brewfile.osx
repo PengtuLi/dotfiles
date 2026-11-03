@@ -26,5 +26,6 @@ cask "visual-studio-code"                # vscode
 # brew "koekeishiya/formulae/yabai" # 平铺窗口管理器
 # brew "koekeishiya/formulae/skhd"  # 键盘快捷键守护进程
 cask "nikitabobko/tap/aerospace"
+brew "nikgrbn/tap/finder-menu"
 # tap "FelixKratz/formulae"
 # brew "borders"
