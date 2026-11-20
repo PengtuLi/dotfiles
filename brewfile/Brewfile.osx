@@ -1,5 +1,7 @@
 # tool
 brew "bear"                  # C/C++ compile_commands.json 生成器
+brew "sleepwatcher"          # 睡眠/唤醒事件钩子（合盖自动关蓝牙防耗电，见 osx.sh）
+brew "blueutil"              # 命令行蓝牙开关
 
 # # macOS 特有软件
 cask "karabiner-elements"                # 键盘映射/改键

@@ -59,6 +59,44 @@ apply_osx_system_defaults() {
 
 }
 
+setup_bluetooth_sleep_guard() {
+    # 合盖入睡自动关蓝牙、唤醒恢复，防止外部蓝牙设备频繁 DarkWake 导致过夜掉电
+    # 代价：蓝牙外设无法唤醒电脑，需开盖或按内置键盘唤醒
+    read -r -p "Enable Bluetooth sleep guard (sleepwatcher + blueutil)? [y/N] " answer
+    if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+        info "Skipped Bluetooth sleep guard"
+        return
+    fi
+
+    info "Setting up Bluetooth sleep guard..."
+
+    if ! command -v blueutil >/dev/null || ! brew list sleepwatcher >/dev/null 2>&1; then
+        warning "blueutil/sleepwatcher 未安装（请先 brew bundle Brewfile.osx），跳过蓝牙睡眠守护配置"
+        return
+    fi
+
+    local blueutil_path
+    blueutil_path="$(command -v blueutil)"
+
+    cat >"$HOME/.sleep" <<EOF
+#!/bin/bash
+# 入睡时记录蓝牙状态并关闭蓝牙，防止外部蓝牙设备频繁 DarkWake 耗电
+$blueutil_path -p > "\$HOME/.blueutil-state"
+$blueutil_path -p 0
+EOF
+
+    cat >"$HOME/.wakeup" <<EOF
+#!/bin/bash
+# 唤醒时恢复入睡前的蓝牙状态（睡前本来就是关的则保持关闭）
+state=\$(cat "\$HOME/.blueutil-state" 2>/dev/null || echo 1)
+$blueutil_path -p "\$state"
+EOF
+
+    chmod +x "$HOME/.sleep" "$HOME/.wakeup"
+    brew services start sleepwatcher
+    info "Bluetooth sleep guard enabled"
+}
+
 check_sleep_power_settings() {
     # 检测睡眠省电设置，未设置则提示用户开启（防止合盖后蓝牙频繁唤醒导致过夜掉电）
     info "Checking sleep power settings..."
@@ -87,6 +125,7 @@ if [ "$(basename "$0")" = "$(basename "${BASH_SOURCE[0]}")" ]; then
     enable_dev_tools_security
     enable_touch_id_for_sudo
     apply_osx_system_defaults
+    setup_bluetooth_sleep_guard
     check_sleep_power_settings
 fi
 
